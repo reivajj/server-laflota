@@ -31,7 +31,7 @@ export default async ({ app }) => {
   });
 
   app.use(config.albumsApi, routes.albums);
-  // app.use(config.tracksApi, routes.tracks);
+  app.use(config.tracksApi, routes.tracks);
   // app.use(config.artistsApi, routes.artists);
 
   app.use((_, __, next) => {

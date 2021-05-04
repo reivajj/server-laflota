@@ -1,7 +1,7 @@
 import Router from "express-promise-router";
 import multer from 'multer';
 import createError from 'http-errors';
-import { createAlbum, getAllAlbums } from '../services/providers/album';
+import { createAlbum, getAllAlbums } from '../services/providers/albums';
 
 const router = Router();
 const upload = multer();
@@ -14,12 +14,10 @@ router.get('/', async (_, res) => {
 });
 
 router.post('/upload', upload.single('cover'), async (req, res) => {
-  console.log("ReqBody: ", req.body);
-  console.log("Req file: ", req.file);
   const response = await createAlbum(req.body, req.file);
   
-  if (!response.data) {
-    throw createError(400, 'Error al subir un Album', { dataResponse: response })
+  if (!response.data.id) {
+    throw createError(400, 'Error al subir un Album', { dataResponse: response, req })
   };
 
   return res.status(200).send({ response: response.data });

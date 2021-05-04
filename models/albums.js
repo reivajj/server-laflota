@@ -1,5 +1,4 @@
 import FormData from 'form-data';
-// import createError from 'http-errors';
 
 export const createDashGoAlbum = (albumMetaData, albumCover) => {
   const formDataAlbum = new FormData();
