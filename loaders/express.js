@@ -12,8 +12,8 @@ export default async ({ app }) => {
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 
-  app.get('/status', (req, res) => { res.status(200).end(); });
-  app.head('/status', (req, res) => { res.status(200).end(); });
+  app.get('/status', (_, res) => { res.status(200).end(); });
+  app.head('/status', (_, res) => { res.status(200).end(); });
   app.enable('trust proxy');
 
   app.use(cors(corsOptions));
