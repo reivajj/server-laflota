@@ -1,8 +1,8 @@
-import albums from './albums.js';
-import tracks from './tracks.js';
-import artists from './artists.js';
+const albums = require('./albums');
+const tracks = require('./tracks');
+const artists = require('./artists');
  
-export default {
+module.exports = {
   albums,
   tracks,
   artists,

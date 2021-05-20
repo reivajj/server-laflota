@@ -1,9 +1,8 @@
-import Router from "express-promise-router";
-import multer from 'multer';
-import createError from 'http-errors';
-import { createTrackForAlbum, getAllTracks } from "../services/providers/tracks.js";
+var router = require("express-promise-router")();
+const multer = require('multer');
+const createError = require('http-errors');
+const { createTrackForAlbum, getAllTracks } = require('../services/providers/tracks');
 
-const router = Router();
 const upload = multer();
 
 router.get('/', async (_, res) => {
@@ -24,4 +23,4 @@ router.post('/upload', upload.single('track'), async (req, res) => {
   return res.status(200).send({ response: response.data });
 });
 
-export default router;
+module.exports = router;

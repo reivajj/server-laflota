@@ -1,9 +1,8 @@
-import Router from "express-promise-router";
-import pkg from 'axios';
-import createError from 'http-errors';
-import FormData from 'form-data';
+var router = require('express-promise-router')();
+const pkg = require('axios');
+const createError = require('http-errors');
+const FormData = require('form-data');
 
-const router = Router();
 const { get, post } = pkg;
 
 router.get('/getAll', async (req, res) => {
@@ -24,4 +23,4 @@ router.get('/getAll', async (req, res) => {
   return res.status(200).send({ response: response.data, formDataSend: formData });
 });
 
-export default router;
+module.exports = router;

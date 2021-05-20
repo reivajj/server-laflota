@@ -1,15 +1,15 @@
-import axiosInstance from '../../../config/axiosConfig.js';
+const axiosInstance = require('../../../config/axiosConfig');
 
 const { get, post } = axiosInstance;
 
-export const getAllTracksFromDashGo = async () => {
+const getAllTracksFromDashGo = async () => {
   const response = await get('/tracks');
 
   if (!response.data) throw createError(400, 'Error al buscar los Tracks');
   return response;
 }
 
-export const uploadTrackToAlbumToProvider = async formDataTrack => {
+const uploadTrackToAlbumToProvider = async formDataTrack => {
   const response = await post('/tracks', formDataTrack, {
     headers: { ...formDataTrack.getHeaders() }
   });
@@ -18,3 +18,4 @@ export const uploadTrackToAlbumToProvider = async formDataTrack => {
   return response;
 }
 
+module.exports = { getAllTracksFromDashGo, uploadTrackToAlbumToProvider };

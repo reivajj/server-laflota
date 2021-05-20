@@ -1,5 +1,4 @@
-// First we need to import axios.js
-import axios from 'axios';
+const axios = require('axios');
 // Next we make an 'instance' of it
 const instance = axios.create({
 // .. where we make our configurations
@@ -10,4 +9,4 @@ const instance = axios.create({
 instance.defaults.headers.common['X-Access-Key'] = `${process.env.DASHGO_API_KEY}`;
 instance.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 
-export default instance;
+module.exports = instance;

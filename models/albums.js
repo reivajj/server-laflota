@@ -1,6 +1,6 @@
-import FormData from 'form-data';
+const FormData = require('form-data');
 
-export const createDashGoAlbum = (albumMetaData, albumCover) => {
+const createDashGoAlbum = (albumMetaData, albumCover) => {
   const formDataAlbum = new FormData();
 
   formDataAlbum.append("artist_id", `${albumMetaData.artist_id}`);
@@ -16,3 +16,5 @@ export const createDashGoAlbum = (albumMetaData, albumCover) => {
 
   return formDataAlbum;
 }
+
+module.exports = createDashGoAlbum;

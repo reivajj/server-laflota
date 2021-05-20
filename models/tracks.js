@@ -1,6 +1,6 @@
-import FormData from 'form-data';
+const FormData = require('form-data');
 
-export const createDashGoTrack = (trackMetaData, trackFile) => {
+const createDashGoTrack = (trackMetaData, trackFile) => {
   const formDataTrack = new FormData();
 
   formDataTrack.append("album_id", trackMetaData.album_id);
@@ -15,3 +15,5 @@ export const createDashGoTrack = (trackMetaData, trackFile) => {
 
   return formDataTrack;
 }
+
+module.exports = createDashGoTrack;

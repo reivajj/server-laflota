@@ -1,10 +1,11 @@
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 
 dotenv.config();
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
-export default {
+module.exports = {
   port: process.env.PORT,
   dashGo: {
     apiUrl: process.env.DASHGO_API_URL,

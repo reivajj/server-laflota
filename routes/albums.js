@@ -1,7 +1,8 @@
-import Router from "express-promise-router";
-import multer from 'multer';
-import createError from 'http-errors';
-import { createAlbum, getAllAlbums } from '../services/providers/albums.js';
+const Router = require('express-promise-router');
+// import Router from "express-promise-router";
+const multer = require('multer');
+const createError = require('http-errors');
+const { createAlbum, getAllAlbums } = require('../services/providers/albums');
 
 const router = Router();
 const upload = multer();
@@ -23,4 +24,4 @@ router.post('/upload', upload.single('cover'), async (req, res) => {
   return res.status(200).send({ response: response.data });
 });
 
-export default router;
+module.exports = router;
