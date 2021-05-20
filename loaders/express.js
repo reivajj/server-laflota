@@ -1,8 +1,8 @@
 import { urlencoded, json } from 'express';
 import cors from 'cors';
 import createError from 'http-errors';
-import routes from '../routes';
-import config from '../config';
+import routes from '../routes/index.js';
+import config from '../config/index.js';
 
 export default async ({ app }) => {
 

@@ -1,7 +1,7 @@
 import Router from "express-promise-router";
 import multer from 'multer';
 import createError from 'http-errors';
-import { createTrackForAlbum, getAllTracks } from "../services/providers/tracks";
+import { createTrackForAlbum, getAllTracks } from "../services/providers/tracks.js";
 
 const router = Router();
 const upload = multer();

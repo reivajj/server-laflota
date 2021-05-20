@@ -1,7 +1,7 @@
 import Router from "express-promise-router";
 import multer from 'multer';
 import createError from 'http-errors';
-import { createAlbum, getAllAlbums } from '../services/providers/albums';
+import { createAlbum, getAllAlbums } from '../services/providers/albums.js';
 
 const router = Router();
 const upload = multer();

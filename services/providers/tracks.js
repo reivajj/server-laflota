@@ -1,6 +1,6 @@
 
-import { createDashGoTrack } from '../../models/tracks';
-import { getAllTracksFromDashGo, uploadTrackToAlbumToProvider } from '../../third-party-api/providers/dashgo/tracks';
+import { createDashGoTrack } from '../../models/tracks.js';
+import { getAllTracksFromDashGo, uploadTrackToAlbumToProvider } from '../../third-party-api/providers/dashgo/tracks.js';
 
 export const getAllTracks = async () => {
   const response = await getAllTracksFromDashGo();

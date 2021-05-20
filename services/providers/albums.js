@@ -1,5 +1,5 @@
-import { getAllAlbumsFromDashGo, uploadAlbumToProvider } from "../../third-party-api/providers/dashgo/albums"
-import { createDashGoAlbum } from '../../models/albums';
+import { getAllAlbumsFromDashGo, uploadAlbumToProvider } from "../../third-party-api/providers/dashgo/albums.js";
+import { createDashGoAlbum } from '../../models/albums.js';
 
 export const getAllAlbums = async () => {
   const response = await getAllAlbumsFromDashGo();

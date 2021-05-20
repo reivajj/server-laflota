@@ -1,7 +1,7 @@
 import express from 'express';
-import config from './config/index';
-import loaders from './loaders';
-import Logger from './loaders/logger';
+import config from './config/index.js';
+import loaders from './loaders/index.js';
+import Logger from './loaders/logger.js';
 
 async function startServer() {
 
