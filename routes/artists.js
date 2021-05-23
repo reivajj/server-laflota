@@ -1,26 +1,27 @@
-var router = require('express-promise-router')();
-const pkg = require('axios');
+var router = require("express-promise-router")();
 const createError = require('http-errors');
-const FormData = require('form-data');
 
-const { get, post } = pkg;
+const multer  = require('multer');
+const upload = multer();
 
-router.get('/getAll', async (req, res) => {
+const { getAllArtists, createArtist } = require('../services/providers/artists');
 
+router.get('/', async (_, res) => {
+  const response = await getAllArtists();
 
-  const response = await get('https://api.dashgo.com/api/v1/artists/', {
-    // You need to use `getHeaders()` in Node.js because Axios doesn't
-    // automatically set the multipart form boundary in Node.
-    headers: {
-      "X-Access-Key": 'laflota-kladsjf-2229-5582-5222-fkgnnEAD'
-    }
-  });
+  if (!response.data) throw createError(400, 'Error al pedir los Artistas', { dataResponse: response });
+  return res.status(200).send({ dataResponse: response.data });
+});
 
-  if (!response.data) {
-    throw createError(400, 'Error al subir un Track', { dataResponse: response })
+// upload.none() se usa para text-only forms data
+router.post('/', upload.none(), async (req, res) => {
+  const response = await createArtist(req.body);
+  
+  if (!response.data.id) {
+    throw createError(400, 'Error al subir un Artista', { dataResponse: response, req })
   };
 
-  return res.status(200).send({ response: response.data, formDataSend: formData });
+  return res.status(200).send({ response: response.data });
 });
 
 module.exports = router;

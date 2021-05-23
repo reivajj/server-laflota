@@ -2,9 +2,7 @@ const { urlencoded, json } = require('express');
 const cors = require('cors');
 const createError = require('http-errors');
 const routes = require('../routes');
-// import routes from '../routes/index.js';
 const config = require('../config');
-// import config from '../config/index.js';
 
 module.exports = async ({ app }) => {
 
@@ -34,7 +32,7 @@ module.exports = async ({ app }) => {
 
   app.use(config.albumsApi, routes.albums);
   app.use(config.tracksApi, routes.tracks);
-  // app.use(config.artistsApi, routes.artists);
+  app.use(config.artistsApi, routes.artists);
 
   app.use((_, __, next) => {
     next(createError(404))

@@ -1,5 +1,5 @@
 const { getAllAlbumsFromDashGo, uploadAlbumToProvider } = require('../../third-party-api/providers/dashgo/albums');
-const { createDashGoAlbum } = require('../../models/albums');
+const createDashGoAlbum = require('../../models/albums');
 
 const getAllAlbums = async () => {
   const response = await getAllAlbumsFromDashGo();

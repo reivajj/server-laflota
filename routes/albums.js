@@ -1,10 +1,9 @@
-const Router = require('express-promise-router');
+var router = require("express-promise-router")();
 // import Router from "express-promise-router";
 const multer = require('multer');
 const createError = require('http-errors');
 const { createAlbum, getAllAlbums } = require('../services/providers/albums');
 
-const router = Router();
 const upload = multer();
 
 router.get('/', async (_, res) => {
