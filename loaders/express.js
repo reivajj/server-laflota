@@ -1,6 +1,7 @@
 const { urlencoded, json } = require('express');
 const cors = require('cors');
 const createError = require('http-errors');
+const handleErrors = require('../middleware/handleErrors');
 const routes = require('../routes');
 const config = require('../config');
 
@@ -33,21 +34,14 @@ module.exports = async ({ app }) => {
   app.use(config.albumsApi, routes.albums);
   app.use(config.tracksApi, routes.tracks);
   app.use(config.artistsApi, routes.artists);
+  app.use(config.labelsApi, routes.labels);
 
   app.use((_, __, next) => {
     next(createError(404))
   });
 
   // Handlers error should go at the END
-  app.use((error, _, res, __) => {
-    res.status(error.status || 500)
-    res.json({
-      status: error.status,
-      message: error.message,
-      stack: error.stack,
-      properties: error.properties || 'no props',
-    })
-  });
+  app.use(handleErrors);
 
   return app;
 }

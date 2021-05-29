@@ -17,5 +17,6 @@ module.exports = {
   baseApi: process.env.MY_SERVER_BASE_URL,
   albumsApi: process.env.MY_SERVER_ALBUMS_URL,
   artistsApi: process.env.MY_SERVER_ARTISTS_URL,
-  tracksApi: process.env.MY_SERVER_TRACKS_URL
+  tracksApi: process.env.MY_SERVER_TRACKS_URL,
+  labelsApi: process.env.MY_SERVER_LABELS_URL
 }

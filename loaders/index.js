@@ -1,6 +1,5 @@
 const expressLoader = require('./express');
 const Logger = require('./logger');
-// import Logger from './logger.js';
 
 module.exports = async ({ expressApp }) => {
   await expressLoader({ app: expressApp });

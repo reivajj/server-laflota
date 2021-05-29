@@ -9,15 +9,15 @@ const upload = multer();
 router.get('/', async (_, res) => {
   const response = await getAllAlbums();
 
-  if (!response.data) throw createError(400, 'Error al pedir los Albums', { dataResponse: response });
-  return res.status(200).send({ dataResponse: response.data });
+  if (!response.data) throw createError(400, 'Error al pedir los Albums', { properties: response });
+  return res.status(200).send({ response: response.data });
 });
 
 router.post('/upload', upload.single('cover'), async (req, res) => {
   const response = await createAlbum(req.body, req.file);
   
   if (!response.data.id) {
-    throw createError(400, 'Error al subir un Album', { dataResponse: response, req })
+    throw createError(400, 'Error al subir un Album', { properties: response })
   };
 
   return res.status(200).send({ response: response.data });

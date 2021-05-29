@@ -1,4 +1,5 @@
 const axiosInstance = require('../../../config/axiosConfig');
+const createError = require('http-errors');
 
 const { get, post } = axiosInstance;
 
@@ -14,7 +15,7 @@ const uploadTrackToAlbumToProvider = async formDataTrack => {
     headers: { ...formDataTrack.getHeaders() }
   });
 
-  if (!response.data) throw createError(400, 'Error al subir un track al Album en DashGo', { dataResponse: response, formData: formDataTrack });
+  if (!response.data) throw createError(400, 'Error al subir un track al Album en DashGo', { properties: { response, formData: formDataTrack }});
   return response;
 }
 

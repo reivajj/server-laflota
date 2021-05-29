@@ -1,10 +1,7 @@
 const express = require('express');
 const config = require('./config');
-// import config from './config/index.js';
 const loaders = require('./loaders');
-// import loaders from './loaders/index.js';
 const Logger = require('./loaders/logger');
-// import Logger from './loaders/logger.js';
 
 async function startServer() {
 
