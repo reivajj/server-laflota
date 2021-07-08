@@ -8,9 +8,9 @@ const createDashGoTrack = (trackMetaData, trackFile) => {
   formDataTrack.append("explicit", trackMetaData.explicit);
   formDataTrack.append("position", trackMetaData.position);
   formDataTrack.append("title", trackMetaData.title);
-  formDataTrack.append("sale_start_date", trackMetaData.sale_start_date);
-  formDataTrack.append("artist_id", trackMetaData.artist_id);
-  formDataTrack.append("price", trackMetaData.price);
+  formDataTrack.append("track_language", trackMetaData.track_language);
+  // if (trackMetaData.price) formDataTrack.append("price", trackMetaData.price);
+  // if (trackMetaData.isrc) formDataTrack.append("isrc", trackMetaData.isrc);
   formDataTrack.append("track", trackFile.buffer, trackFile.originalname);
 
   return formDataTrack;

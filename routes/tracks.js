@@ -13,7 +13,7 @@ router.get('/', async (_, res) => {
 });
 
 
-router.post('/upload', upload.single('track'), async (req, res) => {
+router.post('/', upload.single('track'), async (req, res) => {
   const response = await createTrackForAlbum(req.body, req.file);
   
   if (!response.data.id) {
