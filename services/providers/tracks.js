@@ -7,8 +7,6 @@ const getAllTracks = async () => {
 }
 
 const createTrackForAlbum = async (trackMetadata, trackFile) => {
-  console.log("Parametros que llegan al BE: ", trackMetadata);
-  console.log("Cover que llega al BE: ", trackFile);
   const trackFormData = createDashGoTrack(trackMetadata, trackFile);
   const response = await uploadTrackToAlbumToProvider(trackFormData);
   return response;
