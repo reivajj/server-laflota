@@ -2,7 +2,6 @@ var router = require("express-promise-router")();
 const createError = require('http-errors');
 
 const multer  = require('multer');
-const Logger = require("../loaders/logger");
 const upload = multer();
 
 const { getAllLabels, createLabel } = require('../services/providers/labels');

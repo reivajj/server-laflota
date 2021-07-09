@@ -3,6 +3,8 @@ const axios = require('axios');
 const instance = axios.create({
 // .. where we make our configurations
     baseURL: `${process.env.DASHGO_API_URL}`,
+    maxContentLength: Infinity,
+    maxBodyLength: Infinity,
 });
 
 // Where you would set stuff like your 'Authorization' header, etc ...
