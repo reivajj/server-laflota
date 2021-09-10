@@ -7,6 +7,9 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 module.exports = {
   port: process.env.PORT,
+  emailAddress: process.env.MY_INFO_EMAIL,
+  emailPassword: process.env.MY_INFO_EMAIL_PASSWORD,
+  inmotionHostName: process.env.INMOTION_HOSTNAME,
   dashGo: {
     apiUrl: process.env.DASHGO_API_URL,
     apiKey: process.env.DASHGO_API_KEY
@@ -18,5 +21,6 @@ module.exports = {
   albumsApi: process.env.MY_SERVER_ALBUMS_URL,
   artistsApi: process.env.MY_SERVER_ARTISTS_URL,
   tracksApi: process.env.MY_SERVER_TRACKS_URL,
-  labelsApi: process.env.MY_SERVER_LABELS_URL
+  labelsApi: process.env.MY_SERVER_LABELS_URL,
+  emailsApi: process.env.EMAILS_API
 }
