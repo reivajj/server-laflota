@@ -10,10 +10,10 @@ const config = require('../config');
 
 const axiosFugaInstance = axios.create({
   // .. where we make our configurations
-      baseURL: config.fuga.apiUrl,
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity,
-  });
+  baseURL: `${config.fuga.apiUrl}`,
+  maxContentLength: Infinity,
+  maxBodyLength: Infinity,
+});
 
 // Where you would set stuff like your 'Authorization' header, etc ...
 // instanceDashGo.defaults.headers.common['X-Access-Key'] = `${process.env.DASHGO_API_KEY}`;

@@ -1,12 +1,15 @@
 const axiosFugaInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
+const axios = require('axios');
+const config = require('../../../config');
 
 const { get, post } = axiosFugaInstance;
 
 const getAllArtistsFromFuga = async () => {
+  console.log("AXIOS: ", axiosFugaInstance.defaults.headers)
   const response = await get('/artists');
 
-  if (!response.data) throw createError(400, 'Error al buscar los Artists');
+  if (!response) throw createError(400, 'Error al buscar los Artists');
   return response;
 }
 

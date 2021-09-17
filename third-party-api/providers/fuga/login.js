@@ -2,18 +2,21 @@ const axiosFugaInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
 const config = require('../../../config');
 
-const { get, post } = axiosFugaInstance;
+const { post } = axiosFugaInstance;
 
 const loginToFuga = async () => {
-  const data = {
+  const loginData = {
     "name": config.fuga.apiUser,
     "password": config.fuga.apiPassword,
     "secure": false,
     "authType": "session"
   };
 
-  const response = await post('/login', data);
+  const response = await post('/login', loginData);
   if (!response) throw createError(400, 'Error al realizar el Login en Fuga');
+
+  const rawCookies = response.headers['set-cookie'][0].split('; ');
+  response.cookie = rawCookies[0].split('=');
 
   return response;
 }

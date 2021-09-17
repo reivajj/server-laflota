@@ -1,8 +1,9 @@
-const { getAllArtistsFromDashGo, uploadArtistToProvider } = require('../../third-party-api/providers/dashgo/artists');
+const { uploadArtistToProvider } = require('../../third-party-api/providers/dashgo/artists');
 const createDashGoArtist = require('../../models/artists');
+const getAllArtistsFromFuga = require('../../third-party-api/providers/fuga/artists');
 
 const getAllArtists = async () => {
-  const response = await getAllArtistsFromDashGo();
+  const response = await getAllArtistsFromFuga();
   return response;
 }
 

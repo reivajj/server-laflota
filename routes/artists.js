@@ -8,8 +8,8 @@ const { getAllArtists, createArtist } = require('../services/providers/artists')
 
 router.get('/', async (_, res) => {
   const response = await getAllArtists();
-
-  if (!response.data) throw createError(400, 'Error al pedir los Artistas', { properties: response });
+  
+  if (!response || response.status !== 200) throw createError(400, 'Error al pedir los Artistas', { properties: response });
   return res.status(200).send({ response: response.data });
 });
 

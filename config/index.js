@@ -17,7 +17,9 @@ module.exports = {
   fuga: {
     apiUrl: process.env.FUGA_API_URL,
     apiUser: process.env.FUGA_API_USER,
-    apiPassword: process.env.FUGA_API_PASSWORD
+    apiPassword: process.env.FUGA_API_PASSWORD,
+    cookieName: process.env.FUGA_COOKIE_NAME,
+    cookieApidemoValue: process.env.FUGA_COOKIE_VALUE_APIDEMO 
   },
   logs: {
     level: process.env.LOG_LEVEL || 'silly',

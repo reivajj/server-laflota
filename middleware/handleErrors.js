@@ -3,9 +3,8 @@ const handleErrors = (error, _, res, __) => {
   if (error.response) {
     let axiosError = error.response;
     return res.status(axiosError.status || 500).json({
-      status: axiosError.status,
-      message: axiosError.data.error,
-      from: "Error from Axios/DashGo"
+      data: axiosError.data,
+      from: "Error from Axios/FUGA",
     });
   }
   return res.status(error.status || 500).json({

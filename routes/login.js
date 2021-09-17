@@ -12,6 +12,7 @@ router.post('/', upload.none(), async (req, res) => {
     throw createError(400, 'Error al realizar el Login en Fuga', { properties: response });
   };
 
+  res.cookie(response.cookie[0], response.cookie[1]);
   return res.status(200).send({ response: response.data });
 });
 

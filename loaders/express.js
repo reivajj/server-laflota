@@ -4,13 +4,17 @@ const createError = require('http-errors');
 const handleErrors = require('../middleware/handleErrors');
 const routes = require('../routes');
 const config = require('../config');
+const cookieParser = require('cookie-parser');
+const checkIfNeedsLogin = require('../middleware/checkIfNeedsLogin');
 
 module.exports = async ({ app }) => {
 
   let corsOptions = {
     // origin: 'https://laflota-dashboard.web.app',
     origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+    exposedHeaders: ["set-cookie"],
   }
 
   app.get('/status', (_, res) => { res.status(200).end(); });
@@ -20,6 +24,7 @@ module.exports = async ({ app }) => {
   app.use(cors(corsOptions));
   app.use(urlencoded({ extended: false }));
   app.use(json());
+  app.use(cookieParser());
 
   app.use((req, _, next) => {
     console.log(`Request_Endpoint: ${req.method} ${req.url}`);
@@ -30,6 +35,8 @@ module.exports = async ({ app }) => {
   app.get(config.baseApi, (_, res) => {
     res.send(`V2 Hello World! V2`);
   });
+
+  app.use(checkIfNeedsLogin);
 
   app.use(config.albumsApi, routes.albums);
   app.use(config.tracksApi, routes.tracks);
