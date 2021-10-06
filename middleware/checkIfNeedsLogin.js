@@ -17,7 +17,6 @@ const checkIfNeedsLogin = async (req, res, next) => {
   const rawCookies = response.headers['set-cookie'][0].split('; ');
   const cookie = rawCookies[0];
 
-  console.log("Cookies en Middle: ", cookie);
   res.locals = cookie;
   axiosFugaInstance.defaults.headers.Cookie = cookie; // attaching cookie to axiosFugaInstance for future requests
   // axiosFugaInstance.defaults.headers.get['Cookie'] = cookie; // attaching cookie to axiosFugaInstance for future requests

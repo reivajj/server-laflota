@@ -1,14 +1,14 @@
-const { uploadLabelToProvider, getAllLabelsFromDashGo } = require('../../third-party-api/providers/dashgo/labels');
-const createDashGoLabel = require('../../models/labels');
+const { uploadLabelToProvider, getAllLabelsFromFuga } = require('../../third-party-api/providers/fuga/labels');
+const createFugaLabel = require('../../models/labels');
 
 const getAllLabels = async () => {
-  const response = await getAllLabelsFromDashGo();
+  const response = await getAllLabelsFromFuga();
   return response;
 }
 
 const createLabel = async labelMetadata => {
-  const labelFormData = createDashGoLabel(labelMetadata);
-  const response = await uploadLabelToProvider(labelFormData);
+  const rawDataLabel = createFugaLabel(labelMetadata);
+  const response = await uploadLabelToProvider(rawDataLabel);
 
   return response;
 }

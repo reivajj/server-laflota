@@ -1,26 +1,20 @@
-const axiosFugaInstance = require('../../../config/axiosConfig');
+const axiosInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
-const axios = require('axios');
-const config = require('../../../config');
 
-const { get, post } = axiosFugaInstance;
+const { get, post } = axiosInstance;
 
 const getAllArtistsFromFuga = async () => {
-  console.log("AXIOS: ", axiosFugaInstance.defaults.headers)
   const response = await get('/artists');
 
-  if (!response) throw createError(400, 'Error al buscar los Artists');
+  if (!response.data) throw createError(400, 'Error al pedir los Artistas', { properties: response });
   return response;
 }
 
-// const uploadArtistToProvider = async formDataArtist => {
-//   const response = await post('/artists', formDataArtist, {
-//     headers: { ...formDataArtist.getHeaders() }
-//   });
+const uploadArtistToProvider = async rawDataArtist => {
+  const response = await post('/artists', rawDataArtist);
 
-//   if (!response.data) throw createError(400, 'Error al subir un artista en DashGo', { properties: { response, formData: formDataArtist } });
-//   return response;
-// }
+  if (!response.data.id) throw createError(400, 'Error al subir un artista en DashGo', { properties: { response, formData: rawDataArtist } });
+  return response;
+}
 
-// module.exports = { getAllArtistsFromDashGo, uploadArtistToProvider };
-module.exports = getAllArtistsFromFuga;
+module.exports = { getAllArtistsFromFuga, uploadArtistToProvider };
