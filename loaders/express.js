@@ -43,6 +43,7 @@ module.exports = async ({ app }) => {
   app.use(config.artistsApi, routes.artists);
   app.use(config.labelsApi, routes.labels);
   app.use(config.productsApi, routes.products);
+  app.use(config.uploadApi, routes.upload);
 
   app.use(config.emailsApi, routes.emails);
   app.use(config.loginApi, routes.login);

@@ -10,7 +10,7 @@ const getAllProductsFromFuga = async () => {
   return response;
 }
 
-const getProductByIDFromFuga = async (productId) => {
+const getProductByIDFromFuga = async productId => {
   const response = await get(`/products/${productId}`);
 
   if (!response.data) throw createError(400, 'Error al buscar el Product con ID', { id: productId, properties: response });
