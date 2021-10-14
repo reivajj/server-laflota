@@ -29,7 +29,6 @@ module.exports = {
   artistsApi: process.env.MY_SERVER_ARTISTS_URL,
   tracksApi: process.env.MY_SERVER_TRACKS_URL,
   labelsApi: process.env.MY_SERVER_LABELS_URL,
-  productsApi: process.env.MY_SERVER_PRODUCTS_URL,
   uploadApi: process.env.MY_SERVER_UPLOAD_URL,
   emailsApi: process.env.EMAILS_API,
   loginApi: process.env.LOGIN_API,

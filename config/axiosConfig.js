@@ -10,7 +10,7 @@ const config = require('../config');
 
 const axiosFugaInstance = axios.create({
   // .. where we make our configurations
-  baseURL: `${config.fuga.apiUrl}`,
+  baseURL: config.fuga.apiUrl,
   maxContentLength: Infinity,
   maxBodyLength: Infinity,
 });

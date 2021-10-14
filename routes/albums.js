@@ -1,25 +1,27 @@
 var router = require("express-promise-router")();
-// import Router from "express-promise-router";
-const multer = require('multer');
-const createError = require('http-errors');
-const { createAlbum, getAllAlbums } = require('../services/providers/albums');
 
+const multer  = require('multer');
 const upload = multer();
 
-router.get('/', async (_, res) => {
-  const response = await getAllAlbums();
+const { getAllAlbums, createAlbum, getAlbumById, createTrackAssetInAlbumWithId } = require('../services/providers/albums');
 
-  if (!response.data) throw createError(400, 'Error al pedir los Albums', { properties: response });
+router.get('/', async (_, res, __) => {
+  const response = await getAllAlbums();
   return res.status(200).send({ response: response.data });
 });
 
-router.post('/upload', upload.single('cover'), async (req, res) => {
-  const response = await createAlbum(req.body, req.file);
-  
-  if (!response.data.id) {
-    throw createError(400, 'Error al subir un Album', { properties: response })
-  };
+router.get('/:albumId', async (req, res, _) => {
+  const response = await getAlbumById(req.params.albumId);
+  return res.status(200).send({ response: response.data });
+});
 
+router.post('/:albumId/assets', upload.none(), async (req, res) => {
+  const response = await createTrackAssetInAlbumWithId(req.body, req.params.albumId);
+  return res.status(200).send({ response: response.data });
+});
+
+router.post('/', upload.none(), async (req, res) => {
+  const response = await createAlbum(req.body);
   return res.status(200).send({ response: response.data });
 });
 

@@ -1,18 +1,29 @@
-const { getAllAlbumsFromDashGo, uploadAlbumToProvider } = require('../../third-party-api/providers/dashgo/albums');
-const createDashGoAlbum = require('../../models/albums');
-const Logger = require("../../loaders/logger");
+const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, uploadTrackAssetInAlbumToFuga } = require('../../third-party-api/providers/fuga/albums');
+const createFugaAlbum = require('../../models/albums');
+const { createFugaTrackAsset } = require('../../models/tracks');
 
 const getAllAlbums = async () => {
-  const response = await getAllAlbumsFromDashGo();
+  const response = await getAllAlbumsFromFuga();
   return response;
 }
 
-const createAlbum = async (albumMetadata, albumCover) => {
-  console.log("Parametros que llegan al BE: ", albumMetadata);
-  console.log("Cover que llega al BE: ", albumCover);
-  const albumFormData = createDashGoAlbum(albumMetadata, albumCover);
-  const response = await uploadAlbumToProvider(albumFormData);
+const getAlbumById = async albumId => {
+  const response = await getAlbumByIdFromFuga(albumId);
   return response;
 }
 
-module.exports = { getAllAlbums, createAlbum };
+const createAlbum = async albumMetaData => {
+  const rawDataAlbum = createFugaAlbum(albumMetaData);
+  const response = await uploadAlbumToProvider(rawDataAlbum);
+
+  return response;
+}
+
+const createTrackAssetInAlbumWithId = async (trackAssetMetaData, albumId) => {
+  const rawDataTrackAsset = createFugaTrackAsset(trackAssetMetaData);
+  const response = await uploadTrackAssetInAlbumToFuga(rawDataTrackAsset, albumId);
+
+  return response;
+}
+
+module.exports = { getAllAlbums, getAlbumById, createAlbum, createTrackAssetInAlbumWithId };

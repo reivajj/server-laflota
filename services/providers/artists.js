@@ -1,9 +1,13 @@
-const { uploadArtistToProvider } = require('../../third-party-api/providers/fuga/artists');
+const { uploadArtistToProvider, getArtistByIdFromFuga, getAllArtistsFromFuga } = require('../../third-party-api/providers/fuga/artists');
 const createFugaArtist = require('../../models/artists');
-const getAllArtistsFromFuga = require('../../third-party-api/providers/fuga/artists');
 
 const getAllArtists = async () => {
   const response = await getAllArtistsFromFuga();
+  return response;
+}
+
+const getArtistById = async artistId => {
+  const response = await getArtistByIdFromFuga(artistId);
   return response;
 }
 
@@ -14,4 +18,4 @@ const createArtist = async artistMetadata => {
   return response;
 }
 
-module.exports = { getAllArtists, createArtist };
+module.exports = { getAllArtists, getArtistById, createArtist };

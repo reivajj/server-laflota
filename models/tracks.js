@@ -1,8 +1,10 @@
 const FormData = require('form-data');
 
+// REVEER: Validar parametros de entrada. No solo retornarlos
 const createFugaTrackAsset = trackAssetMetaData => {
-  let rawDataTrackAsset = {};
-  return rawDataTrackAsset;
+  // let rawDataTrackAsset = {};
+
+  return trackAssetMetaData;
 }
 
 const createFugaTrackFile = (fileTrackMetaData, trackFile) => {

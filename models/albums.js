@@ -1,19 +1,17 @@
-const FormData = require('form-data');
-
-const createDashGoAlbum = (albumMetaData, albumCover) => {
-  const formDataAlbum = new FormData();
-
-  formDataAlbum.append("c_line", `${albumMetaData.c_line}`);
-  formDataAlbum.append("label_name", `${albumMetaData.label_name}`);
-  formDataAlbum.append("p_line", `${albumMetaData.p_line}`);
-  formDataAlbum.append("release_date", `${albumMetaData.release_date}`);
-  formDataAlbum.append("sale_start_date", `${albumMetaData.sale_start_date}`);
-  formDataAlbum.append("title", `${albumMetaData.title}`);
-  formDataAlbum.append("cover", albumCover.buffer, albumCover.originalname);
-
-  console.log("El form: ", formDataAlbum);
-
-  return formDataAlbum;
+const createFugaAlbum = albumMetaData => {
+  return {
+    name: albumMetaData.name,
+    label: albumMetaData.label,
+    catalog_number: albumMetaData.catalog_number,
+    upc: albumMetaData.upc,
+    release_format_type: albumMetaData.release_format_type,
+    c_line_text: albumMetaData.c_line_text,
+    p_line_text: albumMetaData.p_line_text,
+    c_line_year: albumMetaData.c_line_year,
+    p_line_year: albumMetaData.p_line_year,
+    genre: albumMetaData.genre,
+    artists: albumMetaData.artists
+  };
 }
 
-module.exports = createDashGoAlbum;
+module.exports = createFugaAlbum;

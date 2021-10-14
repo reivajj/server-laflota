@@ -10,6 +10,13 @@ const getAllArtistsFromFuga = async () => {
   return response;
 }
 
+const getArtistByIdFromFuga = async artistId => {
+  const response = await get(`/artists/${artistId}`);
+
+  if (!response.data) throw createError(400, `Error getting the artist with ID: ${artistId}`, { properties: response });
+  return response;
+}
+
 const uploadArtistToProvider = async rawDataArtist => {
   const response = await post('/artists', rawDataArtist);
 
@@ -17,4 +24,4 @@ const uploadArtistToProvider = async rawDataArtist => {
   return response;
 }
 
-module.exports = { getAllArtistsFromFuga, uploadArtistToProvider };
+module.exports = { getAllArtistsFromFuga, getArtistByIdFromFuga, uploadArtistToProvider };
