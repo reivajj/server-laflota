@@ -1,6 +1,8 @@
-const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, uploadTrackAssetInAlbumToFuga } = require('../../third-party-api/providers/fuga/albums');
+const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, uploadTrackAssetInAlbumToFuga, uploadCoverInAlbumToFuga } = require('../../third-party-api/providers/fuga/albums');
 const createFugaAlbum = require('../../models/albums');
 const { createFugaTrackAsset } = require('../../models/tracks');
+const { getUploadUuid, finishUpload } = require('../../third-party-api/providers/fuga/upload');
+const { createFugaCoverUploadStart, createFugaCoverUpload } = require('../../models/upload');
 
 const getAllAlbums = async () => {
   const response = await getAllAlbumsFromFuga();
@@ -26,4 +28,16 @@ const createTrackAssetInAlbumWithId = async (trackAssetMetaData, albumId) => {
   return response;
 }
 
-module.exports = { getAllAlbums, getAlbumById, createAlbum, createTrackAssetInAlbumWithId };
+const createCoverImageInAlbum = async (coverFormDataToUpload, coverFile) => {
+  const rawDataCoverUploadStart = createFugaCoverUploadStart(coverFormDataToUpload);
+  const responseUploadStart = await getUploadUuid(rawDataCoverUploadStart);
+  console.log("Response upload Start:", responseUploadStart.data);
+  
+  const coverFormDataWithUploadUuid = createFugaCoverUpload(coverFile, responseUploadStart.data.id);
+  await uploadCoverInAlbumToFuga(coverFormDataWithUploadUuid);
+  
+  const responseUploadFinish = finishUpload(responseUploadStart.data.id);
+  return responseUploadFinish;
+}
+
+module.exports = { getAllAlbums, getAlbumById, createAlbum, createTrackAssetInAlbumWithId, createCoverImageInAlbum };

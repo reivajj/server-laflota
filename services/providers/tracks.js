@@ -1,5 +1,5 @@
 const { createFugaTrackAsset } = require('../../models/tracks');
-const { createFugaTrackStartUpload, createFugaTrackFileUpload } = require('../../models/upload');
+const { createFugaTrackUploadStart, createFugaTrackFileUpload } = require('../../models/upload');
 const { getAllTracksAssetsFromFuga, uploadTrackAssetToProvider, getTrackAssetByIdFromFuga } = require('../../third-party-api/providers/fuga/tracks');
 const { getUploadUuid, uploadFile } = require('../../third-party-api/providers/fuga/upload');
 
@@ -20,7 +20,7 @@ const createTrackAsset = async (trackAssetMetadata, trackFile) => {
 }
 
 const startUploadTrack = async uploadStartMetaData => {
-  const rawDataUploadStart = createFugaTrackStartUpload(uploadStartMetaData);
+  const rawDataUploadStart = createFugaTrackUploadStart(uploadStartMetaData);
   const response = await getUploadUuid(rawDataUploadStart);
   return response;
 }

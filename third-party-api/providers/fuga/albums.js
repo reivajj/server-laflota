@@ -27,8 +27,18 @@ const uploadAlbumToProvider = async rawDataAlbum => {
 const uploadTrackAssetInAlbumToFuga = async (rawDataTrackAsset, albumId) => {
   const response = await post(`products/${albumId}/assets`, rawDataTrackAsset);
 
-  if (!response.data) throw createError(400, `Error to upload an asset to the Album with Id: ${albumId}` , { properties: { response, formData: rawDataTrackAsset } });
+  if (!response.data) throw createError(400, `Error to upload an asset to the Album with Id: ${albumId}`, { properties: { response, formData: rawDataTrackAsset } });
   return response;
 }
 
-module.exports = { getAllAlbumsFromFuga, uploadAlbumToProvider, getAlbumByIdFromFuga, uploadTrackAssetInAlbumToFuga };
+const uploadCoverInAlbumToFuga = async formDataCover => {
+  console.log("FormData Cover: ", formDataCover);
+  const response = await post('/upload', formDataCover, {
+    headers: { ...formDataCover.getHeaders() }
+  })
+
+  if (!response.data.success) throw createError(400, `Error to upload a Cover Image to an album`, { properties: { response, formData: formDataCover } });
+  return response;
+}
+
+module.exports = { getAllAlbumsFromFuga, uploadAlbumToProvider, getAlbumByIdFromFuga, uploadTrackAssetInAlbumToFuga, uploadCoverInAlbumToFuga };
