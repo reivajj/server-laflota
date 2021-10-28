@@ -7,10 +7,19 @@ const createFugaTrackUploadStart = uploadMetaData => {
   if (uploadMetaData.id === undefined) throw createError(400, 'Error starting the track upload, because the trackAssetId is missing', { properties: { formData: uploadMetaData } });
   rawDataUpload.id = uploadMetaData.id;
   rawDataUpload.type = uploadMetaData.type;
-  if (uploadMetaData.overwrite_all !== undefined) rawDataUpload.overwrite_all = uploadMetaData.overwrite_all;
-  if (uploadMetaData.clear_all_encodings !== undefined) rawDataUpload.clear_all_encodings = uploadMetaData.clear_all_encodings;
 
   return rawDataUpload;
+}
+
+const createFugaTrackFileUpload = (trackFile, trackUploadStartUuid) => {
+  const formDataTrack = new FormData();
+  formDataTrack.append("uuid", trackUploadStartUuid);
+  formDataTrack.append("filename", trackFile.originalname);
+  formDataTrack.append("totalfilesize", trackFile.size);
+  formDataTrack.append("partbyteoffset", '0');
+  formDataTrack.append("file", trackFile.buffer , trackFile.originalname);
+
+  return formDataTrack;
 }
 
 const createFugaCoverUploadStart = uploadCoverFormData => {
@@ -34,4 +43,4 @@ const createFugaCoverUpload = (imageCoverArtFile, coverUploadStartUuid) => {
   return formDataImageCoverArt;
 }
 
-module.exports = { createFugaTrackUploadStart, createFugaCoverUploadStart, createFugaCoverUpload };
+module.exports = { createFugaTrackUploadStart, createFugaTrackFileUpload, createFugaCoverUploadStart, createFugaCoverUpload };

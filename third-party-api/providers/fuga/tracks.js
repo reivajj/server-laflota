@@ -19,9 +19,18 @@ const getTrackAssetByIdFromFuga = async trackAssetId => {
 
 const uploadTrackAssetToProvider = async rawDataTrackAsset => {
   const response = await post('/assets', rawDataTrackAsset);
-
   if (!response.data.id) throw createError(400, 'Error uploading the track asset', { properties: { response, formData: rawDataTrackAsset } });
   return response;
 }
 
-module.exports = { getAllTracksAssetsFromFuga, getTrackAssetByIdFromFuga, uploadTrackAssetToProvider };
+const uploadTrackFileInAlbumToFuga = async formDataTrackFileUpload => {
+  console.log("FormData Cover: ", formDataTrackFileUpload);
+  const response = await post('/upload', formDataTrackFileUpload, {
+    headers: { ...formDataTrackFileUpload.getHeaders() }
+  });
+
+  if (!response.data.success) throw createError(400, `Error to upload a Track to an album`, { properties: { response, formData: formDataTrackFileUpload } });
+  return response;
+}
+
+module.exports = { getAllTracksAssetsFromFuga, getTrackAssetByIdFromFuga, uploadTrackAssetToProvider, uploadTrackFileInAlbumToFuga };

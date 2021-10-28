@@ -1,7 +1,7 @@
 const axiosInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
 
-const { get, post } = axiosInstance;
+const { get, post, put } = axiosInstance;
 
 const getAllAlbumsFromFuga = async () => {
   const response = await get('/products');
@@ -24,15 +24,14 @@ const uploadAlbumToProvider = async rawDataAlbum => {
   return response;
 }
 
-const uploadTrackAssetInAlbumToFuga = async (rawDataTrackAsset, albumId) => {
-  const response = await post(`products/${albumId}/assets`, rawDataTrackAsset);
+const attachTrackAssetInAlbumFuga = async (albumId, trackId) => {
+  const response = await put(`products/${albumId}/assets/${trackId}`);
 
-  if (!response.data) throw createError(400, `Error to upload an asset to the Album with Id: ${albumId}`, { properties: { response, formData: rawDataTrackAsset } });
+  if (!response.data) throw createError(400, `Error to attach an asset to the Album with Id: ${albumId}`, { properties: { response, formData: rawDataTrackAsset } });
   return response;
 }
 
 const uploadCoverInAlbumToFuga = async formDataCover => {
-  console.log("FormData Cover: ", formDataCover);
   const response = await post('/upload', formDataCover, {
     headers: { ...formDataCover.getHeaders() }
   })
@@ -41,4 +40,4 @@ const uploadCoverInAlbumToFuga = async formDataCover => {
   return response;
 }
 
-module.exports = { getAllAlbumsFromFuga, uploadAlbumToProvider, getAlbumByIdFromFuga, uploadTrackAssetInAlbumToFuga, uploadCoverInAlbumToFuga };
+module.exports = { getAllAlbumsFromFuga, uploadAlbumToProvider, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga, uploadCoverInAlbumToFuga };

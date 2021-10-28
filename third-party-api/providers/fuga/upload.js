@@ -4,7 +4,6 @@ const createError = require('http-errors');
 const { get, post } = axiosInstance;
 
 const getUploadUuid = async rawDataUploadStart => {
-  console.log("rawDataCover: ", rawDataUploadStart);
   const response = await post('upload/start', rawDataUploadStart);
 
   if (!response.data) throw createError(400, 'Error to get the upload UUID', { properties: response });
