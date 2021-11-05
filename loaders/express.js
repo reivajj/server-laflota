@@ -5,7 +5,7 @@ const handleErrors = require('../middleware/handleErrors');
 const routes = require('../routes');
 const config = require('../config');
 const cookieParser = require('cookie-parser');
-const checkIfNeedsLogin = require('../middleware/checkIfNeedsLogin');
+const loginToFugaIfNeeded = require('../middleware/loginToFugaIfNeeded');
 
 module.exports = async ({ app }) => {
 
@@ -36,12 +36,13 @@ module.exports = async ({ app }) => {
     res.send(`V2 Hello World! V2`);
   });
 
-  app.use(checkIfNeedsLogin);
+  app.use(loginToFugaIfNeeded);
 
   app.use(config.albumsApi, routes.albums);
   app.use(config.tracksApi, routes.tracks);
   app.use(config.artistsApi, routes.artists);
   app.use(config.labelsApi, routes.labels);
+  app.use(config.usersApi, routes.users);
 
   app.use(config.emailsApi, routes.emails);
   app.use(config.loginApi, routes.login);

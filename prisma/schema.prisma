@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model test {
+  id   Int  @id @default(autoincrement())
+  prop Int?
+}
+
+model wp_lf_regalias_dashgo {
+  Transaction_ID       Int      @id @default(autoincrement()) @map("Transaction ID")
+  Reported_Date        DateTime @map("Reported Date") @db.Date
+  Transaction_Date     String?  @map("Transaction Date") @db.Text
+  Store                String   @db.Text
+  Region               String   @db.Text
+  artist_name          String   @db.Text
+  Label_Name           String   @map("Label Name") @db.Text
+  Album_Name           String   @map("Album Name") @db.Text
+  Track_Artist         String   @map("Track Artist") @db.Text
+  UPC                  String   @db.Text
+  Track_Title          String   @map("Track Title") @db.Text
+  VideoId              String?  @db.Text
+  ChannelId            String?  @db.Text
+  ISRC                 String   @db.Text
+  Label_Track_ID       String?  @map("Label Track ID") @db.Text
+  Composers            String?  @db.Text
+  Units                String?  @db.Text
+  Currency             String   @db.Text
+  Product_Type         String   @map("Product Type") @db.Text
+  Use_Type             String   @map("Use Type") @db.Text
+  Revenue              String   @db.Text
+  Exchange_Rate        String?  @map("Exchange Rate") @db.Text
+  USD_Revenue          String   @map("USD Revenue") @db.Text
+  Distribution_Rate    String   @map("Distribution Rate") @db.Text
+  Net_Revenue          String   @map("Net Revenue") @db.Text
+  Deal_Share           String?  @map("Deal Share") @db.Text
+  Cover_Song           String   @map("Cover Song") @db.Text
+  Mechanical_Deduction String   @map("Mechanical Deduction") @db.Text
+  Pub_Admin_Fee        String   @map("Pub Admin Fee") @db.Text
+  Payable              String   @db.Text
+}
+
+model wp_lf_regalias_dg_payouts {
+  TransactionID      Int      @id @default(autoincrement())
+  UserID             Int
+  UserEmail          String   @db.Text
+  currency           String   @db.Text
+  currency_rate      String?  @default("1") @db.Text
+  historic_total     String   @db.Text
+  already_paid       String   @db.Text
+  transfer_total     String   @db.Text
+  transfer_total_ars String?  @db.Text
+  comision_ars_bank  String?  @db.Text
+  request_date       DateTime @db.Date
+  transfer_date      DateTime @db.Date
+  UserCUIT           String   @db.Text
+  UserName           String   @db.Text
+  UserLastName       String   @db.Text
+  cupon              String?  @db.Text
+  paypal_email       String?  @db.Text
+  bank_cbu           String?  @db.Text
+  mercadopago_email  String?  @db.Text
+  PAYPAL_TRS_ID      String?  @db.Text
+  PAYPAL_STATUS      String?  @db.Text
+  PAYPAL_FEE         Int?
+  ESTADO             String   @db.Text
+}
+
+model wp_lf_user_artists {
+  ID               Int     @id @default(autoincrement())
+  artist_name      String  @db.Text
+  ArtistID_LaFlota Int?
+  UserID           Int
+  email            String? @db.Text
+  artist_id        String? @db.Text
+  spotify_uri      String? @db.Text
+  apple_id         String? @db.Text
+  label_id         Int?
+  labelname        String? @db.Text
+}
+
+model wp_usermeta {
+  umeta_id   Int  @id @default(autoincrement()) 
+  user_id    Int  @default(0) 
+  meta_key   String? @db.VarChar(255)
+  meta_value String? @db.LongText
+
+  @@index([user_id], map: "user_id")
+}
+
+model User {
+  id                Int   @id @default(autoincrement()) @map("ID") 
+  userLogin         String   @default("") @map("user_login") @db.VarChar(60)
+  userPass          String   @default("") @map("user_pass") @db.VarChar(255)
+  userNicename      String   @default("") @map("user_nicename") @db.VarChar(50)
+  userEmail         String   @default("") @map("user_email") @db.VarChar(100)
+  userUrl           String   @default("") @map("user_url") @db.VarChar(100)
+  userRegistered    DateTime @default(dbgenerated("('0000-00-00 00:00:00')")) @map("user_registered") @db.DateTime(0)
+  userActivationKey String   @default("") @map("user_activation_key") @db.VarChar(255)
+  userStatus        Int      @default(0) @map("user_status")
+  displayName       String   @default("") @map("display_name") @db.VarChar(250)
+  spam              Int      @default(0) @db.TinyInt
+  deleted           Int      @default(0) @db.TinyInt
+
+  @@index([userEmail], map: "user_email")
+  @@index([userLogin], map: "user_login_key")
+  @@index([userNicename], map: "user_nicename")
+  @@map("wp_users")
+}

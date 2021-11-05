@@ -21,6 +21,9 @@ module.exports = {
     cookieName: process.env.FUGA_COOKIE_NAME,
     cookieApidemoValue: process.env.FUGA_COOKIE_VALUE_APIDEMO 
   },
+  mySqlDb: {
+    password: process.env.MY_SQL_PASSWORD,
+  },
   logs: {
     level: process.env.LOG_LEVEL || 'silly',
   },
@@ -30,6 +33,7 @@ module.exports = {
   tracksApi: process.env.MY_SERVER_TRACKS_URL,
   labelsApi: process.env.MY_SERVER_LABELS_URL,
   uploadApi: process.env.MY_SERVER_UPLOAD_URL,
+  usersApi: process.env.MY_SERVER_USERS_URL,
   emailsApi: process.env.EMAILS_API,
   loginApi: process.env.LOGIN_API,
 }
