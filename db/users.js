@@ -1,8 +1,7 @@
 const createHttpError = require("http-errors");
-const prisma = require("../loaders/prisma");
 
 const getAllUsersFromPrismaDB = async () => {
-  const allUsers = await prisma.user.findMany();
+  const allUsers = ["USER 1", "User 2"];
   if (!allUsers) throw createHttpError(400, 'DB Error retrieving all users:', { id: albumId, properties: response });
 
   return allUsers;
