@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/laflot6/filemanagerapp
+    - /bin/cp testBash.txt $DEPLOYPATH
+    - /bin/cp testBash1.txt $DEPLOYPATH
