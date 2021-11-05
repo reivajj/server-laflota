@@ -3,5 +3,4 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/laflot6/filemanagerapp
     - export SRC=/home/laflot6/repositories/server-laflota
-    - /bin/cp -r config db loaders mailing middleware prisma routes services third-party-api tmp app.js package.json testAuto.txt $DEPLOYPATH
-   
+    - /bin/cp -r config db loaders mailing middleware models prisma routes services third-party-api tmp app.js package.json testAuto.txt $DEPLOYPATH
