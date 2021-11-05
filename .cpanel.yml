@@ -3,5 +3,5 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/laflot6/filemanagerapp
     - export SRC=/home/laflot6/repositories/server-laflota
-    - /bin/cp -r db $DEPLOYPATH
-    - /bin/cp testBash1.txt $DEPLOYPATH
+    - /bin/cp -r !(.git) $DEPLOYPATH
+   
