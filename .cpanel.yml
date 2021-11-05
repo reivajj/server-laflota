@@ -3,5 +3,5 @@ deployment:
   tasks:
     - export DEPLOYPATH=/home/laflot6/filemanagerapp
     - export SRC=/home/laflot6/repositories/server-laflota
-    - rsync -av --progress $SRC $DEPLOYPATH --exclude .git
+    - /bin/rsync -av --progress $SRC $DEPLOYPATH --exclude .git
     - /bin/cp testBash1.txt $DEPLOYPATH
