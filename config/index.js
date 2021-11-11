@@ -22,7 +22,7 @@ module.exports = {
     cookieApidemoValue: process.env.FUGA_COOKIE_VALUE_APIDEMO 
   },
   mySqlDb: {
-    password: process.env.MY_SQL_PASSWORD,
+    url: process.env.DATABASE_URL,
   },
   logs: {
     level: process.env.LOG_LEVEL || 'silly',

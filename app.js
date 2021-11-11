@@ -6,6 +6,7 @@ const Logger = require('./loaders/logger');
 async function startServer() {
 
   const app = express();
+  const db = require("./loaders/sequelize");
 
   loaders({ expressApp:app });
 

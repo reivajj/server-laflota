@@ -1,7 +1,7 @@
-const getAllUsersFromPrismaDB = require("../../db/users");
+const getAllUsersFromDB = require("../../db/users");
 
 const getAllUsers = async () => {
-  const response = await getAllUsersFromPrismaDB();
+  const response = await getAllUsersFromDB();
   return response;
 }
 

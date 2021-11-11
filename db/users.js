@@ -1,10 +1,11 @@
 const createHttpError = require("http-errors");
+const db = require("../loaders/sequelize");
 
-const getAllUsersFromPrismaDB = async () => {
-  const allUsers = ["USER 1", "User 2"];
+const getAllUsersFromDB = async () => {
+  const allUsers = db.User.findAll();
   if (!allUsers) throw createHttpError(400, 'DB Error retrieving all users:', { id: albumId, properties: response });
 
   return allUsers;
 }
 
-module.exports = getAllUsersFromPrismaDB;
+module.exports = getAllUsersFromDB;
