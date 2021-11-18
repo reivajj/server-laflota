@@ -32,21 +32,29 @@ const uploadTrack = async (trackFileMetaData, trackFile) => {
   return response;
 }
 
-const uploadTrackAssetWithFile = async (trackAssetMetaData, trackFile) => {
-  const responseTrackAssetCreated = await createTrackAsset(trackAssetMetaData);
-  console.log("Track Asset: ", responseTrackAssetCreated.data);
-
-  const rawDataTrackFileUploadStart = createFugaTrackUploadStart({ id: responseTrackAssetCreated.data.id, type: 'audio' });
+const uploadTrackFileInAlbum = async (trackAssetId, trackAssetType, albumId, trackFile) => {
+  const rawDataTrackFileUploadStart = createFugaTrackUploadStart({ id: trackAssetId, type: trackAssetType });
   const responseUploadStart = await getUploadUuid(rawDataTrackFileUploadStart);
-  console.log("Response upload Start:", responseUploadStart.data);
 
   const trackFileFormDataWithUploadUuid = createFugaTrackFileUpload(trackFile, responseUploadStart.data.id);
   await uploadTrackFileInAlbumToFuga(trackFileFormDataWithUploadUuid);
   const responseFinishUpload = await finishUpload(responseUploadStart.data.id);
 
-  const responseAttachTrackInAlbum = await attachTrackAssetInAlbumWithId(trackAssetMetaData.albumId, responseTrackAssetCreated.data.id);
-  console.log("responseAttachTrackInAlbum: ", responseAttachTrackInAlbum)
-  return { data: { result: responseFinishUpload.data, assetId: responseAttachTrackInAlbum.data.id, albumId: trackAssetMetaData.albumId } };
+  const responseAttachTrackInAlbum = await attachTrackAssetInAlbumWithId(albumId, trackAssetId);
+  return { responseAttachTrackInAlbum, responseFinishUpload};
+}
+
+const uploadTrackAssetWithFile = async (trackAssetMetaData, trackFile) => {
+  const responseTrackAssetCreated = await createTrackAsset(trackAssetMetaData);
+  const { responseFinishUpload, responseAttachTrackInAlbum } = await uploadTrackFileInAlbum(responseTrackAssetCreated.data.id
+    , 'audio', trackAssetMetaData.albumId, trackFile);
+
+  return {
+    data: {
+      result: responseFinishUpload.data, assetId: responseAttachTrackInAlbum.data.id
+      , albumId: trackAssetMetaData.albumId
+    }
+  };
 }
 
 module.exports = { getAllTracks, getTrackAssetById, createTrackAsset, startUploadTrack, uploadTrack, uploadTrackAssetWithFile }

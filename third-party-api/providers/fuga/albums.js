@@ -18,9 +18,11 @@ const getAlbumByIdFromFuga = async albumId => {
 }
 
 const uploadAlbumToProvider = async rawDataAlbum => {
+  console.log("Entro a uploadAlbumToProvider: ", rawDataAlbum);
   const response = await post('/products', rawDataAlbum);
-
+  console.log("Response en uploadAlbum: ", response)
   if (!response.data) throw createError(400, 'Error al subir un album en FUGA', { properties: { response, formData: rawDataAlbum } });
+  console.log("TODO OK en uploadAlbum: ", response);
   return response;
 }
 

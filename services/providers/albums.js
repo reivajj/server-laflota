@@ -1,8 +1,7 @@
 const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga, uploadCoverInAlbumToFuga } = require('../../third-party-api/providers/fuga/albums');
-const createFugaAlbum = require('../../models/albums');
-const { createFugaTrackAsset } = require('../../models/tracks');
 const { getUploadUuid, finishUpload } = require('../../third-party-api/providers/fuga/upload');
 const { createFugaCoverUploadStart, createFugaCoverUpload } = require('../../models/upload');
+const { createFugaAlbumFromFormData } = require('../../models/albums');
 
 const getAllAlbums = async () => {
   const response = await getAllAlbumsFromFuga();
@@ -14,10 +13,9 @@ const getAlbumById = async albumId => {
   return response;
 }
 
-const createAlbum = async albumMetaData => {
-  const rawDataAlbum = createFugaAlbum(albumMetaData);
+const createAlbumAsset = async albumFormData => {
+  const rawDataAlbum = createFugaAlbumFromFormData(albumFormData);
   const response = await uploadAlbumToProvider(rawDataAlbum);
-
   return response;
 }
 
@@ -29,12 +27,24 @@ const attachTrackAssetInAlbumWithId = async (albumId, trackId) => {
 const createCoverImageInAlbum = async (coverFormDataToUpload, coverFile) => {
   const rawDataCoverUploadStart = createFugaCoverUploadStart(coverFormDataToUpload);
   const responseUploadStart = await getUploadUuid(rawDataCoverUploadStart);
-  
+
   const coverFormDataWithUploadUuid = createFugaCoverUpload(coverFile, responseUploadStart.data.id);
   await uploadCoverInAlbumToFuga(coverFormDataWithUploadUuid);
-  
-  const responseUploadFinish = finishUpload(responseUploadStart.data.id);
-  return responseUploadFinish;
+
+  const responseUploadAlbumCoverFinish = finishUpload(responseUploadStart.data.id);
+  return responseUploadAlbumCoverFinish;
 }
 
-module.exports = { getAllAlbums, getAlbumById, createAlbum, attachTrackAssetInAlbumWithId, createCoverImageInAlbum };
+const uploadAlbumAssetWithCover = async (albumAssetMetaData, coverFile) => {
+  const responseCreateAlbumAsset = await createAlbumAsset(albumAssetMetaData);
+  const responseUploadAlbumCoverFinish = await createCoverImageInAlbum({
+    type: albumAssetMetaData.typeCover, id: responseCreateAlbumAsset.data.cover_image.id
+  }, coverFile);
+
+  return { data: { result: responseUploadAlbumCoverFinish.data, albumId: responseCreateAlbumAsset.data.id } };
+}
+
+module.exports = {
+  getAllAlbums, getAlbumById, createAlbumAsset, attachTrackAssetInAlbumWithId,
+  createCoverImageInAlbum, uploadAlbumAssetWithCover
+};

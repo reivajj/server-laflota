@@ -24,7 +24,6 @@ const uploadTrackAssetToProvider = async rawDataTrackAsset => {
 }
 
 const uploadTrackFileInAlbumToFuga = async formDataTrackFileUpload => {
-  console.log("FormData Cover: ", formDataTrackFileUpload);
   const response = await post('/upload', formDataTrackFileUpload, {
     headers: { ...formDataTrackFileUpload.getHeaders() }
   });

@@ -3,7 +3,7 @@ var router = require("express-promise-router")();
 const multer  = require('multer');
 const upload = multer();
 
-const { getAllAlbums, createAlbum, getAlbumById, attachTrackAssetInAlbumWithId, createCoverImageInAlbum } = require('../services/providers/albums');
+const { getAllAlbums, getAlbumById, attachTrackAssetInAlbumWithId, createCoverImageInAlbum, uploadAlbumAssetWithCover } = require('../services/providers/albums');
 
 router.get('/', async (_, res, __) => {
   const response = await getAllAlbums();
@@ -15,8 +15,8 @@ router.get('/:albumId', async (req, res, _) => {
   return res.status(200).send({ response: response.data });
 });
 
-router.post('/', upload.none(), async (req, res) => {
-  const response = await createAlbum(req.body);
+router.post('/', upload.single('cover'), async (req, res) => {
+  const response = await uploadAlbumAssetWithCover(req.body, req.file);  
   return res.status(200).send({ response: response.data });
 });
 
