@@ -20,7 +20,8 @@ router.post('/', upload.single('cover'), async (req, res) => {
   return res.status(200).send({ response: response.data });
 });
 
-router.post('/uploadCover', upload.single('file'), async (req, res) => {
+router.post('/uploadCover', upload.single('cover'), async (req, res) => {
+  console.log("REQUES: ", req.file);
   const response = await createCoverImageInAlbum(req.body, req.file);
   return res.status(200).send({ response: response.data });
 });
