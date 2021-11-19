@@ -1,9 +1,9 @@
 var router = require("express-promise-router")();
 const multer = require('multer');
 const createError = require('http-errors');
-const { createTrackAsset, getAllTracks, getTrackAssetById, startUploadTrack, uploadTrack, uploadTrackAssetWithFile } = require('../services/providers/tracks');
+const { getAllTracks, getTrackAssetById, uploadTrack, uploadTrackAssetWithFile } = require('../services/providers/tracks');
 
-const upload = multer();
+const upload = multer({limits: {fileSize: 1000000000 }});
 
 router.get('/', async (_, res) => {
   const response = await getAllTracks();

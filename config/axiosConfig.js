@@ -15,11 +15,7 @@ const axiosFugaInstance = axios.create({
   maxBodyLength: Infinity,
 });
 
-// Where you would set stuff like your 'Authorization' header, etc ...
-// instanceDashGo.defaults.headers.common['X-Access-Key'] = `${process.env.DASHGO_API_KEY}`;
-// instanceDashGo.defaults.headers.post['Content-Type'] = 'multipart/form-data';
-
-axiosFugaInstance.defaults.headers.post['Content-Type'] = 'application/json';
+axiosFugaInstance.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 axiosFugaInstance.defaults.headers.post['Accept'] = 'application/json';
 
 module.exports = axiosFugaInstance;

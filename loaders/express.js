@@ -1,4 +1,4 @@
-const { urlencoded, json } = require('express');
+const { json, urlencoded } = require('express');
 const cors = require('cors');
 const createError = require('http-errors');
 const handleErrors = require('../middleware/handleErrors');

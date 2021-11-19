@@ -51,7 +51,7 @@ const uploadTrackAssetWithFile = async (trackAssetMetaData, trackFile) => {
 
   return {
     data: {
-      result: responseFinishUpload.data, assetId: responseAttachTrackInAlbum.data.id
+      result: responseFinishUpload.data, fugaTrackCreatedInfo: responseAttachTrackInAlbum.data
       , albumId: trackAssetMetaData.albumId
     }
   };
