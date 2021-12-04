@@ -1,4 +1,5 @@
-const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga, uploadCoverInAlbumToFuga } = require('../../third-party-api/providers/fuga/albums');
+const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga,
+  uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA } = require('../../third-party-api/providers/fuga/albums');
 const { getUploadUuid, finishUpload } = require('../../third-party-api/providers/fuga/upload');
 const { createFugaCoverUploadStart, createFugaCoverUpload } = require('../../models/upload');
 const { createFugaAlbumFromFormData } = require('../../models/albums');
@@ -44,7 +45,22 @@ const uploadAlbumAssetWithCover = async (albumAssetMetaData, coverFile) => {
   return { data: { result: responseUploadAlbumCoverFinish.data, albumId: responseCreateAlbumAsset.data.id } };
 }
 
+const changeTrackPositionInAlbum = async (albumId, trackId, newPosition) => {
+  const response = await changeTrackPositionInAlbumInFUGA(albumId, trackId, newPosition);
+  return response;
+}
+
+const changeMultipleTracksPositionsInAlbum = async (albumId, rearrengeInstructionInBody) => {
+  const rearrengeFunction = rearrengeInstructionInBody.rearrengeInstructions.map(async instruction => {
+    const responseIndividual = await changeTrackPositionInAlbumInFUGA(albumId, instruction.trackId, instruction.newPosition);
+    return { trackId: instruction.trackId, success: responseIndividual.status === 200 };
+  });
+
+  return Promise.all(rearrengeFunction).then(result => result).catch(error => console.log(error));
+}
+
 module.exports = {
   getAllAlbums, getAlbumById, createAlbumAsset, attachTrackAssetInAlbumWithId,
-  createCoverImageInAlbum, uploadAlbumAssetWithCover
+  createCoverImageInAlbum, uploadAlbumAssetWithCover, changeTrackPositionInAlbum,
+  changeMultipleTracksPositionsInAlbum
 };

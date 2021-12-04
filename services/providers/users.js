@@ -1,15 +1,23 @@
-const getAllUsersFromDB = require("../../db/users");
+const hasher = require('wordpress-hash-node');
+const { getAllUsersFromDB, getUserByEmailFromDB } = require("../../db/users");
 
 const getAllUsers = async () => {
   const response = await getAllUsersFromDB();
   return response;
 }
 
-// const createLabel = async labelMetadata => {
-//   const rawDataLabel = createFugaLabel(labelMetadata);
-//   const response = await uploadLabelToProvider(rawDataLabel);
+const getUserByEmail = async (email) => {
+  const response = await getUserByEmailFromDB(email);
+  return response;
+}
 
-//   return response;
-// }
+const loginUserWithEmailAndPw = async (email, password) => {
+  const userByEmail = await getUserByEmail(email);
 
-module.exports = getAllUsers;
+  const passwordHashInDB = userByEmail.userPass;
+  const checked = hasher.CheckPassword(password, passwordHashInDB);
+
+  return checked;
+}
+
+module.exports = { getAllUsers, getUserByEmail, loginUserWithEmailAndPw };

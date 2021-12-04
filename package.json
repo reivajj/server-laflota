@@ -27,7 +27,8 @@
     "sequelize": "^6.9.0",
     "sequelize-auto": "^0.8.5",
     "validator": "^13.7.0",
-    "winston": "^3.3.3"
+    "winston": "^3.3.3",
+    "wordpress-hash-node": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.16",

@@ -42,4 +42,16 @@ const uploadCoverInAlbumToFuga = async formDataCover => {
   return response;
 }
 
-module.exports = { getAllAlbumsFromFuga, uploadAlbumToProvider, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga, uploadCoverInAlbumToFuga };
+const changeTrackPositionInAlbumInFUGA = async (albumId, trackId, newPosition) => {
+  const response = await put(`products/${albumId}/assets/${trackId}/position/${newPosition}`);
+  
+  if (!response.data.id) throw createError(400, `Error to update position of trackId: ${trackId} in album with id: ${albumId}`
+    , { properties: { response, formData: { albumId, trackId, newPosition } } });
+  
+    return response;
+}
+
+module.exports = {
+  getAllAlbumsFromFuga, uploadAlbumToProvider, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga
+  , uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA
+};
