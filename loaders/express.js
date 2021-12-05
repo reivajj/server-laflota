@@ -33,7 +33,7 @@ module.exports = async ({ app }) => {
 
   // define a root route
   app.get(config.baseApi, (_, res) => {
-    res.send(`V2 Hello World! V2`);
+    res.send(`Im alive`);
   });
 
   app.use(loginToFugaIfNeeded);
