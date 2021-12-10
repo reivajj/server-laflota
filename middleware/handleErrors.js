@@ -1,6 +1,5 @@
 // Handlers error should go at the END
 const handleErrors = (error, _, res, __) => {
-  console.log("ERROR:", error)
   if (error.response) {
     let axiosError = error.response;
     return res.status(axiosError.status || 500).json({

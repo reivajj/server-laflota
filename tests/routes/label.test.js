@@ -30,5 +30,6 @@ test('trying to delete unexistant label raise error', async () => {
   let inventedIdLabel = 123123;
   const resDelete = await agent.del(`${labelsUrl}/${inventedIdLabel}`);
   expect(resDelete.body.status).toBeGreaterThanOrEqual(400);
+  expect(resDelete.body.status).toBeLessThan(500);
   expect(resDelete.body.message).toBe("Error to delete a label in FUGA");
 })

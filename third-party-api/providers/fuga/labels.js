@@ -22,7 +22,7 @@ const deleteLabelFuga = async idToDelete => {
     throw createHttpError(400, 'Error to delete a label in FUGA', { properties: { msgFromFuga: error.response.data } });
   });
 
-  if (!response.data) createHttpError(400, 'Error to delete a label in FUGA', { properties: { response, formData: idToDelete } });
+  if (!response.data) throw createHttpError(400, 'Error to delete a label in FUGA', { properties: { response, formData: idToDelete } });
   return response;
 }
 

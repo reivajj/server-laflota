@@ -9,13 +9,11 @@ const getAllLabels = async () => {
 const createLabel = async labelMetadata => {
   const rawDataLabel = createFugaLabel(labelMetadata);
   const response = await uploadLabelToProvider(rawDataLabel);
-
   return response;
 }
 
 const deleteLabel = async labelId => {
   const response = await deleteLabelFuga(labelId);
-
   return response;
 }
 

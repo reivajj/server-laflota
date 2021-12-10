@@ -4,7 +4,7 @@ const multer = require('multer');
 const upload = multer();
 
 const { getAllAlbums, getAlbumById, attachTrackAssetInAlbumWithId, createCoverImageInAlbum,
-  uploadAlbumAssetWithCover, changeTrackPositionInAlbum, changeMultipleTracksPositionsInAlbum } = require('../services/providers/albums');
+  uploadAlbumAssetWithCover, changeTrackPositionInAlbum, changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId } = require('../services/providers/albums');
 
 router.get('/', async (_, res, __) => {
   const response = await getAllAlbums();
@@ -39,8 +39,18 @@ router.put('/:albumId/tracks/:trackId/position/:newPosition', upload.none(), asy
 
 router.put('/:albumId/rearrenge', upload.none(), async (req, res) => {
   const response = await changeMultipleTracksPositionsInAlbum(req.params.albumId, req.body);
-  return res.status(200).send({ response });
+  return res.status(200).send({ response: response.data });
 })
 
+router.post('/:albumId/publish', upload.none(), async (req, res) => {
+  const response = await publishAlbumWithId(req.params.albumId);
+  return res.status(200).send({ response: response.data });
+})
+
+router.put('/:albumId', upload.none(), async (req, res) => {
+  console.log("INGRESO AL UPDATE EN ROUTES");
+  const response = await updateAlbumWithId(req.params.albumId, req.body);
+  return res.status(200).send({ response: response.data });
+})
 
 module.exports = router;

@@ -1,12 +1,14 @@
 const axios = require('axios');
 const config = require('../config');
-// Next we make an 'instance' of it
+
 // const instanceDashGo = axios.create({
-// // .. where we make our configurations
-//     baseURL: `${process.env.DASHGO_API_URL}`,
-//     maxContentLength: Infinity,
-//     maxBodyLength: Infinity,
+//   // .. where we make our configurations
+//   baseURL: `${process.env.DASHGO_API_URL}`,
+//   maxContentLength: Infinity,
+//   maxBodyLength: Infinity,
 // });
+
+// instanceDashGo.defaults.headers.common['X-Access-Key'] = `${process.env.DASHGO_API_KEY}`;
 
 const axiosFugaInstance = axios.create({
   // .. where we make our configurations

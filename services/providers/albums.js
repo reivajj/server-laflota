@@ -1,23 +1,23 @@
 const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga,
-  uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA } = require('../../third-party-api/providers/fuga/albums');
+  uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga } = require('../../third-party-api/providers/fuga/albums');
 const { getUploadUuid, finishUpload } = require('../../third-party-api/providers/fuga/upload');
 const { createFugaCoverUploadStart, createFugaCoverUpload } = require('../../models/upload');
 const { createFugaAlbumFromFormData } = require('../../models/albums');
 
 const getAllAlbums = async () => {
-  const response = await getAllAlbumsFromFuga();
-  return response;
+  const responseGetAllAlbums = await getAllAlbumsFromFuga();
+  return responseGetAllAlbums;
 }
 
 const getAlbumById = async albumId => {
-  const response = await getAlbumByIdFromFuga(albumId);
-  return response;
+  const responseGetAlbum = await getAlbumByIdFromFuga(albumId);
+  return responseGetAlbum;
 }
 
 const createAlbumAsset = async albumFormData => {
   const rawDataAlbum = createFugaAlbumFromFormData(albumFormData);
-  const response = await uploadAlbumToProvider(rawDataAlbum);
-  return response;
+  const responseUploadAlbum = await uploadAlbumToProvider(rawDataAlbum);
+  return responseUploadAlbum;
 }
 
 const attachTrackAssetInAlbumWithId = async (albumId, trackId) => {
@@ -46,8 +46,8 @@ const uploadAlbumAssetWithCover = async (albumAssetMetaData, coverFile) => {
 }
 
 const changeTrackPositionInAlbum = async (albumId, trackId, newPosition) => {
-  const response = await changeTrackPositionInAlbumInFUGA(albumId, trackId, newPosition);
-  return response;
+  const responseChangeTrackPosition = await changeTrackPositionInAlbumInFUGA(albumId, trackId, newPosition);
+  return responseChangeTrackPosition;
 }
 
 const changeMultipleTracksPositionsInAlbum = async (albumId, rearrengeInstructionInBody) => {
@@ -59,8 +59,19 @@ const changeMultipleTracksPositionsInAlbum = async (albumId, rearrengeInstructio
   return Promise.all(rearrengeFunction).then(result => result).catch(error => console.log(error));
 }
 
+const publishAlbumWithId = async albumId => {
+  const responsePublishAlbum = await publishAlbumWithIdInFuga(albumId);
+  return responsePublishAlbum;
+}
+
+const updateAlbumWithId = async (albumId, newData) => {
+  console.log("INGRESO AL UPDATE EN SERVICE");
+  const responseUpdateAlbum = await updateAlbumWithIdInFuga(albumId, newData);
+  return responseUpdateAlbum;
+}
+
 module.exports = {
   getAllAlbums, getAlbumById, createAlbumAsset, attachTrackAssetInAlbumWithId,
   createCoverImageInAlbum, uploadAlbumAssetWithCover, changeTrackPositionInAlbum,
-  changeMultipleTracksPositionsInAlbum
+  changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId
 };
