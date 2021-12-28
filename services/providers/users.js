@@ -1,8 +1,13 @@
 const hasher = require('wordpress-hash-node');
-const { getAllUsersFromDB, getUserByEmailFromDB } = require("../../db/users");
+const { getAllUsersFromDB, getUserByEmailFromDB, getCountUsersFromDB } = require("../../db/users");
 
 const getAllUsers = async () => {
   const response = await getAllUsersFromDB();
+  return response;
+}
+
+const getCountUsers = async () => {
+  const response = await getCountUsersFromDB();
   return response;
 }
 
@@ -20,4 +25,4 @@ const loginUserWithEmailAndPw = async (email, password) => {
   return checked;
 }
 
-module.exports = { getAllUsers, getUserByEmail, loginUserWithEmailAndPw };
+module.exports = { getAllUsers, getUserByEmail, loginUserWithEmailAndPw, getCountUsers };

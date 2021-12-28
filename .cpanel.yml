@@ -2,4 +2,4 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/laflot6/filemanagerapp
-    - /bin/cp -r config db loaders mailing middleware models routes sequelize services third-party-api tmp app.js server.js jest.config.js jest.setup.js package.json $DEPLOYPATH
+    - /bin/cp -r config firebase db loaders mailing middleware models routes sequelize services third-party-api tmp app.js server.js jest.config.js jest.setup.js package.json $DEPLOYPATH

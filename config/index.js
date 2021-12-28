@@ -34,6 +34,8 @@ module.exports = {
   labelsApi: process.env.MY_SERVER_LABELS_URL,
   uploadApi: process.env.MY_SERVER_UPLOAD_URL,
   usersApi: process.env.MY_SERVER_USERS_URL,
+  firebaseApi: process.env.FIREBASE_API,
+  csvApi: process.env.CSV_API,
   emailsApi: process.env.EMAILS_API,
   loginApi: process.env.LOGIN_API,
 }

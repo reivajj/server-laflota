@@ -1,8 +1,13 @@
 var router = require("express-promise-router")();
-const { getAllUsers, getUserByEmail, loginUserWithEmailAndPw } = require("../services/providers/users");
+const { getAllUsers, getUserByEmail, loginUserWithEmailAndPw, getCountUsers } = require("../services/providers/users");
 
 router.get('/', async (_, res, next) => {
   const response = await getAllUsers();
+  return res.status(200).send({ response });
+});
+
+router.get('/countTotalUsers', async (_, res, next) => {
+  const response = await getCountUsers();
   return res.status(200).send({ response });
 });
 

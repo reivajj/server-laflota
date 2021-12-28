@@ -5,6 +5,8 @@ const labels = require('./labels');
 const users = require('./users');
 const emails = require('./emails');
 const login = require('./login');
+const firebase = require('./firebase');
+const csv = require('./csv');
 
 module.exports = {
   albums,
@@ -14,4 +16,6 @@ module.exports = {
   users,
   emails,
   login,
+  firebase,
+  csv,
 };

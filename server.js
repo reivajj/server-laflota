@@ -7,6 +7,7 @@ async function startServer() {
 
   const app = express();
   const db = require("./loaders/sequelize");
+  const firebase = require("./loaders/firebase");
 
   loaders({ expressApp: app });
   module.exports = app;
