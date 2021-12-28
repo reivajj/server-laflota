@@ -16,10 +16,10 @@ const getCountUsersFromDB = async () => {
 }
 
 const getUserByEmailFromDB = async (email) => {
-  const userByEmail = await db.User.findOne({ where: { userEmail: email } });
-  if (!userByEmail || !userByEmail.id) throw createHttpError(400, `DB Error retrieving the user with email: ${email}`, { email, properties: userByEmail });
+  const userByEmail = await db.User.findOne({ where: { userEmail: email }, raw: true });
+  if (!userByEmail || !userByEmail.id) return { exist: false };
 
-  return userByEmail;
+  return { exist: true, user: userByEmail };
 }
 
 module.exports = { getAllUsersFromDB, getUserByEmailFromDB, getCountUsersFromDB };

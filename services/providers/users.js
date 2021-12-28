@@ -17,9 +17,8 @@ const getUserByEmail = async (email) => {
 }
 
 const loginUserWithEmailAndPw = async (email, password) => {
-  const userByEmail = await getUserByEmail(email);
-
-  const passwordHashInDB = userByEmail.userPass;
+  const userByEmailResponse = await getUserByEmail(email);
+  const passwordHashInDB = userByEmailResponse.user.userPass;
   const checked = hasher.CheckPassword(password, passwordHashInDB);
 
   return checked;

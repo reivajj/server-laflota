@@ -5,13 +5,19 @@ const axiosFugaInstance = require('../config/axiosConfig');
 
 // REVEER: users no usa FUGA entonces, no necesito el Login (ver de chequear efectivamente que solo 
 // haga login para las rutas que lo necesiten)
+const urlsWithNoLoginToFUGA = ['/filemanagerapp/api/users', '/filemanagerapp/api/firebase', '/filemanagerapp/api/csv']
+
 const checkIfNeedLoginToFuga = reqUrl => {
-  if (reqUrl !== '/filemanagerapp/api/users') return true;
-  else return false;
+  for (let i = 0; i < urlsWithNoLoginToFUGA.length; i++) {
+    if (reqUrl.indexOf(urlsWithNoLoginToFUGA[i]) === 0) return false;
+  }
+  return true
 }
 
 const loginToFugaIfNeeded = async (req, res, next) => {
+
   if (checkIfNeedLoginToFuga(req.url)) {
+    console.log("NEED LOGIN");
     const loginData = {
       "name": config.fuga.apiUser,
       "password": config.fuga.apiPassword,
