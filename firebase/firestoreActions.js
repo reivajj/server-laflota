@@ -7,6 +7,34 @@ const { getCountUsers, getAllUsers } = require('../services/providers/users');
 
 const dbFS = getFirestore();
 
+const deleteUserInFSByEmail = async email => {
+  const usersRef = dbFS.collection('users');
+  const snapshotDelete = await usersRef.where('email', '==', email).get();
+
+  if (snapshotDelete.empty) return 'No matching documents.';
+
+  snapshotDelete.forEach(async doc => {
+    await usersRef.doc(doc.id).delete();
+  });
+
+  return "Delete successed";
+}
+
+const getUserInFSByEmail = async email => {
+  const usersRef = dbFS.collection('users');
+  const snapshotGet = await usersRef.where('email', '==', email).get();
+
+  if (snapshotGet.empty) return { exist: false };
+
+  let usersData = [];
+  snapshotGet.forEach(doc => {
+    usersData.push(doc.data());
+  });
+
+  return { user: usersData[0], exist: true, count: usersData.length };
+}
+
+
 const getUsersStatsFromFS = async () => {
   const statsDoc = await dbFS.collection('users').doc('stats').get();
   if (!statsDoc.exists) throw createHttpError(400, 'DB Error retrieving all users stats from firestore, impossible to find');
@@ -76,6 +104,4 @@ const createUsersInFirestore = async () => {
   return `Total creates ${totalCounter}`;
 }
 
-
-
-module.exports = { getAllUsersFromFS, createUsersInFirestore, getUsersStatsFromFS, updateTotalUsersFromFS };
+module.exports = { getAllUsersFromFS, createUsersInFirestore, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail, getUserInFSByEmail };
