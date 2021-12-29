@@ -1,4 +1,5 @@
 const { getFirestore } = require('firebase-admin/firestore');
+const admin = require('firebase-admin');
 
 // Firebase App lo necesito aca..
 const firebaseApp = require('../loaders/firebase');
@@ -16,6 +17,15 @@ const deleteUserInFSByEmail = async email => {
   snapshotDelete.forEach(async doc => {
     await usersRef.doc(doc.id).delete();
   });
+
+  const elementStatsDbRef = dbFS.collection('users').doc('stats');
+  await elementStatsDbRef.update({ total: admin.firestore.FieldValue.increment(-1) });
+
+  const usersByEmailRef = dbFS.collection('usersByEmail').doc(email);
+  const snapshotByEmailDelete = await usersByEmailRef.delete();
+
+  const usersByEmailStatsDbRef = dbFS.collection('usersByEmail').doc('stats');
+  await usersByEmailStatsDbRef.update({ total: admin.firestore.FieldValue.increment(-1) });
 
   return "Delete successed";
 }
