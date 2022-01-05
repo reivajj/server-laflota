@@ -1,12 +1,11 @@
 const admin = require('firebase-admin');
 const firebaseApp = require('../loaders/firebase');
-const { getFirestore } = require('firebase-admin/firestore');
 
 // Firebase App lo necesito aca..
 const { createFBUser } = require('./models/user');
 const { getCountUsers, getAllUsers } = require('../services/providers/users');
 
-const dbFS = getFirestore();
+const dbFS = admin.firestore();
 
 const deleteUserInFSByEmail = async email => {
   const usersRef = dbFS.collection('users');

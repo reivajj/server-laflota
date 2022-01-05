@@ -1,9 +1,9 @@
-const { initializeApp, applicationDefault, cert } = require('firebase-admin/app');
+const admin = require('firebase-admin');
 
 const serviceAccount = require('../fbAdminKeys.json');
 
-const firebaseApp = initializeApp({
-  credential: cert(serviceAccount)
+const firebaseApp = admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
 });
 console.log("Firebase connected.");
 
