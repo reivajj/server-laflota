@@ -30,9 +30,7 @@ const attachTrackAssetInAlbumFuga = async (albumId, trackId) => {
 }
 
 const uploadCoverInAlbumToFuga = async formDataCover => {
-  const response = await post('/upload', formDataCover, {
-    headers: { ...formDataCover.getHeaders() }
-  })
+  const response = await post('/upload', formDataCover)
     .catch((error) => { throw createError(400, albumUploadCoverError, { properties: { message: error.message, formData: formDataCover } }); });
   return response;
 }

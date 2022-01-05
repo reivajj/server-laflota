@@ -1,8 +1,8 @@
-const { getFirestore } = require('firebase-admin/firestore');
 const admin = require('firebase-admin');
+const firebaseApp = require('../loaders/firebase');
+const { getFirestore } = require('firebase-admin/firestore');
 
 // Firebase App lo necesito aca..
-const firebaseApp = require('../loaders/firebase');
 const { createFBUser } = require('./models/user');
 const { getCountUsers, getAllUsers } = require('../services/providers/users');
 

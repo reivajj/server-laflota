@@ -1,5 +1,6 @@
 const axiosInstance = require('../../../config/axiosConfig');
 const createHttpError = require('http-errors');
+const { handleLabelErrors } = require('../errors/handleFugaErrors');
 
 const { get, post } = axiosInstance;
 
@@ -10,10 +11,9 @@ const getAllLabelsFromFuga = async () => {
   return response;
 }
 
+// Si hay un error lo toma el handler. Probar bien esto cuando podria fallar! Pensando en porque tenes un CATCH en el delete.
 const uploadLabelToProvider = async rawDataLabel => {
   const response = await post('/labels', rawDataLabel);
-
-  if (!response.data) throw createHttpError(400, 'Error al subir un label en FUGA', { properties: { response, formData: rawDataLabel } });
   return response;
 }
 
