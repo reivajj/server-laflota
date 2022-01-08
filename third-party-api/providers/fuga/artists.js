@@ -1,42 +1,42 @@
 const axiosInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
+const { artistGetAllError } = require('../../../utils/errors.utils');
 
 const { get, post, put } = axiosInstance;
 
 const getAllArtistsFromFuga = async () => {
-  const response = await get('/artists');
-
-  if (!response.data) throw createError(400, 'Error al pedir los Artistas', { properties: response });
+  const response = await get('/artists')
+    .catch((error) => { throw createError(400, artistGetAllError, { properties: error.response.data }) });
   return response;
 }
 
 const getArtistByIdFromFuga = async artistId => {
-  const response = await get(`/artists/${artistId}`);
-
-  if (!response.data.id) throw createError(400, `Error getting the artist with ID: ${artistId}`, { properties: response });
+  const response = await get(`/artists/${artistId}`)
   return response;
 }
 
 // const uploadArtistPhotoToArtistFuga = async artistPhotoWithUploadUuid => {
-//   const response = await post('/upload', artistPhotoWithUploadUuid)
+//   const response = await post('/upload', artistPhotoWithUploadUuid, {
+//     headers: { ...artistPhotoWithUploadUuid.getHeaders() }
+//   })
 //     .catch((error) => { throw createError(400, artistPhotoWithUploadUuid, { properties: { message: error.message, formData: artistPhotoWithUploadUuid } }); });
 //   return response;
 // }
 
 const uploadArtistFuga = async rawDataArtist => {
-  console.log("ARTIST IN FUGA:", rawDataArtist)
   const response = await post('/artists', rawDataArtist);
-
-  if (!response.data.id) throw createError(400, 'Error uploading artist in FUGA', { properties: { response, formData: rawDataArtist } });
   return response;
 }
 
 const updateArtistWithIdFuga = async (artistId, rawDataArtist) => {
   const response = await put(`/artists/${artistId}`, rawDataArtist);
+  return response;
+}
 
-  if (!response.data.id) throw createError(400, 'Error updating an artist in FUGA', { properties: { response, formData: rawDataArtist } });
+const deleteArtistWithIdFuga = async (artistId) => {
+  const response = await axiosInstance.delete(`/artists/${artistId}`);
   return response;
 }
 
 
-module.exports = { getAllArtistsFromFuga, getArtistByIdFromFuga, uploadArtistFuga, updateArtistWithIdFuga };
+module.exports = { getAllArtistsFromFuga, getArtistByIdFromFuga, uploadArtistFuga, updateArtistWithIdFuga, deleteArtistWithIdFuga };

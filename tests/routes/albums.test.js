@@ -30,13 +30,13 @@ test('getAlbum with wrong id should raise error', async () => {
   expect(res.body.message).toBe(albumGetAlbumError(inventedAlbumId));
 });
 
-// test('create and delete label test', async () => {
-//   const resCreate = await agent.post(labelsUrl).send({ name: "Testing Jest" });
+// test('create and delete album test', async () => {
+//   const resCreate = await agent.post(albumsUrl).send({ name: "Testing Album Jest" });
 //   expect(resCreate.status).toBe(200);
 //   expect(resCreate.body.response).toHaveProperty("name");
 //   expect(resCreate.body.response).toHaveProperty("id");
 
-//   const resDelete = await agent.del(`${labelsUrl}/${resCreate.body.response.id}`);
+//   const resDelete = await agent.del(`${albumsUrl}/${resCreate.body.response.id}`);
 //   expect(resDelete.status).toBe(200);
 //   expect(resDelete.body.response).toBe("OK");
 // });
@@ -54,7 +54,7 @@ test('trying to publish with out permission/contract should raise permission err
 });
 
 test('changing properties of a created album should update it', async () => {
-  const newAlbumName = 'Prueba con Tuli y Tests';
+  const newAlbumName = 'Prueba con Tuli y Tests Ok';
   const newReleaseDate = "2021-12-12";
   const fieldsToUpdate = {
     name: newAlbumName,

@@ -1,7 +1,7 @@
 const axiosInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
 const { albumPublishNotFoundError, albumPublishPermissionError, albumRearrengeError, albumUploadCoverError
-  , albumTrackAssetError, albumUploadAlbumError, albumGetAlbumError, albumGetAllError, albumUpdateFieldsError } = require('../../../utils/errors.utils');
+  , albumTrackAssetError, albumUploadAlbumError, albumGetAlbumError, albumGetAllError, albumUpdateFieldsError, albumDeleteError } = require('../../../utils/errors.utils');
 
 const { get, post, put } = axiosInstance;
 
@@ -19,7 +19,6 @@ const getAlbumByIdFromFuga = async albumId => {
 
 const uploadAlbumToProvider = async rawDataAlbum => {
   const response = await post('/products', rawDataAlbum)
-    .catch((error) => { throw createError(400, albumUploadAlbumError, { properties: { message: error.message, formData: rawDataAlbum } }); });
   return response;
 }
 
@@ -30,8 +29,9 @@ const attachTrackAssetInAlbumFuga = async (albumId, trackId) => {
 }
 
 const uploadCoverInAlbumToFuga = async formDataCover => {
-  const response = await post('/upload', formDataCover)
-    .catch((error) => { throw createError(400, albumUploadCoverError, { properties: { message: error.message, formData: formDataCover } }); });
+  const response = await post('/upload', formDataCover, {
+    headers: { ...formDataCover.getHeaders() }
+  })
   return response;
 }
 
@@ -63,8 +63,15 @@ const updateAlbumWithIdInFuga = async (albumId, newFieldsValues) => {
   return response;
 }
 
+const deleteAlbumAndAssetsWithIdFromFuga = async (albumId, deleteAllAssetsBoolean) => {
+  const response = await axiosInstance.delete(`/products/${albumId}?delete_assets=${deleteAllAssetsBoolean}`)
+    .catch((error) => { throw createError(404, albumDeleteError, { properties: { message: error.message, albumId } }) });
+  return response;
+}
+
 
 module.exports = {
-  getAllAlbumsFromFuga, uploadAlbumToProvider, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga
-  , uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga
+  getAllAlbumsFromFuga, uploadAlbumToProvider, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga,
+  uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga,
+  deleteAlbumAndAssetsWithIdFromFuga
 };

@@ -3,7 +3,7 @@ var router = require("express-promise-router")();
 const multer  = require('multer');
 const upload = multer();
 
-const { getAllArtists, createArtist, getArtistById, updateArtistWithId } = require('../services/providers/artists');
+const { getAllArtists, createArtist, getArtistById, updateArtistWithId, deleteArtistWithId } = require('../services/providers/artists');
 
 router.get('/', async (_, res) => {
   const response = await getAllArtists();
@@ -26,5 +26,9 @@ router.put('/:artistId', async (req, res) => {
   return res.status(200).send({ response: response.data });
 });
 
+router.delete('/:artistId', async (req, res) => {
+  const response = await deleteArtistWithId(req.params.artistId);
+  return res.status(200).send({ response: response.data });
+});
 
 module.exports = router;

@@ -1,6 +1,6 @@
 const axiosInstance = require('../../../config/axiosConfig');
 const createHttpError = require('http-errors');
-const { handleLabelErrors } = require('../errors/handleFugaErrors');
+const { handleLabelErrorsMessage } = require('../errors/handleFugaErrors');
 
 const { get, post } = axiosInstance;
 

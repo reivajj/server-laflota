@@ -1,17 +1,52 @@
 // ACA ESCRIBIRE TODOS LOS ERRORES PARA QUE SEAN IMPORTADOS EN TESTS Y CREATEERRRORS
 
+// VARIOS
+const errorInesperado = "Hubo un error inesperado. Por favor, intente nuevamente.";
+
 // ALBUMS
-const albumPublishPermissionError = albumId => `Error to publish an album in FUGA with id: ${albumId}, no permission or contract.`;
-const albumPublishNotFoundError = albumId => `Error to publish an album in FUGA with id: ${albumId}: no existe o no esta disponible.`;
-const albumRearrengeError = (trackId, albumId) => `Error to update position of trackId: ${trackId} in album with id: ${albumId}`;
-const albumUploadCoverError = `Error to upload a Cover Image to an album`;
-const albumTrackAssetError = (albumId, trackId) => `Error to attach an asset to the Album with Id: ${albumId} and trackId: ${trackId}`;
-const albumUploadAlbumError = 'Error uploading an album in FUGA';
-const albumGetAlbumError = albumId => `Error getting an album with ID: ${albumId}`;
-const albumGetAllError = 'Error getting al the albums';
-const albumUpdateFieldsError = albumId => `Error trying to update an Album with id: ${albumId}`;
+const albumPublishPermissionError = "Error al querer publicar el Album, no tienes permiso o contrato.";
+const albumPublishNotFoundError = "Error al querer publicar el Album, no fue posible encontrar el Album.";
+const albumRearrengeError = "Error al actualizar la posición de la Canción en el Album.";
+const albumUploadCoverError = `Error al subir la imagen del Arte de Tapa.`;
+const albumTrackAssetError = "Error al subir la Canción al Album.";
+const albumUploadAlbumError = 'Error al crear el Album.';
+const albumUploadAlbumEntityNotFoundError = entityMissing => `Error al crear el Album, no encontramos las siguientes entidades: ${entityMissing}`;
+const albumGetAlbumError = "Error al querer obtener el Album.";
+const albumGetAllError = "Error al querer obtener todos los Albums.";
+const albumUpdateFieldsError = "Error al querer actualizar el Album. ";
+const albumDeleteError = "No se pudo eliminar el Album. ";
+const albumCreateDuplicateAlbum = "Este Album ya existe en el catálogo, con el mismo nombre y numero de catálogo.";
+
+// ARTISTS
+const artistCreateError = 'Error creating an artist in FUGA';
+const artistGetArtistError = "No podemos encontrar al artista solicitado.";
+const artistGetAllError = 'Error getting all the artists';
+const artistUpdateFieldsError = fieldsToUpdate => `Error trying to update an Artist with fields: ${Object.keys(fieldsToUpdate).toString()}`;
+const artistsDeleteError = "Generic Error trying to delete artist";
+const artistsInUseDeleteError = "Error trying to delete artist because is in use";
+const artistFieldsMissingCreateError = fields => `Los siguientes campos del Artista faltan o son incorrectos: ${fields}`
+
+// LABELS
+const labelDuplicateName = "El nombre del sello ya se encuentra en uso.";
+
+// TRACKS
+const trackUploadFileError = "Error al subir la Canción (archivo) al Album. "
+
+const genericErrorUploadingAFile = "Error al subir un archivo.";
 
 module.exports = {
+  errorInesperado,
+
   albumPublishNotFoundError, albumPublishPermissionError, albumRearrengeError, albumUploadCoverError,
-  albumTrackAssetError, albumUploadAlbumError, albumGetAlbumError, albumGetAllError, albumUpdateFieldsError
+  albumTrackAssetError, albumUploadAlbumError, albumGetAlbumError, albumGetAllError, albumUpdateFieldsError,
+  albumDeleteError, albumUploadAlbumEntityNotFoundError, albumCreateDuplicateAlbum,
+
+  artistCreateError, artistGetAllError, artistGetArtistError, artistUpdateFieldsError, artistsDeleteError,
+  artistsInUseDeleteError, artistFieldsMissingCreateError,
+
+  labelDuplicateName,
+
+  trackUploadFileError,
+
+  genericErrorUploadingAFile
 }

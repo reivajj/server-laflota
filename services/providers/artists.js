@@ -1,4 +1,4 @@
-const { uploadArtistFuga, getArtistByIdFromFuga, getAllArtistsFromFuga, updateArtistWithIdFuga } = require('../../third-party-api/providers/fuga/artists');
+const { uploadArtistFuga, getArtistByIdFromFuga, getAllArtistsFromFuga, updateArtistWithIdFuga, deleteArtistWithIdFuga } = require('../../third-party-api/providers/fuga/artists');
 const createFugaArtist = require('../../models/artists');
 
 const getAllArtists = async () => {
@@ -46,4 +46,9 @@ const updateArtistWithId = async (artistId, artistMetadata) => {
   return response;
 }
 
-module.exports = { getAllArtists, getArtistById, updateArtistWithId, createArtist };
+const deleteArtistWithId = async (artistId) => {
+  const response = await deleteArtistWithIdFuga(artistId);
+  return response;
+}
+
+module.exports = { getAllArtists, getArtistById, updateArtistWithId, createArtist, deleteArtistWithId };

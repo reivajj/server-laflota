@@ -4,7 +4,7 @@ const multer = require('multer');
 const upload = multer();
 
 const { getAllAlbums, getAlbumById, attachTrackAssetInAlbumWithId, createCoverImageInAlbum,
-  uploadAlbumAssetWithCover, changeTrackPositionInAlbum, changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId } = require('../services/providers/albums');
+  uploadAlbumAssetWithCover, changeTrackPositionInAlbum, changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId, deleteAlbumAndAssetsWithId } = require('../services/providers/albums');
 
 router.get('/', async (_, res, __) => {
   const response = await getAllAlbums();
@@ -17,6 +17,8 @@ router.get('/:albumId', async (req, res, _) => {
 });
 
 router.post('/', upload.single('cover'), async (req, res) => {
+  console.log("REQ BODY IN ROUTE:", req.body);
+  console.log("REQ FILE IN ROUTE: ", req.file);
   const response = await uploadAlbumAssetWithCover(req.body, req.file);
   return res.status(200).send({ response: response.data });
 });
@@ -52,5 +54,10 @@ router.put('/:albumId', upload.none(), async (req, res) => {
   const response = await updateAlbumWithId(req.params.albumId, req.body);
   return res.status(200).send({ response: response.data });
 })
+
+router.delete('/:albumId', async (req, res, _) => {
+  const response = await deleteAlbumAndAssetsWithId(req.params.albumId, req.query.delete_assets);
+  return res.status(200).send({ response: response.data });
+});
 
 module.exports = router;

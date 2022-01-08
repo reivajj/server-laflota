@@ -1,5 +1,5 @@
 const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga,
-  uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga } = require('../../third-party-api/providers/fuga/albums');
+  uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga, deleteAlbumAndAssetsWithIdFromFuga } = require('../../third-party-api/providers/fuga/albums');
 const { getUploadUuid, finishUpload } = require('../../third-party-api/providers/fuga/upload');
 const { createFugaCoverUploadStart, createFugaCoverUpload } = require('../../models/upload');
 const { createFugaAlbumFromFormData } = require('../../models/albums');
@@ -28,10 +28,8 @@ const attachTrackAssetInAlbumWithId = async (albumId, trackId) => {
 const createCoverImageInAlbum = async (coverFormDataToUpload, coverFile) => {
   const rawDataCoverUploadStart = createFugaCoverUploadStart(coverFormDataToUpload);
   const responseUploadStart = await getUploadUuid(rawDataCoverUploadStart);
-
   const coverFormDataWithUploadUuid = createFugaCoverUpload(coverFile, responseUploadStart.data.id);
   await uploadCoverInAlbumToFuga(coverFormDataWithUploadUuid);
-
   const responseUploadAlbumCoverFinish = finishUpload(responseUploadStart.data.id);
   return responseUploadAlbumCoverFinish;
 }
@@ -65,13 +63,19 @@ const publishAlbumWithId = async albumId => {
 }
 
 const updateAlbumWithId = async (albumId, newData) => {
-  console.log("INGRESO AL UPDATE EN SERVICE");
   const responseUpdateAlbum = await updateAlbumWithIdInFuga(albumId, newData);
   return responseUpdateAlbum;
+}
+
+const deleteAlbumAndAssetsWithId = async (albumId, deleteAllAssets) => {
+  const deleteAllAssetsBoolean = deleteAllAssets === "true";
+  const responseDeleteAlbum = await deleteAlbumAndAssetsWithIdFromFuga(albumId, deleteAllAssetsBoolean);
+  return responseDeleteAlbum;
 }
 
 module.exports = {
   getAllAlbums, getAlbumById, createAlbumAsset, attachTrackAssetInAlbumWithId,
   createCoverImageInAlbum, uploadAlbumAssetWithCover, changeTrackPositionInAlbum,
-  changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId
+  changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId,
+  deleteAlbumAndAssetsWithId
 };
