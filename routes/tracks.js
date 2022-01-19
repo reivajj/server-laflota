@@ -1,14 +1,13 @@
 var router = require("express-promise-router")();
 const multer = require('multer');
 const createError = require('http-errors');
-const { getAllTracks, getTrackAssetById, uploadTrack, uploadTrackAssetWithFile } = require('../services/providers/tracks');
+const { getAllTracks, getTrackAssetById, uploadTrack, uploadTrackAssetWithFile, updateTrackAssetWithId
+  , getTrackContributors, addContributorToAsset, uploadTrackTest } = require('../services/providers/tracks');
 
-const upload = multer({limits: {fileSize: 1000000000 }});
+const upload = multer({ limits: { fileSize: 1000000000 } });
 
 router.get('/', async (_, res) => {
   const response = await getAllTracks();
-
-  if (!response.data) throw createError(400, 'Error al pedir los Tracks', { properties: response });
   return res.status(200).send({ response: response.data });
 });
 
@@ -17,32 +16,42 @@ router.get('/:trackId', async (req, res, next) => {
   return res.status(200).send({ response: response.data });
 });
 
+router.put('/:trackId', upload.none(), async (req, res, next) => {
+  const response = await updateTrackAssetWithId(req.params.trackId, req.body);
+  return res.status(200).send({ response: response.data });
+});
+
 router.post('/', upload.single('track'), async (req, res) => {
   console.log("MetaData: ", req.body);
-  const response = await uploadTrackAssetWithFile(req.body, req.file);  
+  const response = await uploadTrackAssetWithFile(req.body, req.file);
   return res.status(200).send({ response: response.data });
 });
 
-// router.post('/', upload.none(), async (req, res) => {
-//   const response = await createTrackAsset(req.body);
-//   // const response = await createFugaTrackAsset(req.body, req.file);
-  
-//   if (!response.data.id) throw createError(400, 'Error al subir un track al Album', { properties: response });
+// router.post('/upload', upload.single('track'), async (req, res) => {
+//   const response = await uploadTrack(req.body, req.file);
+
+//   if (!response.data.success) throw createError(400, 'Error uploading a track to an Album', { properties: response });
 //   return res.status(200).send({ response: response.data });
 // });
 
-// router.post('/upload/start',upload.none() , async (req, res) => {
-//   const response = await startUploadTrack(req.body);
+router.post('/uploadTest', upload.single('track'), async (req, res) => {
+  const response = await uploadTrackTest(req.body, req.file);
+  console.log("RESPONSE:", response);
+  // if (!response.data.success) throw createError(400, 'Error uploading a track to an Album', { properties: response });
+  return res.status(200).send({ response: response });
+});
 
-//   if (!response.data) throw createError(400, 'Error getting the UUID of the upload:', { properties: response });
-//   return res.status(200).send({ response: response.data });
-// });
+// =================================CONTRIBUTORS================================\\
 
-router.post('/upload', upload.single('track'), async (req, res) => {
-  const response = await uploadTrack(req.body, req.file);
-  
-  if (!response.data.success) throw createError(400, 'Error uploading a track to an Album', { properties: response });
+router.get('/:trackId/contributors', async (req, res, next) => {
+  const response = await getTrackContributors(req.params.trackId);
   return res.status(200).send({ response: response.data });
 });
+
+router.post('/:trackId/contributors', async (req, res) => {
+  const response = await addContributorToAsset(req.params.trackId, req.body);
+  return res.status(200).send({ response: response.data });
+});
+
 
 module.exports = router;

@@ -17,8 +17,6 @@ router.get('/:albumId', async (req, res, _) => {
 });
 
 router.post('/', upload.single('cover'), async (req, res) => {
-  console.log("REQ BODY IN ROUTE:", req.body);
-  console.log("REQ FILE IN ROUTE: ", req.file);
   const response = await uploadAlbumAssetWithCover(req.body, req.file);
   return res.status(200).send({ response: response.data });
 });
@@ -50,7 +48,6 @@ router.post('/:albumId/publish', upload.none(), async (req, res) => {
 })
 
 router.put('/:albumId', upload.none(), async (req, res) => {
-  console.log("INGRESO AL UPDATE EN ROUTES");
   const response = await updateAlbumWithId(req.params.albumId, req.body);
   return res.status(200).send({ response: response.data });
 })

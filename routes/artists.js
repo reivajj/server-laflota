@@ -31,4 +31,11 @@ router.delete('/:artistId', async (req, res) => {
   return res.status(200).send({ response: response.data });
 });
 
+router.post('/:artistId/identifier', async (req, res) => {
+  const response = await createArtistIdentifierDsp(req.params.artistId, req.body);
+  return res.status(200).send({ response: response.data });
+});
+
+
+
 module.exports = router;

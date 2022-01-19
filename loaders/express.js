@@ -43,9 +43,9 @@ module.exports = async ({ app }) => {
   app.use(config.artistsApi, routes.artists);
   app.use(config.labelsApi, routes.labels);
   app.use(config.usersApi, routes.users);
+  app.use(config.peopleApi, routes.people);
   app.use(config.firebaseApi, routes.firebase);
   app.use(config.csvApi, routes.csv);
-
   app.use(config.emailsApi, routes.emails);
   app.use(config.loginApi, routes.login);
 

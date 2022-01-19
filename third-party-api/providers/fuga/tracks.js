@@ -1,7 +1,7 @@
 const axiosInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
 
-const { get, post } = axiosInstance;
+const { get, post, put } = axiosInstance;
 
 const getAllTracksAssetsFromFuga = async () => {
   const response = await get('/assets');
@@ -24,13 +24,33 @@ const uploadTrackAssetToProvider = async rawDataTrackAsset => {
 }
 
 const uploadTrackFileInAlbumToFuga = async formDataTrackFileUpload => {
-  console.log("FormData: ", formDataTrackFileUpload);
   const response = await post('/upload', formDataTrackFileUpload, {
-    headers: formDataTrackFileUpload.getHeaders() 
+    headers: formDataTrackFileUpload.getHeaders()
   }).catch(error => console.log("ERROR: ", error));
 
   if (!response || !response.data.success) throw createError(400, `Error to upload a Track to an album`, { properties: { response, formData: formDataTrackFileUpload } });
   return response;
 }
 
-module.exports = { getAllTracksAssetsFromFuga, getTrackAssetByIdFromFuga, uploadTrackAssetToProvider, uploadTrackFileInAlbumToFuga };
+const updateTrackAssetWithIdFromFuga = async (trackAssetId, rawDataTrackToUpdate) => {
+  const response = await put(`/assets/${trackAssetId}`, rawDataTrackToUpdate);
+  return response;
+}
+
+// =================================CONTRIBUTORS================================\\
+
+const getTrackContributorsFromFuga = async trackAssetId => {
+  const response = await get(`/assets/${trackAssetId}/contributors`);
+  return response;
+}
+
+const addContributorToAssetFuga = async (trackAssetId, rawDataContributor) => {
+  const response = await post(`/assets/${trackAssetId}/contributors`, rawDataContributor);
+  return response;
+}
+
+module.exports = {
+  getAllTracksAssetsFromFuga, getTrackAssetByIdFromFuga, uploadTrackAssetToProvider,
+  uploadTrackFileInAlbumToFuga, updateTrackAssetWithIdFromFuga, getTrackContributorsFromFuga,
+  addContributorToAssetFuga
+};

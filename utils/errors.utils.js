@@ -31,8 +31,16 @@ const labelDuplicateName = "El nombre del sello ya se encuentra en uso.";
 
 // TRACKS
 const trackUploadFileError = "Error al subir la Canción (archivo) al Album. "
-
 const genericErrorUploadingAFile = "Error al subir un archivo.";
+
+// CONTRIBUTORS
+const errorInesperadoContributors = "Error inesperado al trabajar con los Contribuidores. ";
+const contributorDuplicatedError = "El artista que contribuye ya existe con ese mismo Rol.";
+const contributorInvalidValueError = fieldValue => `El campo ${fieldValue}, tiene un valor inválido al querer agregar un Contriuidor.`
+
+// PEOPLE
+const errorInesperadoPeople = "Error inesperado al trabajar con People";
+const errorPersonNameDuplicated = "Error al crear una Persona, el nombre ya existe. ";
 
 module.exports = {
   errorInesperado,
@@ -48,5 +56,9 @@ module.exports = {
 
   trackUploadFileError,
 
-  genericErrorUploadingAFile
+  genericErrorUploadingAFile,
+
+  errorInesperadoContributors, contributorDuplicatedError, contributorInvalidValueError,
+
+  errorInesperadoPeople, errorPersonNameDuplicated,
 }

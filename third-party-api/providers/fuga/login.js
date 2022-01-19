@@ -6,8 +6,8 @@ const { post } = axiosFugaInstance;
 
 const loginToFuga = async () => {
   const loginData = {
-    "name": config.fuga.apiUser,
-    "password": config.fuga.apiPassword,
+    "name": config.fuga.apiUserLaFlota,
+    "password": config.fuga.apiPasswordLaFlota,
     "secure": false,
     "authType": "session"
   };

@@ -15,4 +15,19 @@ const createFugaArtist = artistMetaData => {
   return artistRawData;
 }
 
-module.exports = createFugaArtist;
+const issuingOrganizationsIsOk = issuingOrgCode => {
+  // check if is spotify, apple or soundcloud...
+  return true;
+}
+
+const createFugaIdentifierArtist = artistMetadata => {
+  let rawDataArtitstIdentifier = {};
+  if (artistMetadata.name) rawDataArtitstIdentifier.name = artistMetadata.name;
+  if (issuingOrganizationsIsOk(artistMetadata.issuingOrg)) rawDataArtitstIdentifier.issuing_organization = artistMetadata.issuingOrg;
+  artistMetadata.newForIssuingOrg ? rawDataArtitstIdentifier.newForIssuingOrg = true : rawDataArtitstIdentifier = false;
+  if (artistMetadata.identifier) rawDataArtitstIdentifier.identifier = artistMetadata.identifier;
+
+  return rawDataArtitstIdentifier;
+}
+
+module.exports = { createFugaArtist, createFugaIdentifierArtist };

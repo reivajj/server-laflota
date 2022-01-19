@@ -1,0 +1,305 @@
+{
+  "response": {
+      "user": {
+          "id": 4950770713,
+          "admin": false,
+          "full_name": "La Flota",
+          "last_login": "2022-01-17T00:32:31",
+          "name": "la flota",
+          "status": "ENABLED",
+          "role": "user",
+          "read_only": false
+      },
+      "org": {
+          "id": 4944899813,
+          "name": "La Flota",
+          "organization_roles": [
+              {
+                  "name": "RECORD_LABEL"
+              }
+          ],
+          "organization_capabilities": [
+              {
+                  "name": "POSE_AS_LABEL"
+              },
+              {
+                  "name": "SEND_CONTENT"
+              }
+          ],
+          "application_hostname": null,
+          "super_organization": null,
+          "sub_organization": false,
+          "settings": [
+              {
+                  "description": "Enable accounting",
+                  "id": "ACCOUNTING",
+                  "enabled": false
+              },
+              {
+                  "description": "Enable mapping 'user generated video' usage right to Twitch usage right delivered via Amazon feed",
+                  "id": "AMAZON_TWITCH",
+                  "enabled": false
+              },
+              {
+                  "description": "Allow creation of different artist with different symbols and capitalization",
+                  "id": "ARTIST_AND_PERSON_NAMES_WITH_SPECIAL_SYMBOLS_AND_CAPITALIZATION",
+                  "enabled": false
+              },
+              {
+                  "description": "Allow creation of an artist with the same name by adding a unique proprietary ID",
+                  "id": "ARTIST_PROPRIETARY_ID",
+                  "enabled": false
+              },
+              {
+                  "description": "Automatically remove 'NEW' flag for already delivered artists and contributors",
+                  "id": "AUTO_REMOVE_ARTIST_NEW_FLAG",
+                  "enabled": false
+              },
+              {
+                  "description": "Disable UPC & title uniqueness constraint for delivering into other orgs, needs to set on both cp and dsp",
+                  "id": "CON_DISABLE",
+                  "enabled": false
+              },
+              {
+                  "description": "Enforcing use of Elastic Search for products",
+                  "id": "ENFORCE_ELASTIC_SEARCH_FOR_PRODUCTS",
+                  "enabled": false
+              },
+              {
+                  "description": "Fuga QC team will give a final review to your submissions",
+                  "id": "FUGA_REVISION_QC",
+                  "enabled": false
+              },
+              {
+                  "description": "Location and label prefixes module",
+                  "id": "LOCATION_AND_LABEL_PREFIXES_MODULE",
+                  "enabled": false
+              },
+              {
+                  "description": "Allow label identifiers",
+                  "id": "LABEL_IDENTIFIERS",
+                  "enabled": false
+              },
+              {
+                  "description": "Mastered for iTunes",
+                  "id": "MASTERED_FOR_ITUNES",
+                  "enabled": false
+              },
+              {
+                  "description": "Enable Metadata ingestion self service tool",
+                  "id": "METADATA_INGESTION_TOOL",
+                  "enabled": false
+              },
+              {
+                  "description": "Enable Metadata validation tool",
+                  "id": "METADATA_VALIDATION_TOOL",
+                  "enabled": false
+              },
+              {
+                  "description": "Link to MUSE",
+                  "id": "MUSE",
+                  "enabled": false
+              },
+              {
+                  "description": "Enable access to the assets catalog",
+                  "id": "MUSE_ASSETS_CATALOG",
+                  "enabled": true
+              },
+              {
+                  "description": "Enable access to the artists catalog",
+                  "id": "MUSE_ARTISTS_CATALOG",
+                  "enabled": true
+              },
+              {
+                  "description": "Enable bulk tagging and bulk edits",
+                  "id": "MUSE_BULK_TAG",
+                  "enabled": true
+              },
+              {
+                  "description": "Enable editing delivery instructions",
+                  "id": "MUSE_DELIVERY_EDIT",
+                  "enabled": true
+              },
+              {
+                  "description": "Enable redelivery functionality",
+                  "id": "MUSE_REDELIVERY",
+                  "enabled": true
+              },
+              {
+                  "description": "Enable editing functionality for muse",
+                  "id": "MUSE_EDIT",
+                  "enabled": true
+              },
+              {
+                  "description": "All Trends filters enabled.",
+                  "id": "MUSE_TRENDS_FILTER",
+                  "enabled": true
+              },
+              {
+                  "description": "Minimum set of Trends filters enabled.",
+                  "id": "MUSE_TRENDS_FILTER_MIN",
+                  "enabled": false
+              },
+              {
+                  "description": "Enable to approve submitted products",
+                  "id": "MUSE_APPROVE_PRODUCTS",
+                  "enabled": true
+              },
+              {
+                  "description": "Enable new metadata translations in muse",
+                  "id": "MUSE_NEW_META_TRANSLATIONS",
+                  "enabled": true
+              },
+              {
+                  "description": "Use Hermes to return results instead of Core in the Next API and UI.",
+                  "id": "MUSE_HERMES_CATALOG",
+                  "enabled": false
+              },
+              {
+                  "description": "Use CSV ingestion to create multiple assets for a product",
+                  "id": "MUSE_CSV_INGESTION",
+                  "enabled": false
+              },
+              {
+                  "description": "The Neighbouring Rights module",
+                  "id": "NEIGHBOURING_RIGHTS",
+                  "enabled": false
+              },
+              {
+                  "description": "Pad UPC to EAN during bulk ingest",
+                  "id": "PAD_UPC_BULK",
+                  "enabled": false
+              },
+              {
+                  "description": "Enable passthrough takedown",
+                  "id": "PASSTHROUGH_TAKEDOWN",
+                  "enabled": false
+              },
+              {
+                  "description": "Physical products module",
+                  "id": "PHYSICAL_PRODUCTS_MODULE",
+                  "enabled": false
+              },
+              {
+                  "description": "Enable Playlist",
+                  "id": "PLAYLIST",
+                  "enabled": true
+              },
+              {
+                  "description": "Allow any 24-bit (or higher) file for mastered products for ADM program",
+                  "id": "REGULAR_ENCODINGS_FOR_MASTERED_PRODUCTS",
+                  "enabled": true
+              },
+              {
+                  "description": "Export catalog metadata to Space Shower (requires Space Shower FUGA JV organization role to be enabled)",
+                  "id": "SPACE_SHOWER_CATALOG_EXPORT",
+                  "enabled": false
+              },
+              {
+                  "description": "STEM audio products",
+                  "id": "STEMS",
+                  "enabled": false
+              },
+              {
+                  "description": "Submission Territory for product",
+                  "id": "SUBMISSION_TERRITORY",
+                  "enabled": false
+              },
+              {
+                  "description": "The ability for an organization to handle suborgs and their users",
+                  "id": "SUB_ORGANIZATIONS_MANAGEMENT",
+                  "enabled": true
+              },
+              {
+                  "description": "Suborgs RASA backed statement dashboard",
+                  "id": "SUB_ORGANIZATIONS_STATEMENT_DASHBOARD",
+                  "enabled": false
+              },
+              {
+                  "description": "The trends feature",
+                  "id": "TRENDS",
+                  "enabled": false
+              },
+              {
+                  "description": "Hides Trends feature if enabled",
+                  "id": "TRENDS_HIDDEN",
+                  "enabled": false
+              },
+              {
+                  "description": "The ability to upload and view trend reports",
+                  "id": "TREND_REPORTS",
+                  "enabled": false
+              },
+              {
+                  "description": "The ability for an organization to manage they own users",
+                  "id": "USER_MANAGEMENT",
+                  "enabled": true
+              },
+              {
+                  "description": "wav analyzer",
+                  "id": "WAV_CHK",
+                  "enabled": false
+              },
+              {
+                  "description": "Enable sending of master org webhooks",
+                  "id": "WEBHOOKS",
+                  "enabled": false
+              },
+              {
+                  "description": "Allow client to configure delivery related webhooks",
+                  "id": "WEBHOOKS_DELIVERY",
+                  "enabled": false
+              },
+              {
+                  "description": "Enable clients to use our internal webhooks solution",
+                  "id": "WEBHOOKS_INTERNAL",
+                  "enabled": false
+              },
+              {
+                  "description": "XML updates, commands and delivery triggering",
+                  "id": "XML_PRO",
+                  "enabled": false
+              },
+              {
+                  "description": "Generate guid for product",
+                  "id": "GENERATE_GUID_FOR_PRODUCT",
+                  "enabled": false
+              },
+              {
+                  "description": "Generate guid for asset",
+                  "id": "GENERATE_GUID_FOR_ASSET",
+                  "enabled": false
+              },
+              {
+                  "description": "Prevent deletion / take-down of any content",
+                  "id": "IS_CURATED_ORGANIZATION",
+                  "enabled": false
+              },
+              {
+                  "description": "Enables mapping 'subscription non interactive streaming' usage right to Fitness+ usage right delivered via Apple Music feed",
+                  "id": "APPLE_MUSIC_FITNESSPLUS",
+                  "enabled": true
+              },
+              {
+                  "description": "Organization can request an automatic barcode for their products",
+                  "id": "AUTOMATIC_BARCODE",
+                  "enabled": false
+              },
+              {
+                  "description": "Exposes any live links to CPs regardless of connection/contract setup. Enable for a distributor to expose live links for products delivered via the distributor to the respective DSP",
+                  "id": "LIVE_LINKS",
+                  "enabled": false
+              }
+          ],
+          "pricing_rule_set": null,
+          "delivery_rule_sets": [
+              {
+                  "group": "STORE_GROUP",
+                  "id": "STORE",
+                  "name": "Store"
+              }
+          ],
+          "delivery_capabilities": []
+      }
+  }
+}

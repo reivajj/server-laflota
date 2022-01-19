@@ -38,5 +38,14 @@ const deleteArtistWithIdFuga = async (artistId) => {
   return response;
 }
 
+const createArtistIdentifierDspFuga = async (artistId, rawDataArtist) => {
+  const response = await post(`/artists/${artistId}/identifier`, rawDataArtist);
+  return response;
+}
 
-module.exports = { getAllArtistsFromFuga, getArtistByIdFromFuga, uploadArtistFuga, updateArtistWithIdFuga, deleteArtistWithIdFuga };
+
+
+module.exports = {
+  getAllArtistsFromFuga, getArtistByIdFromFuga, uploadArtistFuga, updateArtistWithIdFuga, deleteArtistWithIdFuga,
+  createArtistIdentifierDspFuga
+};

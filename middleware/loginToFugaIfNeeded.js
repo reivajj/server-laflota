@@ -19,6 +19,8 @@ const loginToFugaIfNeeded = async (req, res, next) => {
   if (checkIfNeedLoginToFuga(req.url)) {
     console.log("NEED LOGIN");
     const loginData = {
+      // "name": config.fuga.apiUserLaFlota,
+      // "password": config.fuga.apiPasswordLaFlota,
       "name": config.fuga.apiUser,
       "password": config.fuga.apiPassword,
       "secure": false,

@@ -1,5 +1,5 @@
-const { uploadArtistFuga, getArtistByIdFromFuga, getAllArtistsFromFuga, updateArtistWithIdFuga, deleteArtistWithIdFuga } = require('../../third-party-api/providers/fuga/artists');
-const createFugaArtist = require('../../models/artists');
+const { uploadArtistFuga, getArtistByIdFromFuga, getAllArtistsFromFuga, updateArtistWithIdFuga, deleteArtistWithIdFuga, createArtistIdentifierDspFuga } = require('../../third-party-api/providers/fuga/artists');
+const { createFugaArtist, createFugaIdentifierArtist } = require('../../models/artists');
 
 const getAllArtists = async () => {
   const response = await getAllArtistsFromFuga();
@@ -51,4 +51,10 @@ const deleteArtistWithId = async (artistId) => {
   return response;
 }
 
-module.exports = { getAllArtists, getArtistById, updateArtistWithId, createArtist, deleteArtistWithId };
+const createArtistIdentifierDsp = async (artistId, artistMetadata) => {
+  const rawDataArtistIdentifier = createFugaIdentifierArtist(artistMetadata);
+  const response = await createArtistIdentifierDspFuga(artistId, rawDataArtistIdentifier);
+  return response;
+}
+
+module.exports = { getAllArtists, getArtistById, updateArtistWithId, createArtist, deleteArtistWithId, createArtistIdentifierDsp };

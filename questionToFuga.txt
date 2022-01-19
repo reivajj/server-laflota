@@ -1,0 +1,13 @@
+
+Settings not enabled that i sa in the response from the LOGIN.
+  1.About creating Artists with the some Name with different ProprieraryIds set to false but working.
+  2.Allow creation of different artist with different symbols and capitalization set to false.
+
+Prices
+
+Product:
+  1. A Product needs at least 1 Artist, must also at least 1 Primary Artist?
+
+Artists:
+  1. To create an Artist Identifier for a DSP, just creating the Artist Identifier and saying that it is new for the DSP, didnt create automatically an Identifier.
+    , needs to wait to the DELIVERY?  
