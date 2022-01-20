@@ -1,11 +1,19 @@
 const fs = require('fs');
 const { parse } = require('fast-csv');
 const { createSubscriptionDataFromCSVRow } = require('../models/subscriptions');
+const { v4: uuidv4, v5: uuidv5 } = require('uuid');
 
-const createSubscriptionData = (csvRowJson) => {
+const isrcNamespace = '1b671a64-40d5-491e-99b0-da01ff1f3341';
+
+const createSubscriptionData = csvRowJson => {
   let subscriptionInJsonToFB = createSubscriptionDataFromCSVRow(csvRowJson);
   return subscriptionInJsonToFB;
 };
+
+const createISRCsData = csvRowJson => {
+  console.log("CSV ISRC ROW: ", csvRowJson);
+  return { ...csvRowJson, used: false, procedence: "FUGA", id: uuidv5(csvRowJson.isrc, isrcNamespace) };
+}
 
 // Async readCsv
 const readCsv = (path, options, rowProcessor) => {
@@ -28,8 +36,16 @@ const readSubscriptionsCsv = async () => {
     { headers: true, ignoreEmpty: true },
     createSubscriptionData,
   );
-
   return data;
 }
 
-module.exports = { readSubscriptionsCsv };
+const readISRCsCsv = async csvFileName => {
+  const data = await readCsv(
+    `${__dirname}/${csvFileName}.csv`,
+    { headers: true, ignoreEmpty: true },
+    createISRCsData,
+  );
+  return data;
+}
+
+module.exports = { readSubscriptionsCsv, readISRCsCsv };

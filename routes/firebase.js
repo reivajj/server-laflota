@@ -1,5 +1,6 @@
 var router = require("express-promise-router")();
-const { getAllUsersFromFS, createUsersInFirestore, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail, getUserInFSByEmail } = require("../firebase/firestoreActions");
+const { createISRCsBatchInFS, deleteISRCsBatchInFS } = require("../firebase/firestore/isrcs");
+const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail, getUserInFSByEmail } = require("../firebase/firestore/user");
 
 router.get('/users', async (_, res, next) => {
   const response = await getAllUsersFromFS();
@@ -17,7 +18,7 @@ router.post('/updateTotalUsers', async (_, res, next) => {
 });
 
 router.post('/createUsers', async (_, res, next) => {
-  const response = await createUsersInFirestore();
+  const response = await createUsersInFS();
   return res.status(200).send({ response });
 })
 
@@ -30,5 +31,16 @@ router.get('/usersByEmail/:email', async (req, res, _) => {
   const response = await getUserInFSByEmail(req.params.email);
   return res.status(200).send({ response });
 })
+
+router.post('/createIsrcsFromLocalCSV/:csvFileName', async (req, res, next) => {
+  const response = await createISRCsBatchInFS(req.params.csvFileName);
+  return res.status(200).send({ response });
+});
+
+router.delete('/deleteIsrcsFromLocalCSV/:csvFileName', async (req, res, next) => {
+  const response = await deleteISRCsBatchInFS(req.params.csvFileName);
+  return res.status(200).send({ response });
+})
+
 
 module.exports = router;

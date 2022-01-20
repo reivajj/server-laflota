@@ -1,9 +1,9 @@
 const admin = require('firebase-admin');
-const firebaseApp = require('../loaders/firebase');
+const firebaseApp = require('../../loaders/firebase');
 
 // Firebase App lo necesito aca..
-const { createFBUser } = require('./models/user');
-const { getCountUsers, getAllUsers } = require('../services/providers/users');
+const { getCountUsersWP, getAllUsersWP } = require('../../services/providers/users');
+const { createFBUser } = require('../models/user');
 
 const dbFS = admin.firestore();
 
@@ -52,7 +52,7 @@ const getUsersStatsFromFS = async () => {
 
 const updateTotalUsersFromFS = async () => {
   const statsDocRef = dbFS.collection('users').doc('stats');
-  const totalUsersFromDB = await getCountUsers();
+  const totalUsersFromDB = await getCountUsersWP();
   const updateResponse = statsDocRef.update({ total: totalUsersFromDB });
   return updateResponse;
 }
@@ -72,12 +72,12 @@ const getAllUsersFromFS = async () => {
 }
 
 const getAndProccesWpUsers = async () => {
-  const wpUsers = await getAllUsers();
+  const wpUsers = await getAllUsersWP();
   const fbUsers = wpUsers.map(wpuser => createFBUser(wpuser));
   return fbUsers;
 }
 
-const createUsersInFirestore = async () => {
+const createUsersInFS = async () => {
   let batch = dbFS.batch();
   let counter = 0;
   let totalCounter = 0;
@@ -113,4 +113,4 @@ const createUsersInFirestore = async () => {
   return `Total creates ${totalCounter}`;
 }
 
-module.exports = { getAllUsersFromFS, createUsersInFirestore, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail, getUserInFSByEmail };
+module.exports = { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail, getUserInFSByEmail };

@@ -1,0 +1,50 @@
+{
+    "errors": [
+        {
+            "code": "CONTRIBUTOR_COMPOSER_REQUIRED",
+            "message": "At least 1 contributor with role 'Composer' is required",
+            "context": "contributors",
+            "messageVariables": []
+        },
+        {
+            "code": "ARTIST_IDENTIFIER_REQUIRED",
+            "message": "Spotify artist identifiers missing for La Flota I",
+            "context": "artists",
+            "messageVariables": [
+                "Spotify",
+                "La Flota I"
+            ]
+        },
+        {
+            "code": "PUBLISHERS_ARE_REQUIRED",
+            "message": "Composer information is required",
+            "context": "publishers",
+            "messageVariables": [
+                "publishers"
+            ]
+        },
+        {
+            "code": "CONTRIBUTOR_LYRICIST_REQUIRED",
+            "message": "At least 1 contributor with role 'Lyricist' is required as language of performance is not Instrumental",
+            "context": "contributors",
+            "messageVariables": []
+        },
+        {
+            "code": "ARTIST_IDENTIFIER_REQUIRED",
+            "message": "Spotify artist identifiers missing for Juanes Rial",
+            "context": "artists",
+            "messageVariables": [
+                "Spotify",
+                "Juanes Rial"
+            ]
+        },
+        {
+            "code": "FIELD_REQUIRED",
+            "message": "The following field(s) are required: isrcCode, upcCode. Please fill them in and try again.",
+            "context": "isrcCode, upcCode",
+            "messageVariables": [
+                "isrcCode, upcCode"
+            ]
+        }
+    ]
+}

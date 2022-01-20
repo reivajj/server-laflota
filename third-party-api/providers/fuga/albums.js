@@ -43,17 +43,6 @@ const changeTrackPositionInAlbumInFUGA = async (albumId, trackId, newPosition) =
   return response;
 }
 
-const publishAlbumWithIdInFuga = async albumId => {
-  const response = await post(`/products/${albumId}/publish`)
-    .catch((error) => {
-      if (error.response.data.code)
-        throw createError(401, albumPublishPermissionError, { properties: { msgFromFuga: error.response.data, albumId } });
-      throw createError(400, albumPublishNotFoundError);
-    });
-
-  return response;
-}
-
 const updateAlbumWithIdInFuga = async (albumId, newFieldsValues) => {
   const response = await put(`/products/${albumId}`, newFieldsValues)
     .catch((error) => {
@@ -68,9 +57,18 @@ const deleteAlbumAndAssetsWithIdFromFuga = async (albumId, deleteAllAssetsBoolea
   return response;
 }
 
+const generateUPCAlbumWithIdInFuga = async albumId => {
+  const response = await post(`/products/${albumId}/barcode`);
+  return response;
+}
+
+const publishAlbumWithIdInFuga = async albumId => {
+  const response = await post(`/products/${albumId}/publish`);  
+  return response;
+}
 
 module.exports = {
   getAllAlbumsFromFuga, uploadAlbumToProvider, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga,
   uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga,
-  deleteAlbumAndAssetsWithIdFromFuga
+  deleteAlbumAndAssetsWithIdFromFuga, generateUPCAlbumWithIdInFuga
 };

@@ -4,7 +4,7 @@ const multer = require('multer');
 const upload = multer();
 
 const { getAllAlbums, getAlbumById, attachTrackAssetInAlbumWithId, createCoverImageInAlbum,
-  uploadAlbumAssetWithCover, changeTrackPositionInAlbum, changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId, deleteAlbumAndAssetsWithId } = require('../services/providers/albums');
+  uploadAlbumAssetWithCover, changeTrackPositionInAlbum, changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId, deleteAlbumAndAssetsWithId, generateUPCAlbumWithId } = require('../services/providers/albums');
 
 router.get('/', async (_, res, __) => {
   const response = await getAllAlbums();
@@ -56,5 +56,10 @@ router.delete('/:albumId', async (req, res, _) => {
   const response = await deleteAlbumAndAssetsWithId(req.params.albumId, req.query.delete_assets);
   return res.status(200).send({ response: response.data });
 });
+
+router.post('/:albumId/barcode', async (req, res) => {
+  const response = await generateUPCAlbumWithId(req.params.albumId);
+  return res.status(200).send({ response: response.data });
+})
 
 module.exports = router;

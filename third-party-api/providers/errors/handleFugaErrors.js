@@ -1,4 +1,9 @@
-const { artistsInUseDeleteError, artistFieldsMissingCreateError, artistGetArtistError, errorInesperado, labelDuplicateName, albumUploadAlbumEntityNotFoundError, albumUploadCoverError, trackUploadFileError, genericErrorUploadingAFile, albumCreateDuplicateAlbum, albumGetAlbumError, errorInesperadoContributors, errorInesperadoPeople, errorPersonNameDuplicated, contributorDuplicatedError, contributorInvalidValueError } = require("../../../utils/errors.utils");
+const { artistsInUseDeleteError, artistFieldsMissingCreateError, artistGetArtistError, errorInesperado, labelDuplicateName,
+  albumUploadAlbumEntityNotFoundError, albumUploadCoverError, trackUploadFileError, genericErrorUploadingAFile,
+  albumCreateDuplicateAlbum, albumGetAlbumError, contributorsInesperatedGenericError, peopleInesperatedGenericError, errorPersonNameDuplicated,
+  contributorDuplicatedError, contributorInvalidValueError, albumNotAuthorizedGenericError, albumMissingFieldsToPublish,
+  albumAlreadyHasUPC, albumInesperatedGenericError, trackInesperatedGenericError, labelInesperatedGenericError,
+} = require("../../../utils/errors.utils");
 
 // Pasar esto a las distintas RUTAS que tenes en ROUTES. Y ver que esten incluidas y listo.
 const handleErrorsMessagesFromFuga = (responseErrorFromFuga, urlReq, errorConfigData) => {
@@ -12,25 +17,25 @@ const handleErrorsMessagesFromFuga = (responseErrorFromFuga, urlReq, errorConfig
 }
 
 const handlePeopleErrorsMessage = peopleErrorFromFuga => {
-  if (!peopleErrorFromFuga || !peopleErrorFromFuga.data) return errorInesperadoPeople;
-  if (peopleErrorFromFuga.unexpectedError) return errorInesperadoPeople;
+  if (!peopleErrorFromFuga || !peopleErrorFromFuga.data) return peopleInesperatedGenericError;
+  if (peopleErrorFromFuga.unexpectedError) return peopleInesperatedGenericError;
   if (peopleErrorFromFuga.data.code === "DUPLICATE_PERSON_NAME") return errorPersonNameDuplicated;
-  return errorInesperadoPeople;
+  return peopleInesperatedGenericError;
 }
 
 const handleContributorsErrorsMessage = (contributorsAssetsErrorFromFuga, errorConfigData) => {
   console.log("ERROR CONFIG EN HANDLE ASSETS", contributorsAssetsErrorFromFuga);
-  if (!contributorsAssetsErrorFromFuga || !contributorsAssetsErrorFromFuga.data) return errorInesperadoContributors;
+  if (!contributorsAssetsErrorFromFuga || !contributorsAssetsErrorFromFuga.data) return contributorsInesperatedGenericError;
 
   let errorData = contributorsAssetsErrorFromFuga.data;
   if (errorData.code === "DUPLICATE_CONTRIBUTOR") return contributorDuplicatedError;
   if (errorData.role === "INVALID_VALUE") return contributorInvalidValueError("role");
-  return errorInesperadoContributors;
+  return contributorsInesperatedGenericError;
 }
 
 const handleAssetsErrorsMessage = (assetsErrorResponseFromFuga, errorConfigData) => {
   console.log("ERROR CONFIG EN HANDLE ASSETS", assetsErrorResponseFromFuga);
-  return errorInesperado;
+  return trackInesperatedGenericError;
 }
 
 const handleUploadErrorsMessage = (uploadErrorResponseFromFuga, errorConfigData) => {
@@ -40,25 +45,32 @@ const handleUploadErrorsMessage = (uploadErrorResponseFromFuga, errorConfigData)
 }
 
 const handleAlbumsErrorsMessage = albumErrorResponseFromFuga => {
-  console.log("ERRO EN ALBUM HANDLER:", albumErrorResponseFromFuga);
-  if (!albumErrorResponseFromFuga || !albumErrorResponseFromFuga.data) return errorInesperado;
+  const configError = albumErrorResponseFromFuga.config;
+  const urlReq = configError.url;
+  const dataError = albumErrorResponseFromFuga.data;
+
+  if (!albumErrorResponseFromFuga || !albumErrorResponseFromFuga.data) return albumInesperatedGenericError;
   if (albumErrorResponseFromFuga.statusText === "Not Found") return albumGetAlbumError;
 
-  let dataError = albumErrorResponseFromFuga.data;
+  if (dataError.code === "PRODUCT_ALREADY_HAS_UPC") return albumAlreadyHasUPC;
+  if (dataError.code === "FIELD_REQUIRED" && urlReq.indexOf("/publish") > 0) return albumMissingFieldsToPublish(dataError.context);
+  if (dataError.code === "NOT_AUTHORIZED") return albumNotAuthorizedGenericError;
+  if (dataError.code === "DUPLICATE_AUDIOPRODUCT") return albumCreateDuplicateAlbum;
+
   if (dataError.primary_artist === "ENTITY_NOT_FOUND") return albumUploadAlbumEntityNotFoundError(`${dataError.context}`);
   if (dataError.label === "ENTITY_NOT_FOUND") return albumUploadAlbumEntityNotFoundError(`${dataError.context}`);
-  if (dataError.code === "DUPLICATE_AUDIOPRODUCT") return albumCreateDuplicateAlbum;
-  return errorInesperado;
+
+  return albumInesperatedGenericError;
 }
 
 const handleLabelErrorsMessage = labelErrorResponseFromFuga => {
   if (labelErrorResponseFromFuga.id) return labelErrorResponseFromFuga;
-  if (!labelErrorResponseFromFuga || !labelErrorResponseFromFuga.data) return errorInesperado;
+  if (!labelErrorResponseFromFuga || !labelErrorResponseFromFuga.data) return labelInesperatedGenericError;
   switch (labelErrorResponseFromFuga.data.code) {
     case "DUPLICATE_LABEL_NAME":
       return labelDuplicateName;
     default:
-      return errorInesperado;
+      return labelInesperatedGenericError;
   }
 };
 

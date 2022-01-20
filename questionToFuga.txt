@@ -1,13 +1,52 @@
 
-Settings not enabled that i sa in the response from the LOGIN.
+Settings not enabled that i sa in the response from the LOGIN. SEND MAIL 
   1.About creating Artists with the some Name with different ProprieraryIds set to false but working.
   2.Allow creation of different artist with different symbols and capitalization set to false.
 
-Prices
+Prices: Where to see the customs Prices
+
+Required Fields of everything.
+  There arent specified in some place? The wiki only shows some examples but no all. 
+  EX: PUBLISHERS_ARE_REQUIRED for delivering, CONTRIBUTOR_COMPOSER_REQUIRED...
+  Now is missing_fields but later will be validation_rules no?
+  CHECK IN MISSING FIELD IN THE PLATFORM.
 
 Product:
-  1. A Product needs at least 1 Artist, must also at least 1 Primary Artist?
+  1.CHECKED OK. A Product needs at least 1 Artist, must also at least 1 Primary Artist? YES
+  2. MaxSize cover_art_image. Undefined
+  3.CHECKED OK. cover_art_image: Yes it uses Chunks to upload big files.
+  4.CHECKED OK. BARCODE === UPC
+  5.CHECKED OK. You could have one Artist X in album, and an Artist Y only as Primary in one Track.
 
 Artists:
   1. To create an Artist Identifier for a DSP, just creating the Artist Identifier and saying that it is new for the DSP, didnt create automatically an Identifier.
-    , needs to wait to the DELIVERY?  
+    , needs to wait to the DELIVERY? yes.
+  .2.CHECKED OK. To publish, every Artists need at least an Spotify IDENTIFIER, if is not given, create it as NEW.
+  3. Photo artists is not useful right now.
+Tracks: 
+  1. MaxSize total track. UNDEFINED
+  2.CHECKED OK. To PUBLISH needs at least a COMPOSER AND LYRICIST CONTRIBUTOR. CHECKED OK.
+  3. PRODUCER NO es obligatorio pero si recomendado.
+  
+LiveLinks: Estan disponibles pero se generan cuando cada DSP los sube. 
+  1. Spotify: 
+    a)Live links are only available for content delivered via FUGA Aggregation. (What means with Aggregation?)
+    b)These links are available ahead of the release date. (How much AHEAD aprox?)
+  2. Apple: all the some as Spotify
+  3. No more than Apple and Spotify?
+
+ISRC adn UPC, how to generates?  
+  1.UPC: post /products/{id}/barcode
+  2. ISRC: given by Fuga.
+
+Mas info y recomendaciones sobre campos de PRODUCT y ASSET.
+  PRDOUCT
+  1.release_format_type (string, optional) = ['ALBUM', 'SINGLE', 'EP', 'BOXSET']
+    Si es un solo Track -> Si o si SINGLE.
+    Si son 2 hasta 4/5 -> EP (flexible pareciera, preguntar).
+    Si son 5> -> ALBUM
+  2.catalog_number: Un STRING relacionado con el nombre del Product Title y un "mini" ID.
+  3.release_version: Solo si el PRODUCT es una version de otro PRODUCT. Ej: Acoustic, Live, etc etc.
+
+  ASSET:
+  1.available_separately: Dejarlo como viene, osea no tocarlo. Que por default esta como TRUE.

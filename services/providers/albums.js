@@ -1,5 +1,5 @@
 const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga,
-  uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga, deleteAlbumAndAssetsWithIdFromFuga } = require('../../third-party-api/providers/fuga/albums');
+  uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga, deleteAlbumAndAssetsWithIdFromFuga, generateUPCAlbumWithIdInFuga } = require('../../third-party-api/providers/fuga/albums');
 const { getUploadUuid, finishUpload } = require('../../third-party-api/providers/fuga/upload');
 const { createFugaCoverUploadStart, createFugaCoverUpload } = require('../../models/upload');
 const { createFugaAlbumFromFormData } = require('../../models/albums');
@@ -73,9 +73,14 @@ const deleteAlbumAndAssetsWithId = async (albumId, deleteAllAssets) => {
   return responseDeleteAlbum;
 }
 
+const generateUPCAlbumWithId = async albumId => {
+  const responsePublishAlbum = await generateUPCAlbumWithIdInFuga(albumId);
+  return responsePublishAlbum;
+}
+
 module.exports = {
   getAllAlbums, getAlbumById, createAlbumAsset, attachTrackAssetInAlbumWithId,
   createCoverImageInAlbum, uploadAlbumAssetWithCover, changeTrackPositionInAlbum,
   changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId,
-  deleteAlbumAndAssetsWithId
+  deleteAlbumAndAssetsWithId, generateUPCAlbumWithId
 };

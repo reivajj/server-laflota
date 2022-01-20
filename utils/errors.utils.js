@@ -16,7 +16,11 @@ const albumGetAllError = "Error al querer obtener todos los Albums.";
 const albumUpdateFieldsError = "Error al querer actualizar el Album. ";
 const albumDeleteError = "No se pudo eliminar el Album. ";
 const albumCreateDuplicateAlbum = "Este Album ya existe en el catálogo, con el mismo nombre y numero de catálogo.";
-
+const albumGenerateUPCInesperatedError = "Sucedió un error inesperado al asignar un UPC al Album.";
+const albumNotAuthorizedGenericError = "No estás autorizado para realizar esta operación. Problablemente no estés logueado.";
+const albumMissingFieldsToPublish = fieldsMissing => `Faltan los siguientes campos obligatorios al querer Publicar el Album: ${fieldsMissing}`;
+const albumAlreadyHasUPC = "El Album ya poseé un UPC/Barcode, no puede generar uno nuevo.";
+const albumInesperatedGenericError = "Hubo un error inesperado al trabajar con un Album. Por favor, intente nuevamente.";
 // ARTISTS
 const artistCreateError = 'Error creating an artist in FUGA';
 const artistGetArtistError = "No podemos encontrar al artista solicitado.";
@@ -27,19 +31,21 @@ const artistsInUseDeleteError = "Error trying to delete artist because is in use
 const artistFieldsMissingCreateError = fields => `Los siguientes campos del Artista faltan o son incorrectos: ${fields}`
 
 // LABELS
+const labelInesperatedGenericError = "Hubo un error inesperado al trabajar con un Sello. Por favor, intente nuevamente.";
 const labelDuplicateName = "El nombre del sello ya se encuentra en uso.";
 
 // TRACKS
-const trackUploadFileError = "Error al subir la Canción (archivo) al Album. "
+const trackInesperatedGenericError = "Hubo un error inesperado al trabajar con una Canción. Por favor, intente nuevamente.";
+const trackUploadFileError = "Error al subir la Canción (archivo) al Album. ";
 const genericErrorUploadingAFile = "Error al subir un archivo.";
 
 // CONTRIBUTORS
-const errorInesperadoContributors = "Error inesperado al trabajar con los Contribuidores. ";
+const contributorsInesperatedGenericError = "Error inesperado al trabajar con los Contribuidores. ";
 const contributorDuplicatedError = "El artista que contribuye ya existe con ese mismo Rol.";
 const contributorInvalidValueError = fieldValue => `El campo ${fieldValue}, tiene un valor inválido al querer agregar un Contriuidor.`
 
 // PEOPLE
-const errorInesperadoPeople = "Error inesperado al trabajar con People";
+const peopleInesperatedGenericError = "Error inesperado al trabajar con People";
 const errorPersonNameDuplicated = "Error al crear una Persona, el nombre ya existe. ";
 
 module.exports = {
@@ -47,18 +53,19 @@ module.exports = {
 
   albumPublishNotFoundError, albumPublishPermissionError, albumRearrengeError, albumUploadCoverError,
   albumTrackAssetError, albumUploadAlbumError, albumGetAlbumError, albumGetAllError, albumUpdateFieldsError,
-  albumDeleteError, albumUploadAlbumEntityNotFoundError, albumCreateDuplicateAlbum,
+  albumDeleteError, albumUploadAlbumEntityNotFoundError, albumCreateDuplicateAlbum, albumGenerateUPCInesperatedError,
+  albumNotAuthorizedGenericError, albumMissingFieldsToPublish, albumAlreadyHasUPC, albumInesperatedGenericError,
 
   artistCreateError, artistGetAllError, artistGetArtistError, artistUpdateFieldsError, artistsDeleteError,
   artistsInUseDeleteError, artistFieldsMissingCreateError,
 
-  labelDuplicateName,
+  labelDuplicateName, labelInesperatedGenericError,
 
-  trackUploadFileError,
+  trackUploadFileError, trackInesperatedGenericError,
 
   genericErrorUploadingAFile,
 
-  errorInesperadoContributors, contributorDuplicatedError, contributorInvalidValueError,
+  contributorsInesperatedGenericError, contributorDuplicatedError, contributorInvalidValueError,
 
-  errorInesperadoPeople, errorPersonNameDuplicated,
+  peopleInesperatedGenericError, errorPersonNameDuplicated,
 }
