@@ -38,6 +38,7 @@ const labelDuplicateName = "El nombre del sello ya se encuentra en uso.";
 const trackInesperatedGenericError = "Hubo un error inesperado al trabajar con una Canción. Por favor, intente nuevamente.";
 const trackUploadFileError = "Error al subir la Canción (archivo) al Album. ";
 const genericErrorUploadingAFile = "Error al subir un archivo.";
+const trackIsrcWrongValue = "Error al subir la Canción, el ISRC no es válido."
 
 // CONTRIBUTORS
 const contributorsInesperatedGenericError = "Error inesperado al trabajar con los Contribuidores. ";
@@ -61,7 +62,7 @@ module.exports = {
 
   labelDuplicateName, labelInesperatedGenericError,
 
-  trackUploadFileError, trackInesperatedGenericError,
+  trackUploadFileError, trackInesperatedGenericError, trackIsrcWrongValue,
 
   genericErrorUploadingAFile,
 

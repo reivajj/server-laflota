@@ -1,0 +1,357 @@
+{
+    "items": [
+        {
+            "id": 35850,
+            "name": "Bebe DJ",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 37127,
+            "name": "GOCIA",
+            "bio": "",
+            "apple_id": "",
+            "spotify_uri": "spotify:artist:0mrstnANi3WTUwYYoCNEQ9"
+        },
+        {
+            "id": 38176,
+            "name": "Nacho Bartolich",
+            "bio": "",
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 38429,
+            "name": "Anime Hospital",
+            "bio": "",
+            "apple_id": "",
+            "spotify_uri": "spotify:artist:43EqhtlzbZexw95NMh81Jf"
+        },
+        {
+            "id": 38431,
+            "name": "Mar Vertical",
+            "bio": "",
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 38512,
+            "name": "Vera y las Bóvedas",
+            "bio": "",
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 38732,
+            "name": "Pura Sanata",
+            "bio": "",
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 38885,
+            "name": "Anubis Zombie",
+            "bio": "",
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:4TL54PvkctKYu9eP97gQN3"
+        },
+        {
+            "id": 38887,
+            "name": "Eneyde",
+            "bio": "",
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:7HojmrKNib4YfioUVxZ53o"
+        },
+        {
+            "id": 38991,
+            "name": "Awkanya",
+            "bio": "",
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:7fqEoAuPBiv6WBVhVG3kEn"
+        },
+        {
+            "id": 39045,
+            "name": "Deja_Vu_Music",
+            "bio": null,
+            "apple_id": "",
+            "spotify_uri": "spotify:artist:3ndOWMK8ojlN91287RY0BK"
+        },
+        {
+            "id": 39317,
+            "name": "Fat Dance",
+            "bio": "",
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:4l1NE9eVDxIwPo19B3yCNG"
+        },
+        {
+            "id": 39366,
+            "name": "Cristian Pueblas",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 39505,
+            "name": "Gienah",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:65q56QsZNMUOljrGuJEjEC"
+        },
+        {
+            "id": 39506,
+            "name": "S-26",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:5zLe83hwKzDvzZL7A7sAjz"
+        },
+        {
+            "id": 39507,
+            "name": "Descalibrados",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:376aQMT96yDKgvskvQahvw"
+        },
+        {
+            "id": 39508,
+            "name": "Francisco Pesqueira",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:6gibCvC26HQlMRv8LIRwTf"
+        },
+        {
+            "id": 39774,
+            "name": "Leandro Sayanes",
+            "bio": null,
+            "apple_id": "",
+            "spotify_uri": "spotify:artist:7ndWEuY30PkeULonq2Bj7y"
+        },
+        {
+            "id": 39776,
+            "name": "Rodia",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 39890,
+            "name": "Revolucionario de Café",
+            "bio": null,
+            "apple_id": "",
+            "spotify_uri": "spotify:artist:4hdukNuxH8LrLOXZFpztuY"
+        },
+        {
+            "id": 39891,
+            "name": "Mercado Chino",
+            "bio": null,
+            "apple_id": "",
+            "spotify_uri": "spotify:artist:3qUMykdjFTa8i1nrXlKlCm"
+        },
+        {
+            "id": 39934,
+            "name": "CLAUDIO ALBINA",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:0PllWWnb5hqXAUDDSTGsiA"
+        },
+        {
+            "id": 39935,
+            "name": "Apo Jota",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:2VYkktevaxRSSqCmb8rVSt"
+        },
+        {
+            "id": 39963,
+            "name": "Tian vck",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 40014,
+            "name": "Abzurda",
+            "bio": null,
+            "apple_id": "",
+            "spotify_uri": "spotify:artist:3GDvJS15rRtL28cx4P451g"
+        },
+        {
+            "id": 40015,
+            "name": "Blues Novato",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:40U8HmUm2AkJCbnZiXsC22"
+        },
+        {
+            "id": 40016,
+            "name": "VIEJO TORINO",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:2UBF1UJ2o7gqvOMCGPIy4G"
+        },
+        {
+            "id": 40017,
+            "name": "Miguel Martin",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:388gOGHTl3z2tKMWRzC4g3"
+        },
+        {
+            "id": 40018,
+            "name": "Mintaka",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:3KuK7sfgJeJ63kt1l7VHR0"
+        },
+        {
+            "id": 40019,
+            "name": "Bruno Theilig",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 40020,
+            "name": "La Brasita de Mi Chala",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 40021,
+            "name": "Los Miranda",
+            "bio": null,
+            "apple_id": "",
+            "spotify_uri": "spotify:artist:6YTb8FhKAVegwfvgh91JKD"
+        },
+        {
+            "id": 40022,
+            "name": "Agustín Carro",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 40023,
+            "name": "FNS Música",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 40024,
+            "name": "Kinginz",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 40025,
+            "name": "New School Band",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 40026,
+            "name": "Vixente",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 40027,
+            "name": "Deja Vu",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 40028,
+            "name": "Alan Kempf",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        },
+        {
+            "id": 40029,
+            "name": "Nanaki",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:3sReZYtvtQF8J14RfBHgTH"
+        },
+        {
+            "id": 40030,
+            "name": "BARNE",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": null
+        },
+        {
+            "id": 40031,
+            "name": "Chify Negretti",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:3ksfJQGRtHGFj9QbTJNGAW"
+        },
+        {
+            "id": 40032,
+            "name": "Dora Brown",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:4qyN6iRGGt59r0gwUdojhQ"
+        },
+        {
+            "id": 40033,
+            "name": "Gabriel Lambardi",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": null
+        },
+        {
+            "id": 40034,
+            "name": "Leo Bromberg",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:1Fd1q3bc4gnN58E7t11G8u"
+        },
+        {
+            "id": 40035,
+            "name": "Lucas Guinart",
+            "bio": "",
+            "apple_id": "",
+            "spotify_uri": "spotify:artist:0RaCvNgETMsoDWxCJ7HWA4"
+        },
+        {
+            "id": 40036,
+            "name": "Maniac Mantu",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": null
+        },
+        {
+            "id": 40037,
+            "name": "Melanie Forher",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:72VFUmWxV4doNC7m1LJfvg"
+        },
+        {
+            "id": 40038,
+            "name": "Never Susy",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": "spotify:artist:0vbcIulPfX7FguF6lLWKVY"
+        },
+        {
+            "id": 40039,
+            "name": "Acciones Drásticas",
+            "bio": null,
+            "apple_id": null,
+            "spotify_uri": ""
+        }
+    ],
+    "page": 1,
+    "perPage": 50,
+    "itemsCount": 9031
+}ca

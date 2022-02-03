@@ -48,6 +48,7 @@ module.exports = async ({ app }) => {
   app.use(config.csvApi, routes.csv);
   app.use(config.emailsApi, routes.emails);
   app.use(config.loginApi, routes.login);
+  app.use(config.miscellaneousApi, routes.miscellaneous);
 
   app.use((_, __, next) => {
     next(createError(404))

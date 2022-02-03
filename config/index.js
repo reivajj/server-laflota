@@ -37,7 +37,7 @@ module.exports = {
   uploadApi: process.env.MY_SERVER_UPLOAD_URL,
   usersApi: process.env.MY_SERVER_USERS_URL,
   peopleApi: process.env.MY_SERVER_PEOPLE_URL,
-  // miscellaneusApi: process.env.MY_SERVER_MISCELLANEUS,
+  miscellaneousApi: process.env.MY_SERVER_MISCELLANEOUS,
   firebaseApi: process.env.FIREBASE_API,
   csvApi: process.env.CSV_API,
   emailsApi: process.env.EMAILS_API,

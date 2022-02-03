@@ -50,3 +50,25 @@ Mas info y recomendaciones sobre campos de PRODUCT y ASSET.
 
   ASSET:
   1.available_separately: Dejarlo como viene, osea no tocarlo. Que por default esta como TRUE.
+
+
+  {
+                "description": "Allow creation of different artist with different symbols and capitalization",
+                "id": "ARTIST_AND_PERSON_NAMES_WITH_SPECIAL_SYMBOLS_AND_CAPITALIZATION",
+                "enabled": false
+            },
+            {
+                "description": "Allow creation of an artist with the same name by adding a unique proprietary ID",
+                "id": "ARTIST_PROPRIETARY_ID",
+                "enabled": false
+            },
+
+
+
+\\\\\\\\\\\\\\\\\\\\\NUEVAS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+El flujo de STATES:
+  1.Cuando hago el DELETE, no me tira Error de nada, pero no cambia el STATE, queda en DELIVERED. (Evidentemente solo se puede hacer
+    cuando no aplique un Deliver Action. Osea cuando el STATE este en NOT_ADDED).
+  2.Cuando hago el TAKEDOWN, pasa a PROCESSING y luego a DELIVERED (en la wiki dice que eso esta bien), pero cuando
+    hice por primera vez el TAKEDONW, paso a CANCELLED. Aun así en las posibles acciones, aparece DELIVER, asi que pareceria que esta
+    dado de baja.
