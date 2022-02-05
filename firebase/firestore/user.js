@@ -43,6 +43,18 @@ const getUserInFSByEmail = async email => {
   return { user: usersData[0], exist: true, count: usersData.length };
 }
 
+const updateUserInFSByEmail = async (email, fieldsToUpdate) => {
+  const usersRef = dbFS.collection('users');
+  const snapshotGet = await usersRef.where('email', '==', email).limit(1).get();
+
+  if (snapshotGet.empty) return { exist: false };
+
+  let usersData = [];
+  const resultUpdate = await snapshotGet.docs[0].ref.update(fieldsToUpdate);
+
+  return { user: usersData[0], exist: true, count: usersData.length, resultUpdate };
+}
+
 
 const getUsersStatsFromFS = async () => {
   const statsDoc = await dbFS.collection('users').doc('stats').get();
@@ -113,4 +125,7 @@ const createUsersInFS = async () => {
   return `Total creates ${totalCounter}`;
 }
 
-module.exports = { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail, getUserInFSByEmail };
+module.exports = {
+  getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
+  getUserInFSByEmail, updateUserInFSByEmail
+};

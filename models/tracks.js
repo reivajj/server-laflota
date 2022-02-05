@@ -6,6 +6,7 @@ const createFugaTrackAsset = trackAssetMetaData => {
   let rawDataTrackAsset = {};
   if (trackAssetMetaData.name) rawDataTrackAsset.name = trackAssetMetaData.name;
   if (trackAssetMetaData.genre) rawDataTrackAsset.genre = trackAssetMetaData.genre;
+  if (trackAssetMetaData.subgenre) rawDataTrackAsset.subgenre = trackAssetMetaData.subgenre;
   if (trackAssetMetaData.artists) rawDataTrackAsset.artists = JSON.parse(trackAssetMetaData.artists);
   if (trackAssetMetaData.sequence) rawDataTrackAsset.sequence = trackAssetMetaData.sequence;
   if (trackAssetMetaData.display_artist) rawDataTrackAsset.display_artist = trackAssetMetaData.display_artist;
