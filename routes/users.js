@@ -16,8 +16,8 @@ router.get('/searchByEmail/:email', async (req, res, _) => {
   return res.status(200).send({ response });
 });
 
-router.get('/login/:email/:password', async (req, res, _) => {
-  const response = await loginUserWithEmailAndPwWP(req.params.email, req.params.password);
+router.get('/login', async (req, res, _) => {
+  const response = await loginUserWithEmailAndPwWP(req.body);
   return res.status(200).send({ response });
 });
 
