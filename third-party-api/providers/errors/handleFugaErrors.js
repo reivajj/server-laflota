@@ -2,7 +2,7 @@ const { artistsInUseDeleteError, artistFieldsMissingCreateError, artistGetArtist
   albumUploadAlbumEntityNotFoundError, albumUploadCoverError, trackUploadFileError, genericErrorUploadingAFile,
   albumCreateDuplicateAlbum, albumGetAlbumError, contributorsInesperatedGenericError, peopleInesperatedGenericError, errorPersonNameDuplicated,
   contributorDuplicatedError, contributorInvalidValueError, albumNotAuthorizedGenericError, albumMissingFieldsToPublish,
-  albumAlreadyHasUPC, albumInesperatedGenericError, trackInesperatedGenericError, labelInesperatedGenericError, trackIsrcWrongValue,
+  albumAlreadyHasUPC, albumInesperatedGenericError, trackInesperatedGenericError, labelInesperatedGenericError, trackIsrcWrongValue, artistDuplicateArtistNameProprietaryId, errorInesperadoArtista, artistErrorNotAuthorized, artistErrorCreatingIdentifierNotAuthorized,
 } = require("../../../utils/errors.utils");
 
 // Pasar esto a las distintas RUTAS que tenes en ROUTES. Y ver que esten incluidas y listo.
@@ -39,7 +39,7 @@ const handleAssetsErrorsMessage = (assetsErrorResponseFromFuga, errorConfigData)
   if (assetsErrorResponseFromFuga.unexpectedError) return trackInesperatedGenericError;
 
   if (assetsErrorResponseFromFuga.data.isrc === "FIELD_VALUE_WRONG") return trackIsrcWrongValue;
-  
+
   return trackInesperatedGenericError;
 }
 
@@ -80,15 +80,21 @@ const handleLabelErrorsMessage = labelErrorResponseFromFuga => {
 };
 
 const handleArtistErrorsMessage = artistErrorResponseFromFuga => {
+  const url = artistErrorResponseFromFuga.config.url;
   if (!artistErrorResponseFromFuga || !artistErrorResponseFromFuga.data) return errorInesperado;
   if (artistErrorResponseFromFuga.status === 404) return artistGetArtistError;
   switch (artistErrorResponseFromFuga.data.code) {
+    case "DUPLICATE_ARTIST_NAME_PROPRIETARY_ID":
+      return artistDuplicateArtistNameProprietaryId;
+    case "NOT_AUTHORIZED":
+      if (url.indexOf("identifier") >= 0) return artistErrorCreatingIdentifierNotAuthorized;
+      return artistErrorNotAuthorized
     case "CANNOT_DELETE_ITEM_IN_USE":
       return artistsInUseDeleteError;
     case "FIELD_REQUIRED":
       return artistFieldsMissingCreateError(artistErrorResponseFromFuga.data.context);
     default:
-      return errorInesperado;
+      return errorInesperadoArtista;
   }
 };
 

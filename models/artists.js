@@ -1,5 +1,6 @@
 const createError = require("http-errors");
 const { artistUpdateFieldsError } = require("../utils/errors.utils");
+const { dspIdsIdentifiers } = require("../utils/fugaVariables");
 
 const createFugaArtist = artistMetaData => {
   let artistRawData = {};
@@ -15,17 +16,20 @@ const createFugaArtist = artistMetaData => {
   return artistRawData;
 }
 
-const issuingOrganizationsIsOk = issuingOrgCode => {
-  // check if is spotify, apple or soundcloud...
-  return true;
+const getIssuingOrganization = (identifierField) => {
+  const identifierDspCode = dspIdsIdentifiers[`${identifierField}`];
+  return identifierDspCode;
 }
 
-const createFugaIdentifierArtist = artistMetadata => {
+const createFugaIdentifierArtist = (identifierField, identifierValue, name) => {
   let rawDataArtitstIdentifier = {};
-  if (artistMetadata.name) rawDataArtitstIdentifier.name = artistMetadata.name;
-  if (issuingOrganizationsIsOk(artistMetadata.issuingOrg)) rawDataArtitstIdentifier.issuing_organization = artistMetadata.issuingOrg;
-  artistMetadata.newForIssuingOrg ? rawDataArtitstIdentifier.newForIssuingOrg = true : rawDataArtitstIdentifier = false;
-  if (artistMetadata.identifier) rawDataArtitstIdentifier.identifier = artistMetadata.identifier;
+  if (name) rawDataArtitstIdentifier.name = name;
+  
+  const identifierDspCode = getIssuingOrganization(identifierField);
+  rawDataArtitstIdentifier.issuing_organization = identifierDspCode;
+  
+  if (identifierValue === "") rawDataArtitstIdentifier.newForIssuingOrg = true;
+  else rawDataArtitstIdentifier.identifier = identifierValue;
 
   return rawDataArtitstIdentifier;
 }

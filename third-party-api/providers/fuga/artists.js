@@ -38,14 +38,31 @@ const deleteArtistWithIdFuga = async (artistId) => {
   return response;
 }
 
-const createArtistIdentifierDspFuga = async (artistId, rawDataArtist) => {
+//===================================================IDENTIFIERS==============================================\\
+
+const getArtistIdenfierByIdFuga = async artistId => {
+  const response = await get(`/artists/${artistId}/identifier`);
+  return response;
+}
+
+const askForArtistIdentifierDspFuga = async (artistId, rawDataArtist) => {
+  console.log("RawdataArtist: ", rawDataArtist);
   const response = await post(`/artists/${artistId}/identifier`, rawDataArtist);
   return response;
 }
 
+const editArtistIdentifierDspFuga = async (artistId, rawDataArtist) => {
+  const response = await put(`/artists/${artistId}/identifier`, rawDataArtist);
+  return response;
+}
+
+const deleteArtistIdentifierByBothIdsFuga = async (artistId, identifierId) => {
+  const response = await axiosInstance.delete(`/artists/${artistId}/identifier/${identifierId}`);
+  return response;
+}
 
 
 module.exports = {
   getAllArtistsFromFuga, getArtistByIdFromFuga, uploadArtistFuga, updateArtistWithIdFuga, deleteArtistWithIdFuga,
-  createArtistIdentifierDspFuga
+  getArtistIdenfierByIdFuga, askForArtistIdentifierDspFuga, editArtistIdentifierDspFuga, deleteArtistIdentifierByBothIdsFuga
 };

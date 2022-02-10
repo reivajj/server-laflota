@@ -1,9 +1,10 @@
 var router = require("express-promise-router")();
 
-const multer  = require('multer');
+const multer = require('multer');
 const upload = multer();
 
-const { getAllArtists, createArtist, getArtistById, updateArtistWithId, deleteArtistWithId } = require('../services/providers/artists');
+const { getAllArtists, createArtist, getArtistById, updateArtistWithId, deleteArtistWithId, createArtistIdentifierDsp,
+  createArtistWithIdentifiersDsp, getArtistIdentifierById, deleteArtistIdentifierByBothIds, editArtistIdentifierDsp } = require('../services/providers/artists');
 
 router.get('/', async (_, res) => {
   const response = await getAllArtists();
@@ -31,11 +32,34 @@ router.delete('/:artistId', async (req, res) => {
   return res.status(200).send({ response: response.data });
 });
 
-router.post('/:artistId/identifier', async (req, res) => {
-  const response = await createArtistIdentifierDsp(req.params.artistId, req.body);
+//=======================================IDENTIFIERS=====================================================\\
+
+router.get('/:artistId/identifier', async (req, res) => {
+  const response = await getArtistIdentifierById(req.params.artistId);
   return res.status(200).send({ response: response.data });
 });
 
+router.post('/:artistId/identifier', async (req, res) => {
+  const { identifierField, identifierValue, name } = req.body;
+  const response = await createArtistIdentifierDsp(req.params.artistId, identifierField, identifierValue, name);
+  return res.status(200).send({ response: response.data });
+});
+
+router.put('/:artistId/identifier', async (req, res) => {
+  const { identifierField, identifierValue, name } = req.body;
+  const response = await editArtistIdentifierDsp(req.params.artistId, identifierField, identifierValue, name);
+  return res.status(200).send({ response: response.data });
+});
+
+router.post('/withIdentifiers', async (req, res) => {
+  const response = await createArtistWithIdentifiersDsp(req.body);
+  return res.status(200).send({ response: response.data });
+});
+
+router.delete('/:artistId/identifier/:identifierId', async (req, res) => {
+  const response = await deleteArtistIdentifierByBothIds(req.params.artistId, req.params.identifierId);
+  return res.status(200).send({ response: response.data });
+});
 
 
 module.exports = router;

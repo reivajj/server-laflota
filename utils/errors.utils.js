@@ -21,6 +21,7 @@ const albumNotAuthorizedGenericError = "No estás autorizado para realizar esta 
 const albumMissingFieldsToPublish = fieldsMissing => `Faltan los siguientes campos obligatorios al querer Publicar el Album: ${fieldsMissing}`;
 const albumAlreadyHasUPC = "El Album ya poseé un UPC/Barcode, no puede generar uno nuevo.";
 const albumInesperatedGenericError = "Hubo un error inesperado al trabajar con un Album. Por favor, intente nuevamente.";
+
 // ARTISTS
 const artistCreateError = 'Error creating an artist in FUGA';
 const artistGetArtistError = "No podemos encontrar al artista solicitado.";
@@ -29,7 +30,10 @@ const artistUpdateFieldsError = fieldsToUpdate => `Error trying to update an Art
 const artistsDeleteError = "Generic Error trying to delete artist";
 const artistsInUseDeleteError = "Error trying to delete artist because is in use";
 const artistFieldsMissingCreateError = fields => `Los siguientes campos del Artista faltan o son incorrectos: ${fields}`
-
+const artistDuplicateArtistNameProprietaryId = 'Error al crear el Artista, Id del Propietario ya se encuentra en uso';
+const errorInesperadoArtista = 'Hubo un error inesperado al trabajar con un Artista. Por favor, intente nuevamente';
+const artistErrorCreatingIdentifierNotAuthorized = 'Error al crear un Identificador para el Artista. Puede ser que el identificador ingresado sea incorrecto. Reingrese nuevamente el identificador.';
+const artistErrorNotAuthorized = 'Error de autorización para realizar esta acción. Aségurate que los datos ingresados son correctos.';
 // LABELS
 const labelInesperatedGenericError = "Hubo un error inesperado al trabajar con un Sello. Por favor, intente nuevamente.";
 const labelDuplicateName = "El nombre del sello ya se encuentra en uso.";
@@ -58,7 +62,8 @@ module.exports = {
   albumNotAuthorizedGenericError, albumMissingFieldsToPublish, albumAlreadyHasUPC, albumInesperatedGenericError,
 
   artistCreateError, artistGetAllError, artistGetArtistError, artistUpdateFieldsError, artistsDeleteError,
-  artistsInUseDeleteError, artistFieldsMissingCreateError,
+  artistsInUseDeleteError, artistFieldsMissingCreateError, artistDuplicateArtistNameProprietaryId, errorInesperadoArtista,
+  artistErrorCreatingIdentifierNotAuthorized, artistErrorNotAuthorized,
 
   labelDuplicateName, labelInesperatedGenericError,
 

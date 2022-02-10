@@ -8,4 +8,6 @@ const testDspAppleMusic = { dspName: "Apple Music (Demo) 2", id: 1723776097 };
 
 const testDspSpotify = { dspName: 'Spotify (Demo) 2', id: 1723792805 }
 
-module.exports = { fugaAlbumsState, fugaAlbumCoverArtTypes, fugaISRCCodesTest, testDspAppleMusic, testDspSpotify };
+const dspIdsIdentifiers = { spotify_uri: 746109, apple_id: 1330598, apple_id_demo: 1723776097 };
+
+module.exports = { fugaAlbumsState, fugaAlbumCoverArtTypes, fugaISRCCodesTest, testDspAppleMusic, testDspSpotify, dspIdsIdentifiers };

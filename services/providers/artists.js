@@ -1,4 +1,7 @@
-const { uploadArtistFuga, getArtistByIdFromFuga, getAllArtistsFromFuga, updateArtistWithIdFuga, deleteArtistWithIdFuga, createArtistIdentifierDspFuga } = require('../../third-party-api/providers/fuga/artists');
+const { uploadArtistFuga, getArtistByIdFromFuga, getAllArtistsFromFuga, updateArtistWithIdFuga,
+  deleteArtistWithIdFuga, createArtistIdentifierDspFuga, getArtistIdenfierByIdFuga, askForArtistIdentifierDspFuga
+  , editArtistIdentifierDspFuga,
+  deleteArtistIdentifierByBothIdsFuga } = require('../../third-party-api/providers/fuga/artists');
 const { createFugaArtist, createFugaIdentifierArtist } = require('../../models/artists');
 
 const getAllArtists = async () => {
@@ -51,10 +54,40 @@ const deleteArtistWithId = async (artistId) => {
   return response;
 }
 
-const createArtistIdentifierDsp = async (artistId, artistMetadata) => {
-  const rawDataArtistIdentifier = createFugaIdentifierArtist(artistMetadata);
-  const response = await createArtistIdentifierDspFuga(artistId, rawDataArtistIdentifier);
+
+//====================================================IDENTIFIERS====================================================\\
+
+const getArtistIdentifierById = async artistId => {
+  const responseGetIdentifiers = await getArtistIdenfierByIdFuga(artistId);
+  return responseGetIdentifiers;
+}
+
+const createArtistIdentifierDsp = async (artistId, identifierField, identifierValue, name) => {
+  const rawDataArtistIdentifier = createFugaIdentifierArtist(identifierField, identifierValue, name);
+  response = await askForArtistIdentifierDspFuga(artistId, rawDataArtistIdentifier)
   return response;
 }
 
-module.exports = { getAllArtists, getArtistById, updateArtistWithId, createArtist, deleteArtistWithId, createArtistIdentifierDsp };
+const editArtistIdentifierDsp = async (artistId, identifierField, identifierValue, name) => {
+  const rawDataArtistIdentifier = createFugaIdentifierArtist(identifierField, identifierValue, name);
+  let response = await editArtistIdentifierDspFuga(artistId, rawDataArtistIdentifier);
+  return response;
+}
+
+const createArtistWithIdentifiersDsp = async artistMetaData => {
+  const createArtistResponse = await createArtist(artistMetaData);
+  const responseSpotifyUri = await createArtistIdentifierDsp(createArtistResponse.data.id, "spotify_uri", artistMetaData.spotify_uri, artistMetaData.name);
+  const resposneAppleId = await createArtistIdentifierDsp(createArtistResponse.data.id, "apple_id", artistMetaData.apple_id, artistMetaData.name);
+  return { data: { ...createArtistResponse.data, spotifyIdentifierIdFuga: responseSpotifyUri.data.id, appleIdentifierIdFuga: resposneAppleId.data.id } };
+}
+
+const deleteArtistIdentifierByBothIds = async (artistId, identifierId) => {
+  const responseDelete = deleteArtistIdentifierByBothIdsFuga(artistId, identifierId);
+  return responseDelete;
+}
+
+module.exports = {
+  getAllArtists, getArtistById, updateArtistWithId, createArtist, deleteArtistWithId,
+  createArtistIdentifierDsp, createArtistWithIdentifiersDsp, getArtistIdentifierById,
+  deleteArtistIdentifierByBothIds, editArtistIdentifierDsp
+};

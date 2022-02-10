@@ -72,3 +72,5 @@ El flujo de STATES:
   2.Cuando hago el TAKEDOWN, pasa a PROCESSING y luego a DELIVERED (en la wiki dice que eso esta bien), pero cuando
     hice por primera vez el TAKEDONW, paso a CANCELLED. Aun así en las posibles acciones, aparece DELIVER, asi que pareceria que esta
     dado de baja.
+
+Identifiers:
