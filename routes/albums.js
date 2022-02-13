@@ -18,8 +18,6 @@ albums.get('/:albumId', async (req, res, _) => {
 });
 
 albums.post('/', upload.single('cover'), async (req, res) => {
-  console.log("REQ BODY IN CREATE ALBUM: ", req.body);
-  console.log("FILE IN CREATE ALBUN: ", req.file);
   const response = await uploadAlbumAssetWithCover(req.body, req.file);
   return res.status(200).send({ response: response.data });
 });

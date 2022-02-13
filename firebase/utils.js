@@ -34,16 +34,9 @@ const batchActions = async (docRefs, setOrDeleteOrUpdate, elementsToBatch, total
     totalCounter += counter;
   }
   await Promise.all(promises).catch(error => error);
-
-  if (setOrDeleteOrUpdate === "set") await dbFS.collection(primaryCollectionTarget).doc("stats")
-    .update({ [`${totalFieldToUpdate}`]: admin.firestore.FieldValue.increment(totalCounter) });
-
-  if (setOrDeleteOrUpdate === "delete") await dbFS.collection(primaryCollectionTarget).doc("stats")
-    .update({ [`${totalFieldToUpdate}`]: admin.firestore.FieldValue.increment(- totalCounter) });
-
   console.log(`Committed total of ${totalCounter}`);
 
-  return `Total ${setOrDeleteOrUpdate}s ${totalCounter}`;
+  return  totalCounter;
 }
 
 module.exports = { batchActions }

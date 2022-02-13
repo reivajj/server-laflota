@@ -22,14 +22,14 @@ const uploadAlbumToProvider = async rawDataAlbum => {
 
 const attachTrackAssetInAlbumFuga = async (albumId, trackId) => {
   const response = await put(`/products/${albumId}/assets/${trackId}`)
-    .catch((error) => { throw createError(400, albumTrackAssetError, { properties: { message: error.message, formData: trackId } }); });
+    .catch((error) => { throw createError(400, albumTrackAssetError, { properties: { message: error.message, formData: trackId, error } }); });
   return response;
 }
 
 const uploadCoverInAlbumToFuga = async formDataCover => {
   const response = await post('/upload', formDataCover, {
     headers: { ...formDataCover.getHeaders() }
-  })
+  }).catch(error => error);
   return response;
 }
 

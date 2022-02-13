@@ -3,6 +3,8 @@ const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, attac
 const { getUploadUuid, finishUpload } = require('../../third-party-api/providers/fuga/upload');
 const { createFugaCoverUploadStart, createFugaCoverUpload } = require('../../models/upload');
 const { createFugaAlbumFromFormData } = require('../../models/albums');
+const FormData = require('form-data');
+const { uploadFileByChunks } = require('../../utils/upload.utils');
 
 const getAllAlbums = async () => {
   const responseGetAllAlbums = await getAllAlbumsFromFuga();
@@ -28,9 +30,10 @@ const attachTrackAssetInAlbumWithId = async (albumId, trackId) => {
 const createCoverImageInAlbum = async (coverFormDataToUpload, coverFile) => {
   const rawDataCoverUploadStart = createFugaCoverUploadStart(coverFormDataToUpload);
   const responseUploadStart = await getUploadUuid(rawDataCoverUploadStart);
-  const coverFormDataWithUploadUuid = createFugaCoverUpload(coverFile, responseUploadStart.data.id);
-  await uploadCoverInAlbumToFuga(coverFormDataWithUploadUuid);
+
+  const chunksUploadResponse = await uploadFileByChunks(coverFile, responseUploadStart.data.id, "image/jpeg", "jpg", "cover", uploadCoverInAlbumToFuga);
   const responseUploadAlbumCoverFinish = finishUpload(responseUploadStart.data.id, coverFile);
+
   return responseUploadAlbumCoverFinish;
 }
 
@@ -40,7 +43,15 @@ const uploadAlbumAssetWithCover = async (albumAssetMetaData, coverFile) => {
     type: albumAssetMetaData.typeCover, id: responseCreateAlbumAsset.data.cover_image.id
   }, coverFile);
 
-  return { data: { result: responseUploadAlbumCoverFinish.data, albumId: responseCreateAlbumAsset.data.id } };
+  let responseCreateUPC = "";
+  if (!albumAssetMetaData.upc) responseCreateUPC = await generateUPCAlbumWithId(responseCreateAlbumAsset.data.id);
+
+  return {
+    data: {
+      result: responseUploadAlbumCoverFinish.data, albumId: responseCreateAlbumAsset.data.id,
+      upc: responseCreateUPC ? responseCreateUPC.data.upc : responseCreateAlbumAsset.data.upc
+    }
+  };
 }
 
 const changeTrackPositionInAlbum = async (albumId, trackId, newPosition) => {
