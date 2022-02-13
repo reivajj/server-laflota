@@ -30,7 +30,7 @@ const createCoverImageInAlbum = async (coverFormDataToUpload, coverFile) => {
   const responseUploadStart = await getUploadUuid(rawDataCoverUploadStart);
   const coverFormDataWithUploadUuid = createFugaCoverUpload(coverFile, responseUploadStart.data.id);
   await uploadCoverInAlbumToFuga(coverFormDataWithUploadUuid);
-  const responseUploadAlbumCoverFinish = finishUpload(responseUploadStart.data.id);
+  const responseUploadAlbumCoverFinish = finishUpload(responseUploadStart.data.id, coverFile);
   return responseUploadAlbumCoverFinish;
 }
 

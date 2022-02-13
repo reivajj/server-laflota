@@ -20,7 +20,6 @@ const uploadFile = async formDataFile => {
 }
 
 const finishUpload = async (uploadUuid, file) => {
-  console.log("rawDataCover: ", uploadUuid);
   const response = await post('/upload/finish', { uuid: uploadUuid, filename: file.originalname });
 
   if (!response.data.success) throw createError(400, 'Error to finish the uplaod', { properties: response });

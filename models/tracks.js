@@ -11,6 +11,7 @@ const createFugaTrackAsset = trackAssetMetaData => {
   if (trackAssetMetaData.sequence) rawDataTrackAsset.sequence = trackAssetMetaData.sequence;
   if (trackAssetMetaData.display_artist) rawDataTrackAsset.display_artist = trackAssetMetaData.display_artist;
   if (trackAssetMetaData.language) rawDataTrackAsset.language = trackAssetMetaData.language;
+  if (trackAssetMetaData.audio_locale) rawDataTrackAsset.audio_locale = trackAssetMetaData.audio_locale;
   if (trackAssetMetaData.isrc) rawDataTrackAsset.isrc = trackAssetMetaData.isrc;
   if (trackAssetMetaData.price) rawDataTrackAsset.price = trackAssetMetaData.price;
   if (trackAssetMetaData.lyrics) rawDataTrackAsset.lyrics = trackAssetMetaData.lyrics;

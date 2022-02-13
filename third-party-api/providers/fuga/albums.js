@@ -1,7 +1,6 @@
 const axiosInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
-const { albumPublishNotFoundError, albumPublishPermissionError, albumRearrengeError,
-  albumTrackAssetError, albumGetAllError, albumUpdateFieldsError, albumDeleteError } = require('../../../utils/errors.utils');
+const { albumRearrengeError, albumTrackAssetError, albumGetAllError, albumUpdateFieldsError, albumDeleteError } = require('../../../utils/errors.utils');
 
 const { get, post, put } = axiosInstance;
 

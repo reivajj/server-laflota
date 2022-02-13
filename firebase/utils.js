@@ -10,13 +10,11 @@ const batchActions = async (docRefs, setOrDeleteOrUpdate, elementsToBatch, total
   let totalCounter = 0;
   const promises = [];
 
-  for (const elem of elementsToBatch) {
+  elementsToBatch.forEach((elem, index) => {
 
-    docRefs.forEach(docRef => {
-      if (setOrDeleteOrUpdate === "set") batch.set(docRef, { ...elem });
-      if (setOrDeleteOrUpdate === "delete") batch.delete(docRef);
-      if (setOrDeleteOrUpdate === "update") batch.update(docRef, { ...elem });
-    })
+    if (setOrDeleteOrUpdate === "set") batch.set(docRefs[index], { ...elem });
+    if (setOrDeleteOrUpdate === "delete") batch.delete(docRefs[index]);
+    if (setOrDeleteOrUpdate === "update") batch.update(docRefs[index], { ...elem });
 
     counter++;
 
@@ -27,7 +25,8 @@ const batchActions = async (docRefs, setOrDeleteOrUpdate, elementsToBatch, total
       counter = 0;
       batch = dbFS.batch();
     }
-  }
+
+  })
 
   if (counter) {
     console.log(`Committing batch of ${counter}`);
@@ -36,10 +35,10 @@ const batchActions = async (docRefs, setOrDeleteOrUpdate, elementsToBatch, total
   }
   await Promise.all(promises).catch(error => error);
 
-  if (setOrDeleteOrUpdate === "set") dbFS.collection(primaryCollectionTarget).doc("stats")
+  if (setOrDeleteOrUpdate === "set") await dbFS.collection(primaryCollectionTarget).doc("stats")
     .update({ [`${totalFieldToUpdate}`]: admin.firestore.FieldValue.increment(totalCounter) });
 
-  if (setOrDeleteOrUpdate === "delete") dbFS.collection(primaryCollectionTarget).doc("stats")
+  if (setOrDeleteOrUpdate === "delete") await dbFS.collection(primaryCollectionTarget).doc("stats")
     .update({ [`${totalFieldToUpdate}`]: admin.firestore.FieldValue.increment(- totalCounter) });
 
   console.log(`Committed total of ${totalCounter}`);
