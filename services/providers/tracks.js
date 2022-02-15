@@ -47,18 +47,17 @@ const uploadTrackFileInAlbum = async (trackAssetId, trackAssetType, albumId, tra
   const chunksUploadResponse = await uploadFileByChunks(trackFile, responseUploadStart.data.id, "audio/wave", "wav", "track", uploadTrackFileInAlbumToFuga);
   const responseFinishUpload = await finishUpload(responseUploadStart.data.id, trackFile);
 
-  const responseAttachTrackInAlbum = await attachTrackAssetInAlbumWithId(albumId, trackAssetId);
-  return { responseAttachTrackInAlbum, responseFinishUpload };
+  return {  responseFinishUpload };
 }
 
 const uploadTrackAssetWithFile = async (trackAssetMetaData, trackFile) => {
   const responseTrackAssetCreated = await createTrackAsset(trackAssetMetaData);
-  const { responseFinishUpload, responseAttachTrackInAlbum } = await uploadTrackFileInAlbum(responseTrackAssetCreated.data.id
+  const { responseFinishUpload } = await uploadTrackFileInAlbum(responseTrackAssetCreated.data.id
     , 'audio', trackAssetMetaData.albumId, trackFile);
 
   return {
     data: {
-      result: responseFinishUpload.data, fugaTrackCreatedInfo: responseAttachTrackInAlbum.data
+      result: responseFinishUpload.data, fugaTrackCreatedInfo: responseTrackAssetCreated.data
       , albumId: trackAssetMetaData.albumId
     }
   };

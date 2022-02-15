@@ -44,12 +44,14 @@ const handleAssetsErrorsMessage = (assetsErrorResponseFromFuga, errorConfigData)
 }
 
 const handleUploadErrorsMessage = (uploadErrorResponseFromFuga, errorConfigData) => {
+  console.log("Upload erro: ", uploadErrorResponseFromFuga);
   if (errorConfigData.type === "image_cover_art") return albumUploadCoverError;
   if (errorConfigData.type === "audio") return trackUploadFileError;
   return genericErrorUploadingAFile;
 }
 
 const handleAlbumsErrorsMessage = albumErrorResponseFromFuga => {
+  console.log("Album Error: ", albumErrorResponseFromFuga);
   const configError = albumErrorResponseFromFuga.config;
   const urlReq = configError.url;
   const dataError = albumErrorResponseFromFuga.data;

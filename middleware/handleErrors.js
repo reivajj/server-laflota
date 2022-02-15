@@ -2,7 +2,6 @@ const { handleErrorsMessagesFromFuga } = require("../third-party-api/providers/e
 
 // Handlers error should go at the END
 const handleErrors = (error, __, res, _) => {
-
   if (error.response) {
     let axiosError = error.response;
     let handleErrorMsg = handleErrorsMessagesFromFuga(error.response, error.config.url, error.config.data);

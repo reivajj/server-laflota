@@ -60,12 +60,16 @@ const changeTrackPositionInAlbum = async (albumId, trackId, newPosition) => {
 }
 
 const changeMultipleTracksPositionsInAlbum = async (albumId, rearrengeInstructionInBody) => {
+  console.log("BODY: ", rearrengeInstructionInBody);
   const rearrengeFunction = rearrengeInstructionInBody.rearrengeInstructions.map(async instruction => {
     const responseIndividual = await changeTrackPositionInAlbumInFUGA(albumId, instruction.trackId, instruction.newPosition);
     return { trackId: instruction.trackId, success: responseIndividual.status === 200 };
   });
 
-  return Promise.all(rearrengeFunction).then(result => result).catch(error => console.log(error));
+  return Promise.all(rearrengeFunction).then(result => {
+    console.log(result);
+    return { response: result };
+  }).catch(error => console.log(error));
 }
 
 const publishAlbumWithId = async albumId => {

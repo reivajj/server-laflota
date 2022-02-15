@@ -51,8 +51,7 @@ const updateAlbumWithIdInFuga = async (albumId, newFieldsValues) => {
 }
 
 const deleteAlbumAndAssetsWithIdFromFuga = async (albumId, deleteAllAssetsBoolean) => {
-  const response = await axiosInstance.delete(`/products/${albumId}?delete_assets=${deleteAllAssetsBoolean}`)
-    .catch((error) => { throw createError(404, albumDeleteError, { properties: { message: error.message, albumId } }) });
+  const response = await axiosInstance.delete(`/products/${albumId}?delete_assets=${deleteAllAssetsBoolean}`);
   return response;
 }
 
@@ -62,7 +61,7 @@ const generateUPCAlbumWithIdInFuga = async albumId => {
 }
 
 const publishAlbumWithIdInFuga = async albumId => {
-  const response = await post(`/products/${albumId}/publish`);  
+  const response = await post(`/products/${albumId}/publish`);
   return response;
 }
 

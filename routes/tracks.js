@@ -36,7 +36,6 @@ router.post('/', upload.single('track'), async (req, res) => {
 
 router.post('/uploadTest', upload.single('track'), async (req, res) => {
   const response = await uploadTrackTest(req.body, req.file);
-  console.log("RESPONSE:", response);
   // if (!response.data.success) throw createError(400, 'Error uploading a track to an Album', { properties: response });
   return res.status(200).send({ response: response });
 });

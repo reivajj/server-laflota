@@ -42,8 +42,20 @@ const getSubgenresFuga = async () => {
   return response;
 }
 
+const getIdOfSubgenreNotCreated = async (errorCreatingSubgenre, rawDataSubgenreName) => {
+  if (errorCreatingSubgenre.data.code === "DUPLICATE_SUBGENRE_NAME") {
+    const allSubgenresResponse = await getSubgenresFuga();
+    return { data: allSubgenresResponse.data.find(subgenre => subgenre.name === rawDataSubgenreName.name) };
+  }
+  else throw createError(400, errorCreatingSubgenre.data.message, {
+    config: { url: "/miscellaneous/subgenres" }
+    , response: { data: { unexpectedError: true } }
+  });
+}
+
 const addSubgenreFuga = async rawDataSubgenreName => {
-  const response = await post('/miscellaneous/subgenres', rawDataSubgenreName);
+  const response = await post('/miscellaneous/subgenres', rawDataSubgenreName)
+    .catch(async errorCreatingSubgenre => await getIdOfSubgenreNotCreated(errorCreatingSubgenre.response, rawDataSubgenreName));
   return response;
 }
 

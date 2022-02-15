@@ -40,7 +40,7 @@ albums.put('/:albumId/tracks/:trackId/position/:newPosition', upload.none(), asy
 
 albums.put('/:albumId/rearrenge', upload.none(), async (req, res) => {
   const response = await changeMultipleTracksPositionsInAlbum(req.params.albumId, req.body);
-  return res.status(200).send({ response: response.data });
+  return res.status(200).send({ response });
 })
 
 albums.post('/:albumId/publish', upload.none(), async (req, res) => {
