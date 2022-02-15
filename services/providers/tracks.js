@@ -28,12 +28,6 @@ const startUploadTrack = async uploadStartMetaData => {
   return response;
 }
 
-// const uploadTrack = async (trackFileMetaData, trackFile) => {
-//   const formDataTrackWithFile = createFugaTrackFileUpload(trackFileMetaData, trackFile);
-//   const response = await uploadFile(formDataTrackWithFile);
-//   return response;
-// }
-
 const updateTrackAssetWithId = async (trackAssetId, trackAssetMetadataToUpdate) => {
   const rawDataTrackAssetToUpdate = createFugaTrackAsset(trackAssetMetadataToUpdate);
   const response = await updateTrackAssetWithIdFromFuga(trackAssetId, rawDataTrackAssetToUpdate);
@@ -64,7 +58,6 @@ const uploadTrackAssetWithFile = async (trackAssetMetaData, trackFile) => {
 }
 
 // =================================CONTRIBUTORS================================\\
-
 
 const getTrackContributors = async trackAssetId => {
   const response = await getTrackContributorsFromFuga(trackAssetId);

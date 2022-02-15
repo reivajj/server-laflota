@@ -51,7 +51,6 @@ const handleUploadErrorsMessage = (uploadErrorResponseFromFuga, errorConfigData)
 }
 
 const handleAlbumsErrorsMessage = albumErrorResponseFromFuga => {
-  console.log("Album Error: ", albumErrorResponseFromFuga);
   const configError = albumErrorResponseFromFuga.config;
   const urlReq = configError.url;
   const dataError = albumErrorResponseFromFuga.data;
