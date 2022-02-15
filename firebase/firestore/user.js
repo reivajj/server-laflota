@@ -40,7 +40,7 @@ const getUserInFSByEmail = async email => {
     usersData.push(doc.data());
   });
 
-  return { user: usersData[0], exist: true, count: usersData.length };
+  return { user: usersData, exist: true, count: usersData.length };
 }
 
 const updateUserInFSByEmail = async (email, fieldsToUpdate) => {
@@ -81,6 +81,27 @@ const getAllUsersFromFS = async () => {
   if (!allUsers) throw createHttpError(400, 'DB Error retrieving all users from firestore:', { properties: allUsers });
 
   return allUsers;
+}
+
+const deleteWpUsersNotLoggedInFS = async () => {
+  let queryRef = dbFS.collection('users').where("idLaFlota", "<=", 10000);
+  // queryRef = queryRef.limit(5);
+  let queryResultSnapshot = await queryRef.get();
+
+  if (queryResultSnapshot.empty) return "Docs not found."
+
+  let deleteResults = [];
+  queryResultSnapshot.forEach(async userDoc => {
+    let deleteResult = await userDoc.ref.delete();
+    deleteResults.push(deleteResult);
+  })
+
+  return deleteResults;
+}
+
+const deleteAllUsersNotInFB = async () => {
+  const response = await deleteWpUsersNotLoggedInFS();
+  return response;
 }
 
 const getAndProccesWpUsers = async () => {
@@ -127,5 +148,5 @@ const createUsersInFS = async () => {
 
 module.exports = {
   getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
-  getUserInFSByEmail, updateUserInFSByEmail
+  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB
 };

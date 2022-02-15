@@ -1,11 +1,16 @@
 var router = require("express-promise-router")();
 const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS } = require("../firebase/firestore/isrcs");
-const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail, getUserInFSByEmail, updateUserInFSByEmail } = require("../firebase/firestore/user");
+const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail, getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB } = require("../firebase/firestore/user");
 
 router.get('/users', async (_, res, next) => {
   const response = await getAllUsersFromFS();
   return res.status(200).send({ response });
 });
+
+router.delete('/users/deleteByQuery', async (_, res, next) => {
+  const response = await deleteAllUsersNotInFB();
+  return res.status(200).send({ response });
+})
 
 router.get('/statsUsers', async (_, res, next) => {
   const response = await getUsersStatsFromFS();
