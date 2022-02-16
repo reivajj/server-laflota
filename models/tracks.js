@@ -15,12 +15,13 @@ const createFugaTrackAsset = trackAssetMetaData => {
   if (trackAssetMetaData.isrc) rawDataTrackAsset.isrc = trackAssetMetaData.isrc;
   if (trackAssetMetaData.price) rawDataTrackAsset.price = trackAssetMetaData.price;
   if (trackAssetMetaData.lyrics) rawDataTrackAsset.lyrics = trackAssetMetaData.lyrics;
+  if (trackAssetMetaData.parental_advisory) rawDataTrackAsset.parental_advisory = trackAssetMetaData.parental_advisory;
   if (trackAssetMetaData.preorder_date) {
     rawDataTrackAsset.preorder_date = trackAssetMetaData.preorder_date;
     rawDataTrackAsset.allow_preorder = true;
     rawDataTrackAsset.available_separately = true;
+    rawDataTrackAsset.allow_preorder_preview = trackAssetMetaData.allow_preorder_preview;
   }
-  if (trackAssetMetaData.allow_preorder_preview) rawDataTrackAsset.allow_preorder_preview = trackAssetMetaData.allow_preorder_preview;
   return rawDataTrackAsset;
 }
 

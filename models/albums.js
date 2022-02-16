@@ -14,6 +14,7 @@ const createFugaAlbumFromFormData = albumAssetMetaData => {
   rawDataAlbumAsset.artists = JSON.parse(albumAssetMetaData.artists);
   rawDataAlbumAsset.original_release_date = albumAssetMetaData.original_release_date;
   rawDataAlbumAsset.consumer_release_date = albumAssetMetaData.consumer_release_date;
+  if (albumAssetMetaData.parental_advisory) rawDataAlbumAsset.parental_advisory = albumAssetMetaData.parental_advisory; 
   if (albumAssetMetaData.preorder_date) rawDataAlbumAsset.preorder_date = albumAssetMetaData.preorder_date; 
   if (albumAssetMetaData.upc) rawDataAlbumAsset.upc = albumAssetMetaData.upc;
   if (albumAssetMetaData.subgenre) rawDataAlbumAsset.subgenre = albumAssetMetaData.subgenre;
