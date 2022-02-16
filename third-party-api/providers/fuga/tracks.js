@@ -1,7 +1,7 @@
-const axiosInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
+const { axiosFugaInstance } = require('../../../config/axiosConfig');
 
-const { get, post, put } = axiosInstance;
+const { get, post, put } = axiosFugaInstance;
 
 const getAllTracksAssetsFromFuga = async () => {
   const response = await get('/assets');

@@ -15,6 +15,12 @@ const getCountUsersFromDB = async () => {
   return allUsersCount;
 }
 
+const getAllArtistsFromLFByUserFromDB = async userId => {
+  const allArtistsFromUser = await db.UserArtist.findAll({ where: { userId: userId }, raw: true });
+  if (!allArtistsFromUser || allArtistsFromUser.length === 0) return "El usuario no tiene Artistas";
+  return allArtistsFromUser;
+}
+
 const getUserByEmailFromDB = async (email) => {
   const userByEmail = await db.User.findOne({ where: { userEmail: email }, raw: true });
   if (!userByEmail || !userByEmail.id) return { exist: false };
@@ -22,4 +28,4 @@ const getUserByEmailFromDB = async (email) => {
   return { exist: true, user: userByEmail };
 }
 
-module.exports = { getAllUsersFromDB, getUserByEmailFromDB, getCountUsersFromDB };
+module.exports = { getAllUsersFromDB, getUserByEmailFromDB, getCountUsersFromDB, getAllArtistsFromLFByUserFromDB };

@@ -1,8 +1,8 @@
-const axiosInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
+const { axiosFugaInstance } = require('../../../config/axiosConfig');
 const { artistGetAllError } = require('../../../utils/errors.utils');
 
-const { get, post, put } = axiosInstance;
+const { get, post, put } = axiosFugaInstance;
 
 const getAllArtistsFromFuga = async () => {
   const response = await get('/artists')
@@ -34,7 +34,7 @@ const updateArtistWithIdFuga = async (artistId, rawDataArtist) => {
 }
 
 const deleteArtistWithIdFuga = async (artistId) => {
-  const response = await axiosInstance.delete(`/artists/${artistId}`);
+  const response = await axiosFugaInstance.delete(`/artists/${artistId}`);
   return response;
 }
 
@@ -57,7 +57,7 @@ const editArtistIdentifierDspFuga = async (artistId, rawDataArtist) => {
 }
 
 const deleteArtistIdentifierByBothIdsFuga = async (artistId, identifierId) => {
-  const response = await axiosInstance.delete(`/artists/${artistId}/identifier/${identifierId}`);
+  const response = await axiosFugaInstance.delete(`/artists/${artistId}/identifier/${identifierId}`);
   return response;
 }
 

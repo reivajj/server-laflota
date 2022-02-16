@@ -1,6 +1,6 @@
-const axiosFugaInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
 const config = require('../../../config');
+const { axiosFugaInstance } = require('../../../config/axiosConfig');
 
 const { post } = axiosFugaInstance;
 

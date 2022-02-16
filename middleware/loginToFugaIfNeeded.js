@@ -1,7 +1,7 @@
 // Handlers error should go at the END
 const config = require('../config');
 const axios = require('axios');
-const axiosFugaInstance = require('../config/axiosConfig');
+const { axiosFugaInstance } = require('../config/axiosConfig');
 
 // REVEER: users no usa FUGA entonces, no necesito el Login (ver de chequear efectivamente que solo 
 // haga login para las rutas que lo necesiten)

@@ -1,5 +1,6 @@
 var router = require("express-promise-router")();
-const { getAllUsersWP, getUserByEmailWP, loginUserWithEmailAndPwWP, getCountUsersWP } = require("../services/providers/users");
+const { getAllUsersWP, getUserByEmailWP, loginUserWithEmailAndPwWP, getCountUsersWP,
+  getUserArtistsByEmailFromDG } = require("../services/providers/users");
 
 router.get('/', async (_, res, next) => {
   const response = await getAllUsersWP();
@@ -16,9 +17,16 @@ router.get('/searchByEmail/:email', async (req, res, _) => {
   return res.status(200).send({ response });
 });
 
+router.get('/searchArtistsByEmail/:email', async (req, res, _) => {
+  const response = await getUserArtistsByEmailFromDG(req.params.email);
+  return res.status(200).send({ response });
+});
+
 router.get('/login', async (req, res, _) => {
   const response = await loginUserWithEmailAndPwWP(req.body);
   return res.status(200).send({ response });
 });
+
+
 
 module.exports = router;

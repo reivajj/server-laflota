@@ -1,14 +1,14 @@
 const axios = require('axios');
 const config = require('../config');
 
-// const instanceDashGo = axios.create({
-//   // .. where we make our configurations
-//   baseURL: `${process.env.DASHGO_API_URL}`,
-//   maxContentLength: Infinity,
-//   maxBodyLength: Infinity,
-// });
+const axiosDGInstance = axios.create({
+  // .. where we make our configurations
+  baseURL: `${process.env.DASHGO_API_URL}`,
+  maxContentLength: Infinity,
+  maxBodyLength: Infinity,
+});
 
-// instanceDashGo.defaults.headers.common['X-Access-Key'] = `${process.env.DASHGO_API_KEY}`;
+axiosDGInstance.defaults.headers.common['X-Access-Key'] = `${process.env.DASHGO_API_KEY}`;
 
 const axiosFugaInstance = axios.create({
   // .. where we make our configurations
@@ -20,4 +20,4 @@ const axiosFugaInstance = axios.create({
 axiosFugaInstance.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 axiosFugaInstance.defaults.headers.post['Accept'] = 'application/json';
 
-module.exports = axiosFugaInstance;
+module.exports = { axiosFugaInstance, axiosDGInstance };

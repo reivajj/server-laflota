@@ -1,4 +1,4 @@
-const axiosFugaInstance = require("../../../config/axiosConfig");
+const { axiosFugaInstance } = require("../../../config/axiosConfig");
 
 const { get, post, put } = axiosFugaInstance;
 

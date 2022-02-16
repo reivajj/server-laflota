@@ -1,8 +1,8 @@
-const axiosInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
+const { axiosFugaInstance } = require('../../../config/axiosConfig');
 const { albumRearrengeError, albumTrackAssetError, albumGetAllError, albumUpdateFieldsError, albumDeleteError } = require('../../../utils/errors.utils');
 
-const { get, post, put } = axiosInstance;
+const { get, post, put } = axiosFugaInstance;
 
 const getAllAlbumsFromFuga = async () => {
   const response = await get('/products')
@@ -51,7 +51,7 @@ const updateAlbumWithIdInFuga = async (albumId, newFieldsValues) => {
 }
 
 const deleteAlbumAndAssetsWithIdFromFuga = async (albumId, deleteAllAssetsBoolean) => {
-  const response = await axiosInstance.delete(`/products/${albumId}?delete_assets=${deleteAllAssetsBoolean}`);
+  const response = await axiosFugaInstance.delete(`/products/${albumId}?delete_assets=${deleteAllAssetsBoolean}`);
   return response;
 }
 

@@ -1,7 +1,7 @@
-const axiosInstance = require('../../../config/axiosConfig');
 const createError = require('http-errors');
+const { axiosFugaInstance } = require('../../../config/axiosConfig');
 
-const { get, post } = axiosInstance;
+const { get, post } = axiosFugaInstance;
 
 const getAllPeopleFuga = async () => {
   const response = await get('/people');
