@@ -4,12 +4,18 @@ const createError = require('http-errors');
 const multer  = require('multer');
 const upload = multer();
 
-const { getAllLabels, createLabel, deleteLabel } = require('../services/providers/labels');
+const { getAllLabels, createLabel, deleteLabel, getLabelById } = require('../services/providers/labels');
 
 router.get('/', async (_, res, next) => {
   const response = await getAllLabels();
   return res.status(200).send({ response: response.data });
 });
+
+router.get('/:labelId', async (req, res, next) => {
+  const response = await getLabelById(req.params.labelId);
+  return res.status(200).send({ response: response.data });
+});
+
 
 router.post('/', upload.none(), async (req, res) => {
   const response = await createLabel(req.body);

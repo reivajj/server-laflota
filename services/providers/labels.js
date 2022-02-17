@@ -1,8 +1,13 @@
-const { uploadLabelToProvider, getAllLabelsFromFuga, deleteLabelFuga } = require('../../third-party-api/providers/fuga/labels');
+const { uploadLabelToProvider, getAllLabelsFromFuga, deleteLabelFuga, getLabelByIdFuga } = require('../../third-party-api/providers/fuga/labels');
 const createFugaLabel = require('../../models/labels');
 
 const getAllLabels = async () => {
   const response = await getAllLabelsFromFuga();
+  return response;
+}
+
+const getLabelById = async labelId => {
+  const response = await getLabelByIdFuga(labelId);
   return response;
 }
 
@@ -17,4 +22,4 @@ const deleteLabel = async labelId => {
   return response;
 }
 
-module.exports = { getAllLabels, createLabel, deleteLabel };
+module.exports = { getAllLabels, createLabel, deleteLabel, getLabelById };

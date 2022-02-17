@@ -28,6 +28,7 @@ const loginUserWithEmailAndPwWP = async ({ email, password, userName }) => {
 const getAllArtistsFromDG = async dgArtistsIds => {
   const getDGArtists = dgArtistsIds.map(async dgArtistId => {
     const responseArtistDG = await axiosDGInstance.get(`/artists/${dgArtistId}`);
+    if (responseArtistDG.data.bio === null) responseArtistDG.data.bio = "";
     if (responseArtistDG.data.apple_id === null) responseArtistDG.data.apple_id = "";
     if (responseArtistDG.data.spotify_uri === null) responseArtistDG.data.spotify_uri = "";
     return responseArtistDG.data;
