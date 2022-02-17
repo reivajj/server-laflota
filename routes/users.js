@@ -22,10 +22,12 @@ router.get('/searchArtistsByEmail/:email', async (req, res, _) => {
   return res.status(200).send({ response });
 });
 
-router.get('/login', async (req, res, _) => {
+router.post('/login', async (req, res, _) => {
   const response = await loginUserWithEmailAndPwWP(req.body);
   return res.status(200).send({ response });
 });
+
+
 
 
 
