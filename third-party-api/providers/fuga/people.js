@@ -1,11 +1,17 @@
 const createError = require('http-errors');
-const { axiosFugaInstance } = require('../../../config/axiosConfig');
+const { axiosFugaV2Instance } = require('../../../config/axiosConfig');
 
-const { get, post } = axiosFugaInstance;
+const { get, post } = axiosFugaV2Instance;
 
 const getAllPeopleFuga = async () => {
   const response = await get('/people');
   return response;
+}
+
+const getPersonByName = async personName => {
+  const personsThatCoincidInitName = await get(`/people?name=${personName}`);
+  console.log("PERSONS THATH COINCID: ", personsThatCoincidInitName.data.person);
+  return personsThatCoincidInitName;
 }
 
 const getPeopleByIdFuga = async personId => {
@@ -15,8 +21,8 @@ const getPeopleByIdFuga = async personId => {
 
 const checkIfErrorIsDuplicatedNameAndAct = async (errorCreatingPerson, personName) => {
   if (errorCreatingPerson.data.code === "DUPLICATE_PERSON_NAME") {
-    const allPersonsResponse = await getAllPeopleFuga();
-    return { data: allPersonsResponse.data.find(person => person.name === personName) };
+    const allPersonsWhoInitWithThatName = await getPersonByName(personName);
+    return { data: allPersonsWhoInitWithThatName.data.person.find(person => person.name.toLowerCase() === personName.toLowerCase()) };
   }
   else throw createError(400, errorCreatingPerson.data.message, { config: { url: "/people" }, response: { data: { unexpectedError: true } } });
 }
@@ -28,6 +34,7 @@ const createPersonFuga = async rawDataPerson => {
 }
 
 const createMultiplePersonsFuga = async personsNames => {
+  console.log("PEOPLE: ", personsNames);
   const people = JSON.parse(personsNames.names);
   const createPersons = people.map(async person => {
     const responseCreatePerson = await createPersonFuga(person);

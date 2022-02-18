@@ -16,7 +16,6 @@ router.get('/:labelId', async (req, res, next) => {
   return res.status(200).send({ response: response.data });
 });
 
-
 router.post('/', upload.none(), async (req, res) => {
   const response = await createLabel(req.body);
   return res.status(200).send({ response: response.data });

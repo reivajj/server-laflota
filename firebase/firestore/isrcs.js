@@ -45,4 +45,22 @@ const updateISRCsInFS = async (isrcsToUpdate, newValues) => {
   return result;
 }
 
-module.exports = { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS };
+const getIsrcDocByIsrcCodeFS = async isrcCode => {
+  let isrcsSnap = await dbFS.collection('isrcs').where('isrc', "==", isrcCode).get();
+  if (!isrcsSnap || isrcsSnap.empty) return "No encontramos el ISRC o hubo un error";
+  return isrcsSnap.docs.map(isrcDoc => isrcDoc.data());
+}
+
+const getIsrcByUsesStateAndLimitFS = async instructionsAndLimit => {
+  const { used, limit } = instructionsAndLimit;
+  let isrcsSnap = await dbFS.collection('isrcs').where('used', "==", used).limit(limit).get();
+  if (isrcsSnap.empty) return `No encontre ISRC que esten con used:${used}`;
+
+  for (isrcDoc of isrcsSnap.docs) {
+    await isrcDoc.ref.update({ used: true });
+  }
+
+  return isrcsSnap.docs.map(isrcDoc => isrcDoc.data().isrc);
+}
+
+module.exports = { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS };

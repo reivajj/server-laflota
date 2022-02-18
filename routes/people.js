@@ -20,6 +20,7 @@ router.post('/', async (req, res, _) => {
 });
 
 router.post('/addAll', upload.none(), async (req, res, _) => {
+  console.log("PERSONS I NROUTE: ", req.body);
   const response = await createMultiplePersonsFuga(req.body);
   return res.status(200).send({ response });
 });

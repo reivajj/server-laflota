@@ -16,6 +16,7 @@ module.exports = {
   },
   fuga: {
     apiUrl: process.env.FUGA_API_URL,
+    apiUrlV2: process.env.FUGA_API_URL_V2,
     apiUser: process.env.FUGA_API_USER,
     apiPassword: process.env.FUGA_API_PASSWORD,
     apiUserLaFlota: process.env.FUGA_API_USER_LA_FLOTA,
