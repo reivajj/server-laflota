@@ -55,6 +55,20 @@ const updateUserInFSByEmail = async (email, fieldsToUpdate) => {
   return { user: usersData[0], exist: true, count: usersData.length, resultUpdate };
 }
 
+const getArtistsFromUserIdFS = async ownerId => {
+  const artistsSnap = await dbFS.collection('artists').where('ownerId', '==', ownerId).get();
+  if (artistsSnap.empty) return { emtpy: true };
+
+  let artistsData = [];
+  artistsSnap.forEach(artistDoc => artistsData.push(artistDoc.data()));
+  return artistsData;
+}
+
+const getUserArtistsInFSByEmail = async email => {
+  const userDataFS = await getUserInFSByEmail(email);
+  const artistsFromOwnerIdFS = await getArtistsFromUserIdFS(userDataFS.user[0].id);
+  return artistsFromOwnerIdFS;
+}
 
 const getUsersStatsFromFS = async () => {
   const statsDoc = await dbFS.collection('users').doc('stats').get();
@@ -148,5 +162,5 @@ const createUsersInFS = async () => {
 
 module.exports = {
   getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
-  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB
+  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail
 };
