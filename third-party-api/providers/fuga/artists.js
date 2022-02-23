@@ -10,6 +10,20 @@ const getAllArtistsFromFuga = async () => {
   return response;
 }
 
+// const checkIfErrorIsDuplicatedPropIdAndAct = async (errorCreatingArtist, artistName) => {
+//   if (errorCreatingArtist.data.code === "DUPLICATE_PERSON_NAME") {
+//     const allPersonsWhoInitWithThatName = await getPersonByName(artistName);
+//     return { data: allPersonsWhoInitWithThatName.data.person.find(person => person.name.toLowerCase() === artistName.toLowerCase()) };
+//   }
+//   else throw createError(400, errorCreatingArtist.data.message, { config: { url: "/people" }, response: { data: { unexpectedError: true } } });
+// }
+
+// const getArtistsByNameFromFuga = async artistName => {
+//   const response = await get(`/artists?name=${artistName}`)
+//     .catch(async error => await checkIfErrorIsDuplicatedPropIdAndAct(error.response, rawDataPerson.name))
+//   return response;
+// }
+
 const getArtistByIdFromFuga = async artistId => {
   const response = await get(`/artists/${artistId}`)
   return response;
