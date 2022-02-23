@@ -1,8 +1,8 @@
 const createHttpError = require('http-errors');
-const { axiosFugaInstance } = require('../../../config/axiosConfig');
+const { axiosFugaV2Instance } = require('../../../config/axiosConfig');
 const { handleLabelErrorsMessage } = require('../errors/handleFugaErrors');
 
-const { get, post } = axiosFugaInstance;
+const { get, post } = axiosFugaV2Instance;
 
 const getAllLabelsFromFuga = async () => {
   const response = await get('/labels');
@@ -16,15 +16,17 @@ const getLabelByIdFuga = async labelId => {
 }
 
 const getLabelByNameFuga = async labelName => {
-  const response = await get(`/labels?name=${labelName}`);
+  const response = await get(`/labels?order_by=id&page=0&page_size=30&search=${encodeURI(labelName)}`).catch(error => console.log("ERROR", error));
+  console.log("RESPONSE GET LABEL NAME: ", response.data);
   return response;
 }
 
 const checkIfErrorIsDuplicateLabelAndAct = async (errorCreatingLabel, labelName) => {
   if (errorCreatingLabel.data.code === "DUPLICATE_LABEL_NAME") {
-    const labelSearched = await getLabelByNameFuga(labelName);
-    if (labelSearched.data.length === 0) return { data: "Hubo un problema al buscar si el Sello estaba creado." }
-    return { data: labelSearched.data[0] };
+    const labelsSearched = await getLabelByNameFuga(labelName);
+    const labelFounded = labelsSearched.data.label.find(label => label.name.toLowerCase() === labelName.toLowerCase());
+    if (!labelFounded.id) return { data: "Hubo un problema al buscar si el Sello estaba creado." }
+    return { data: labelFounded };
   }
   else throw createError(400, errorCreatingLabel.data.message, { config: { url: "/labels" }, response: { data: { unexpectedError: true } } });
 }

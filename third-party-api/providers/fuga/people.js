@@ -15,7 +15,7 @@ const getPersonByName = async personName => {
 }
 
 const getPeopleByIdFuga = async personId => {
-  const response = await get(`/people/${personId}`);
+  const response = await get(`/people/${encodeURI(personId)}`);
   return response;
 }
 
