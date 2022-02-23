@@ -9,13 +9,12 @@ const getAllPeopleFuga = async () => {
 }
 
 const getPersonByName = async personName => {
-  const personsThatCoincidInitName = await get(`/people?name=${personName}`);
-  console.log("PERSONS THATH COINCID: ", personsThatCoincidInitName.data.person);
+  const personsThatCoincidInitName = await get(`/people?name=${encodeURI(personName)}`);
   return personsThatCoincidInitName;
 }
 
 const getPeopleByIdFuga = async personId => {
-  const response = await get(`/people/${encodeURI(personId)}`);
+  const response = await get(`/people/${personId}`);
   return response;
 }
 
