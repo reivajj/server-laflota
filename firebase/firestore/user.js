@@ -6,6 +6,7 @@ const { getCountUsersWP, getAllUsersWP } = require('../../services/providers/use
 const { createFBUser } = require('../models/user');
 
 const dbFS = admin.firestore();
+const auth = admin.auth();
 
 const deleteUserInFSByEmail = async email => {
   const usersRef = dbFS.collection('users');
@@ -97,6 +98,24 @@ const getAllUsersFromFS = async () => {
   return allUsers;
 }
 
+const updatePasswordByEmailInFS = async (userEmail, newPassword) => {
+  console.log("DATA: ", { userEmail, newPassword });
+  const userDataFS = await getUserInFSByEmail(userEmail);
+  console.log("UID: ", userDataFS.user);
+  auth.updateUser(userDataFS.user[0].id, {
+    password: newPassword,
+  })
+    .then((userRecord) => {
+      // See the UserRecord reference doc for the contents of userRecord.
+      console.log('Successfully updated user', userRecord.toJSON());
+      return userRecord;
+    })
+    .catch((error) => {
+      console.log('Error updating user:', error);
+    });
+
+}
+
 const deleteWpUsersNotLoggedInFS = async () => {
   let queryRef = dbFS.collection('users').where("idLaFlota", "<=", 10000);
   // queryRef = queryRef.limit(5);
@@ -162,5 +181,5 @@ const createUsersInFS = async () => {
 
 module.exports = {
   getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
-  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail
+  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS
 };

@@ -22,7 +22,12 @@ module.exports = {
     apiUserLaFlota: process.env.FUGA_API_USER_LA_FLOTA,
     apiPasswordLaFlota: process.env.FUGA_API_PASSWORD_LA_FLOTA,
     cookieName: process.env.FUGA_COOKIE_NAME,
-    cookieApidemoValue: process.env.FUGA_COOKIE_VALUE_APIDEMO 
+    cookieApidemoValue: process.env.FUGA_COOKIE_VALUE_APIDEMO
+  },
+  spotify: {
+    spotifyId: process.env.SPOTIFY_ID,
+    spotifySecretCode: process.env.SPOTIFY_SECRET_CODE,
+    spotifyApiUrl: process.env.SPOTIFY_API_URL
   },
   mySqlDb: {
     url: process.env.DATABASE_URL,
@@ -40,6 +45,7 @@ module.exports = {
   peopleApi: process.env.MY_SERVER_PEOPLE_URL,
   miscellaneousApi: process.env.MY_SERVER_MISCELLANEOUS,
   firebaseApi: process.env.FIREBASE_API,
+  spotifyApi: process.env.SPOTIFY_API,
   csvApi: process.env.CSV_API,
   emailsApi: process.env.EMAILS_API,
   loginApi: process.env.LOGIN_API,

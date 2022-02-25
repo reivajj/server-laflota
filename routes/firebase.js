@@ -1,6 +1,7 @@
 var router = require("express-promise-router")();
 const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS } = require("../firebase/firestore/isrcs");
-const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail, getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail } = require("../firebase/firestore/user");
+const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
+  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS } = require("../firebase/firestore/user");
 
 router.get('/users', async (_, res, next) => {
   const response = await getAllUsersFromFS();
@@ -41,6 +42,11 @@ router.put('/usersByEmail/:email', async (req, res, _) => {
   const response = await updateUserInFSByEmail(req.params.email, req.body);
   return res.status(200).send({ response });
 })
+
+router.put('/changePasswordByEmail/:userEmail', async (req, res, _) => {
+  const response = await updatePasswordByEmailInFS(req.params.userEmail, req.body.password);
+  return res.status(200).send({ response });
+});
 
 //============================================================ARTISTS==============================================\\
 

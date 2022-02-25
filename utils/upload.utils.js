@@ -1,4 +1,5 @@
 const FormData = require('form-data');
+const WaveFile = require('wavefile').WaveFile;
 
 const getEndOfChunk = (index, chunksize, totalParts, totalSize) => {
   if (index + 1 === totalParts) return totalSize - 1;

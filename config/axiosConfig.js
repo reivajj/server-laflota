@@ -8,6 +8,14 @@ const axiosDGInstance = axios.create({
   maxBodyLength: Infinity,
 });
 
+const axiosSpotifyInstance = axios.create({
+  baseURL: config.spotify.spotifyApiUrl,
+})
+
+const axiosLoginSpotifyInstance = axios.create({
+  baseURL: 'https://accounts.spotify.com/api',
+})
+
 axiosDGInstance.defaults.headers.common['X-Access-Key'] = `${process.env.DASHGO_API_KEY}`;
 
 const axiosFugaInstance = axios.create({
@@ -30,4 +38,6 @@ axiosFugaV2Instance.defaults.headers.post['Accept'] = 'application/json';
 axiosFugaInstance.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 axiosFugaInstance.defaults.headers.post['Accept'] = 'application/json';
 
-module.exports = { axiosFugaInstance, axiosDGInstance, axiosFugaV2Instance };
+// axiosSpotifyInstance.defaults.headers.common['Authorization'] = `Bearer ${config.spotify.spotifySecretCode}`;
+
+module.exports = { axiosFugaInstance, axiosDGInstance, axiosFugaV2Instance, axiosSpotifyInstance, axiosLoginSpotifyInstance };

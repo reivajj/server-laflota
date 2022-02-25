@@ -2,7 +2,7 @@ const { artistsInUseDeleteError, artistFieldsMissingCreateError, artistGetArtist
   albumUploadAlbumEntityNotFoundError, albumUploadCoverError, trackUploadFileError, genericErrorUploadingAFile,
   albumCreateDuplicateAlbum, albumGetAlbumError, contributorsInesperatedGenericError, peopleInesperatedGenericError, errorPersonNameDuplicated,
   contributorDuplicatedError, contributorInvalidValueError, albumNotAuthorizedGenericError, albumMissingFieldsToPublish,
-  albumAlreadyHasUPC, albumInesperatedGenericError, trackInesperatedGenericError, labelInesperatedGenericError, trackIsrcWrongValue, artistDuplicateArtistNameProprietaryId, errorInesperadoArtista, artistErrorNotAuthorized, artistErrorCreatingIdentifierNotAuthorized,
+  albumAlreadyHasUPC, albumInesperatedGenericError, trackInesperatedGenericError, labelInesperatedGenericError, trackIsrcWrongValue, artistDuplicateArtistNameProprietaryId, errorInesperadoArtista, artistErrorNotAuthorized, artistErrorCreatingIdentifierNotAuthorized, artistInvalidIdentifier, trackQualityTooLow, trackFloatingPointWavError,
 } = require("../../../utils/errors.utils");
 
 // Pasar esto a las distintas RUTAS que tenes en ROUTES. Y ver que esten incluidas y listo.
@@ -44,10 +44,13 @@ const handleAssetsErrorsMessage = (assetsErrorResponseFromFuga, errorConfigData)
 }
 
 const handleUploadErrorsMessage = (uploadErrorResponseFromFuga, errorConfigData) => {
-  console.log("Upload erro: ", uploadErrorResponseFromFuga);
   if (errorConfigData.type === "image_cover_art") return albumUploadCoverError;
   if (errorConfigData.type === "audio") return trackUploadFileError;
-  return genericErrorUploadingAFile;
+  if (uploadErrorResponseFromFuga.data.error.code === "INVALID_FILE_TYPE") {
+    if (uploadErrorResponseFromFuga.data.error.message.indexOf("Floating point") >= 0) return trackFloatingPointWavError;
+    if (uploadErrorResponseFromFuga.data.error.message.indexOf("Need a stereo") >= 0) return trackQualityTooLow;
+  }
+  return trackQualityTooLow;
 }
 
 const handleAlbumsErrorsMessage = albumErrorResponseFromFuga => {
@@ -85,6 +88,8 @@ const handleArtistErrorsMessage = artistErrorResponseFromFuga => {
   if (!artistErrorResponseFromFuga || !artistErrorResponseFromFuga.data) return errorInesperado;
   if (artistErrorResponseFromFuga.status === 404) return artistGetArtistError;
   switch (artistErrorResponseFromFuga.data.code) {
+    case "ARTIST_INVALID_IDENTIFIER":
+      return artistInvalidIdentifier;
     case "DUPLICATE_ARTIST_NAME_PROPRIETARY_ID":
       return artistDuplicateArtistNameProprietaryId;
     case "NOT_AUTHORIZED":

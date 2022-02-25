@@ -34,16 +34,18 @@ const artistDuplicateArtistNameProprietaryId = 'Error al crear el Artista, Id de
 const errorInesperadoArtista = 'Hubo un error inesperado al trabajar con un Artista. Por favor, intente nuevamente';
 const artistErrorCreatingIdentifierNotAuthorized = 'Error al crear un Identificador para el Artista. Puede ser que el identificador ingresado sea incorrecto. Reingrese nuevamente el identificador.';
 const artistErrorNotAuthorized = 'Error de autorización para realizar esta acción. Aségurate que los datos ingresados son correctos.';
+const artistInvalidIdentifier = 'El identificador de artista no tiene el formato correcto. El Spotify Artist URI es un código alfanúmerico (sin signo de preguntas) que contiene exactamente 37 carácteres. Por ejemplo: spotify:artist:6rqhFgbbKwnb9MLmUQDhG6.';
 // LABELS
 const labelInesperatedGenericError = "Hubo un error inesperado al trabajar con un Sello. Por favor, intente nuevamente.";
 const labelDuplicateName = "El nombre del sello ya se encuentra en uso.";
 
 // TRACKS
 const trackInesperatedGenericError = "Hubo un error inesperado al trabajar con una Canción. Por favor, intente nuevamente.";
-const trackUploadFileError = "Error al subir la Canción (archivo) al Album. ";
+const trackUploadFileError = "Error al subir la Canción (archivo) al Lanzamiento, la calidad es muy baja. Debe ser un stereo, 16, 24, or 32 bit entre 44.1 and 192 kHz WAV";
 const genericErrorUploadingAFile = "Error al subir un archivo.";
 const trackIsrcWrongValue = "Error al subir la Canción, el ISRC no es válido."
-
+const trackQualityTooLow = "Error al subir el archivo de la canción, la calidad es muy baja. Debe ser un stereo, 16, 24, or 32 bit entre 44.1 and 192 kHz WAV";
+const trackFloatingPointWavError = "Archivos Floating point WAV no son soportados. Debe ser un stereo, 16, 24, or 32 bit entre 44.1 y 192 kHz (Sample Rate) WAV";
 // CONTRIBUTORS
 const contributorsInesperatedGenericError = "Error inesperado al trabajar con los Contribuidores. ";
 const contributorDuplicatedError = "El artista que contribuye ya existe con ese mismo Rol.";
@@ -63,11 +65,11 @@ module.exports = {
 
   artistCreateError, artistGetAllError, artistGetArtistError, artistUpdateFieldsError, artistsDeleteError,
   artistsInUseDeleteError, artistFieldsMissingCreateError, artistDuplicateArtistNameProprietaryId, errorInesperadoArtista,
-  artistErrorCreatingIdentifierNotAuthorized, artistErrorNotAuthorized,
+  artistErrorCreatingIdentifierNotAuthorized, artistErrorNotAuthorized, artistInvalidIdentifier,
 
   labelDuplicateName, labelInesperatedGenericError,
 
-  trackUploadFileError, trackInesperatedGenericError, trackIsrcWrongValue,
+  trackUploadFileError, trackInesperatedGenericError, trackIsrcWrongValue, trackQualityTooLow, trackFloatingPointWavError,
 
   genericErrorUploadingAFile,
 

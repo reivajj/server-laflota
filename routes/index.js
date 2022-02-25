@@ -8,6 +8,7 @@ const emails = require('./emails');
 const login = require('./login');
 const delivery = require('./delivery');
 const firebase = require('./firebase');
+const spotify = require('./spotify');
 const miscellaneous = require('./miscellaneous');
 const csv = require('./csv');
 
@@ -22,6 +23,7 @@ module.exports = {
   login,
   delivery,
   firebase,
+  spotify,
   miscellaneous,
   csv,
 };

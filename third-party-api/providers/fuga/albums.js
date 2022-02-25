@@ -15,6 +15,11 @@ const getAlbumByIdFromFuga = async albumId => {
   return response;
 }
 
+const getAlbumLiveLinksByIdFuga = async albumId => {
+  const response = await get(`/products/${albumId}/live_links`);
+  return response;
+}
+
 const uploadAlbumToProvider = async rawDataAlbum => {
   const response = await post('/products', rawDataAlbum)
   return response;
@@ -68,5 +73,5 @@ const publishAlbumWithIdInFuga = async albumId => {
 module.exports = {
   getAllAlbumsFromFuga, uploadAlbumToProvider, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga,
   uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga,
-  deleteAlbumAndAssetsWithIdFromFuga, generateUPCAlbumWithIdInFuga
+  deleteAlbumAndAssetsWithIdFromFuga, generateUPCAlbumWithIdInFuga, getAlbumLiveLinksByIdFuga
 };

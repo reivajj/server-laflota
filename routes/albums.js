@@ -5,7 +5,7 @@ const multer = require('multer');
 const upload = multer();
 
 const { getAllAlbums, getAlbumById, attachTrackAssetInAlbumWithId, createCoverImageInAlbum,
-  uploadAlbumAssetWithCover, changeTrackPositionInAlbum, changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId, deleteAlbumAndAssetsWithId, generateUPCAlbumWithId } = require('../services/providers/albums');
+  uploadAlbumAssetWithCover, changeTrackPositionInAlbum, changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId, deleteAlbumAndAssetsWithId, generateUPCAlbumWithId, getAlbumLiveLinksById } = require('../services/providers/albums');
 
 albums.get('/', async (_, res, __) => {
   const response = await getAllAlbums();
@@ -16,6 +16,12 @@ albums.get('/:albumId', async (req, res, _) => {
   const response = await getAlbumById(req.params.albumId);
   return res.status(200).send({ response: response.data });
 });
+
+albums.get('/:albumId/live_links', async (req, res, _) => {
+  const response = await getAlbumLiveLinksById(req.params.albumId);
+  return res.status(200).send({ response: response.data });
+});
+
 
 albums.post('/', upload.single('cover'), async (req, res) => {
   const response = await uploadAlbumAssetWithCover(req.body, req.file);
