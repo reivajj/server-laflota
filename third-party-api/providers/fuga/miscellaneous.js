@@ -43,9 +43,10 @@ const getSubgenresFuga = async () => {
 }
 
 const getIdOfSubgenreNotCreated = async (errorCreatingSubgenre, rawDataSubgenreName) => {
+  console.log("ERROR SUBGENRE: ", errorCreatingSubgenre.data)
   if (errorCreatingSubgenre.data.code === "DUPLICATE_SUBGENRE_NAME") {
     const allSubgenresResponse = await getSubgenresFuga();
-    return { data: allSubgenresResponse.data.find(subgenre => subgenre.name === rawDataSubgenreName.name) };
+    return { data: allSubgenresResponse.data.find(subgenre => subgenre.name.toLowerCase() === rawDataSubgenreName.name.toLowerCase()) };
   }
   else throw createError(400, errorCreatingSubgenre.data.message, {
     config: { url: "/miscellaneous/subgenres" }
