@@ -1,5 +1,5 @@
 var router = require("express-promise-router")();
-const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS } = require("../firebase/firestore/isrcs");
+const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS, createCapifIsrcs, getCapifISRCs } = require("../firebase/firestore/isrcs");
 const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
   getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS } = require("../firebase/firestore/user");
 
@@ -68,6 +68,11 @@ router.delete('/deleteIsrcsFromLocalCSV/:csvFileName', async (req, res, next) =>
   return res.status(200).send({ response });
 })
 
+router.post('/createCapifIsrcs', async (req, res, next) => {
+  const response = await createCapifIsrcs(req.body.init, req.body.cant);
+  return res.status(200).send({ response });
+});
+
 router.get('/getIsrcByUsedStateAndLimit', async (req, res, next) => {
   const response = await getIsrcByUsesStateAndLimitFS(req.body);
   return res.status(200).send({ response });
@@ -75,6 +80,11 @@ router.get('/getIsrcByUsedStateAndLimit', async (req, res, next) => {
 
 router.get('/getIsrcDocByIsrcCode/:isrcCode', async (req, res, next) => {
   const response = await getIsrcDocByIsrcCodeFS(req.params.isrcCode);
+  return res.status(200).send({ response });
+})
+
+router.get('/getCapifISRCs', async (req, res, next) => {
+  const response = await getCapifISRCs();
   return res.status(200).send({ response });
 })
 

@@ -36,7 +36,7 @@ const batchActions = async (docRefs, setOrDeleteOrUpdate, elementsToBatch, total
   await Promise.all(promises).catch(error => error);
   console.log(`Committed total of ${totalCounter}`);
 
-  return  totalCounter;
+  return totalCounter;
 }
 
 module.exports = { batchActions }

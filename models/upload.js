@@ -19,7 +19,6 @@ const createFugaTrackFileUpload = (trackFile, trackUploadStartUuid) => {
   formDataTrack.append("totalfilesize", trackFile.size);
   formDataTrack.append("partbyteoffset", '0');
   formDataTrack.append("file", trackFile.buffer, trackFile.originalname);
-  console.log("FORM: ", formDataTrack);
   return formDataTrack;
 }
 

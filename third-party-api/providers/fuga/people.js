@@ -33,14 +33,14 @@ const createPersonFuga = async rawDataPerson => {
 }
 
 const createMultiplePersonsFuga = async personsNames => {
-  console.log("PEOPLE: ", personsNames);
   const people = JSON.parse(personsNames.names);
   const createPersons = people.map(async person => {
+    if (!person.name) return "EMPTY NAME";
     const responseCreatePerson = await createPersonFuga(person);
     return responseCreatePerson.data;
   })
 
-  return Promise.all(createPersons).then(result => result).catch(error => error);
+  return Promise.all(createPersons).then(result => result.filter(person => person !== "EMPTY NAME")).catch(error => error);
 }
 
 module.exports = { getAllPeopleFuga, getPeopleByIdFuga, createPersonFuga, createMultiplePersonsFuga };

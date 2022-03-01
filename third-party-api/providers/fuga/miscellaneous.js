@@ -1,6 +1,6 @@
-const { axiosFugaInstance } = require("../../../config/axiosConfig");
+const { axiosFugaV2Instance } = require("../../../config/axiosConfig");
 
-const { get, post } = axiosFugaInstance;
+const { get, post, put } = axiosFugaV2Instance;
 
 const getAllDspGroupsFuga = async () => {
   const response = await get('/contracts');
@@ -42,11 +42,17 @@ const getSubgenresFuga = async () => {
   return response;
 }
 
+const getSubgenresByNameFuga = async subgenreName => {
+  const response = await get(`/miscellaneous/subgenres?search=${subgenreName}`);
+  console.log("RESPONSE: ", response);
+  return response;
+}
+
 const getIdOfSubgenreNotCreated = async (errorCreatingSubgenre, rawDataSubgenreName) => {
   console.log("ERROR SUBGENRE: ", errorCreatingSubgenre.data)
   if (errorCreatingSubgenre.data.code === "DUPLICATE_SUBGENRE_NAME") {
-    const allSubgenresResponse = await getSubgenresFuga();
-    return { data: allSubgenresResponse.data.find(subgenre => subgenre.name.toLowerCase() === rawDataSubgenreName.name.toLowerCase()) };
+    const allSubgenresResponse = await getSubgenresByNameFuga(rawDataSubgenreName.name);
+    return { data: allSubgenresResponse.data.subgenre.find(subgenre => subgenre.name.toLowerCase() === rawDataSubgenreName.name.toLowerCase()) };
   }
   else throw createError(400, errorCreatingSubgenre.data.message, {
     config: { url: "/miscellaneous/subgenres" }

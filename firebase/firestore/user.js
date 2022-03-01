@@ -50,8 +50,13 @@ const updateUserInFSByEmail = async (email, fieldsToUpdate) => {
 
   if (snapshotGet.empty) return { exist: false };
 
-  let usersData = [];
   const resultUpdate = await snapshotGet.docs[0].ref.update(fieldsToUpdate);
+  const snapshotGetUpdated = await usersRef.where('email', '==', email).limit(1).get();
+
+  let usersData = [];
+  snapshotGetUpdated.forEach(doc => {
+    usersData.push(doc.data());
+  });
 
   return { user: usersData[0], exist: true, count: usersData.length, resultUpdate };
 }

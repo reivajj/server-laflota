@@ -45,6 +45,7 @@ const getTrackContributorsFromFuga = async trackAssetId => {
 }
 
 const addContributorToAssetFuga = async (trackAssetId, rawDataContributor) => {
+  if (!rawDataContributor.person) return { data: "ERROR" };
   const response = await post(`/assets/${trackAssetId}/contributors`, rawDataContributor);
   return response;
 }

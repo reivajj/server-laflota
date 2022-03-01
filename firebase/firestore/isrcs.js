@@ -21,6 +21,28 @@ const createISRCsBatchInFS = async csvFileName => {
   return result;
 }
 
+const createCapifIsrcs = async (initNumber, cant) => {
+  let isrcs = [];
+  for (let index = Number(initNumber); Number(index) < Number(initNumber) + Number(cant); Number(index++)) {
+    let indexToFiveDigits = index.toLocaleString('en-US', { minimumIntegerDigits: 5, useGrouping: false });
+    let isrc = `AR-QIW-22-${indexToFiveDigits}`;
+    const capifIsrc = { procedence: "CAPIF", isrc, used: false, id: uuidv5(isrc, isrcNamespace) };
+    isrcs.push(capifIsrc);
+  }
+
+  const batchSize = 300;
+  const docRefs = [];
+  isrcs.forEach(elem => docRefs.push(dbFS.collection("isrcs").doc(elem.id)));
+
+  const result = await batchActions(docRefs, "set", isrcs, "totalIsrcs", "isrcs", batchSize);
+  const updateStats = await dbFS.collection("isrcs").doc('stats').update({
+    totalIsrcs: admin.firestore.FieldValue.increment(cant),
+    totalIsrcsFromCAPIF: admin.firestore.FieldValue.increment(cant)
+  })
+
+  return { result, updateStats };
+}
+
 const deleteISRCsBatchInFS = async csvFileName => {
   const isrcsFromCSV = await readISRCsCsv(csvFileName);
   // const elementsSliced = isrcsFromCSV.slice(0,10);
@@ -31,6 +53,12 @@ const deleteISRCsBatchInFS = async csvFileName => {
 
   const result = await batchActions(docRefs, "delete", isrcsFromCSV, "totalIsrcs", "isrcs", batchSize);
   return result;
+}
+
+const getCapifISRCs = async () => {
+  let isrcsSnap = await dbFS.collection('isrcs').where('procedence', "==", "CAPIF").limit(10).get();
+  if (!isrcsSnap || isrcsSnap.empty) return "No encontramos el ISRC o hubo un error";
+  return isrcsSnap.docs.map(isrcDoc => isrcDoc.data());
 }
 
 const updateISRCsInFS = async (isrcsToUpdate, newValues) => {
@@ -53,14 +81,13 @@ const getIsrcDocByIsrcCodeFS = async isrcCode => {
 
 const getIsrcByUsesStateAndLimitFS = async instructionsAndLimit => {
   const { used, limit } = instructionsAndLimit;
-  let isrcsSnap = await dbFS.collection('isrcs').where('used', "==", used).limit(limit).get();
+  let isrcsSnap = await dbFS.collection('isrcs').where('used', "==", used).orderBy("isrc", "asc").limit(limit).get();
   if (isrcsSnap.empty) return `No encontre ISRC que esten con used:${used}`;
-
-  for (isrcDoc of isrcsSnap.docs) {
-    await isrcDoc.ref.update({ used: true });
-  }
 
   return isrcsSnap.docs.map(isrcDoc => isrcDoc.data().isrc);
 }
 
-module.exports = { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS };
+module.exports = {
+  createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS,
+  createCapifIsrcs, getCapifISRCs
+};

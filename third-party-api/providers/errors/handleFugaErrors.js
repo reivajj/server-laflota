@@ -68,6 +68,8 @@ const handleAlbumsErrorsMessage = albumErrorResponseFromFuga => {
 
   if (dataError.primary_artist === "ENTITY_NOT_FOUND") return albumUploadAlbumEntityNotFoundError(`${dataError.context}`);
   if (dataError.label === "ENTITY_NOT_FOUND") return albumUploadAlbumEntityNotFoundError(`${dataError.context}`);
+  
+  if (dataError.messageVariables && dataError.messageVariables.length > 0 && dataError.messageVariables[0].upc === "DUPLICATE_UPC_CODE") return albumAlreadyHasUPC;
 
   return albumInesperatedGenericError;
 }
