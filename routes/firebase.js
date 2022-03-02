@@ -1,5 +1,6 @@
 var router = require("express-promise-router")();
 const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS, createCapifIsrcs, getCapifISRCs } = require("../firebase/firestore/isrcs");
+const { getTracksByPropFS, attachTracksToAlbumFS } = require("../firebase/firestore/tracks");
 const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
   getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS } = require("../firebase/firestore/user");
 
@@ -55,6 +56,17 @@ router.get('/usersByEmail/:email/artists', async (req, res, _) => {
   return res.status(200).send({ response });
 })
 
+//============================================================TRACKS===============================================\\
+
+router.get('/tracks', async (req, res, _) => {
+  const response = await getTracksByPropFS(req.body);
+  return res.status(200).send({ response });
+})
+
+router.put('/fuga/tracks/:albumFugaId/attach', async (req, res, _) => {
+  const response = await attachTracksToAlbumFS(req.params.albumFugaId);
+  return res.status(200).send({ response });
+})
 
 //============================================================ISRC=================================================\\
 
@@ -92,7 +104,6 @@ router.put('/updateIsrcs', async (req, res, next) => {
   const response = await updateISRCsInFS(req.body.isrcs, req.body.updateWith);
   return res.status(200).send({ response });
 });
-
 
 
 module.exports = router;

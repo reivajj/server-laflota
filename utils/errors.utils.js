@@ -8,7 +8,7 @@ const albumPublishPermissionError = "Error al querer publicar el Album, no tiene
 const albumPublishNotFoundError = "Error al querer publicar el Album, no fue posible encontrar el Album.";
 const albumRearrengeError = "Error al actualizar la posición de la Canción en el Album.";
 const albumUploadCoverError = `Error al subir la imagen del Arte de Tapa.`;
-const albumTrackAssetError = "Error al subir la Canción al Album.";
+const albumTrackAssetError = "Error al adjuntar la Canción al Album.";
 const albumUploadAlbumError = 'Error al crear el Album.';
 const albumUploadAlbumEntityNotFoundError = entityMissing => `Error al crear el Album, no encontramos las siguientes entidades: ${entityMissing}`;
 const albumGetAlbumError = "Error al querer obtener el Album.";
@@ -19,7 +19,7 @@ const albumCreateDuplicateAlbum = "Este Album ya existe en el catálogo, con el 
 const albumGenerateUPCInesperatedError = "Sucedió un error inesperado al asignar un UPC al Album.";
 const albumNotAuthorizedGenericError = "No estás autorizado para realizar esta operación. Problablemente no estés logueado.";
 const albumMissingFieldsToPublish = fieldsMissing => `Faltan los siguientes campos obligatorios al querer Publicar el Album: ${fieldsMissing}`;
-const albumAlreadyHasUPC = "El Album ya poseé un UPC/Barcode, no puede generar uno nuevo.";
+const albumAlreadyHasUPC = "El UPC del lanzamiento ya existe en nuestro sistema, no puede usarlo nuevamente. Si el UPC fue asignado por el sistema, por favor, elimínelo y dejelo vacío (ver campo UPC).";
 const albumInesperatedGenericError = "Hubo un error inesperado al trabajar con un Album. Por favor, intente nuevamente.";
 
 // ARTISTS

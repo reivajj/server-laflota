@@ -48,31 +48,14 @@ const uploadAlbumAssetWithCover = async (albumAssetMetaData, coverFile) => {
     type: albumAssetMetaData.typeCover, id: responseCreateAlbumAsset.data.cover_image.id
   }, coverFile);
 
-  let responseCreateUPC = "";
-  if (!albumAssetMetaData.upc) responseCreateUPC = await generateUPCAlbumWithId(responseCreateAlbumAsset.data.id);
-
   return {
-    data: {
-      result: responseUploadAlbumCoverFinish.data, albumId: responseCreateAlbumAsset.data.id,
-      upc: responseCreateUPC ? responseCreateUPC.data.upc : responseCreateAlbumAsset.data.upc
-    }
+    data: { result: responseUploadAlbumCoverFinish.data, albumId: responseCreateAlbumAsset.data.id }
   };
 }
 
 const changeTrackPositionInAlbum = async (albumId, trackId, newPosition) => {
   const responseChangeTrackPosition = await changeTrackPositionInAlbumInFUGA(albumId, trackId, newPosition);
   return responseChangeTrackPosition;
-}
-
-const changeMultipleTracksPositionsInAlbum = async (albumId, rearrengeInstructionInBody) => {
-  const rearrengeFunction = rearrengeInstructionInBody.rearrengeInstructions.map(async instruction => {
-    const responseIndividual = await changeTrackPositionInAlbumInFUGA(albumId, instruction.trackId, instruction.newPosition);
-    return { trackId: instruction.trackId, success: responseIndividual.status === 200 };
-  });
-
-  return Promise.all(rearrengeFunction).then(result => {
-    return { response: result };
-  }).catch(error => console.log(error));
 }
 
 const publishAlbumWithId = async albumId => {
@@ -92,6 +75,7 @@ const deleteAlbumAndAssetsWithId = async (albumId, deleteAllAssets) => {
 }
 
 const generateUPCAlbumWithId = async albumId => {
+  console.log("CALLING GENERATE UPC: ", albumId);
   const responsePublishAlbum = await generateUPCAlbumWithIdInFuga(albumId);
   return responsePublishAlbum;
 }
@@ -99,6 +83,6 @@ const generateUPCAlbumWithId = async albumId => {
 module.exports = {
   getAllAlbums, getAlbumById, createAlbumAsset, attachTrackAssetInAlbumWithId,
   createCoverImageInAlbum, uploadAlbumAssetWithCover, changeTrackPositionInAlbum,
-  changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId,
-  deleteAlbumAndAssetsWithId, generateUPCAlbumWithId, getAlbumLiveLinksById
+  publishAlbumWithId, updateAlbumWithId, deleteAlbumAndAssetsWithId,
+  generateUPCAlbumWithId, getAlbumLiveLinksById
 };

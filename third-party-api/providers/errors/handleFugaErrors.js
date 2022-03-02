@@ -54,6 +54,7 @@ const handleUploadErrorsMessage = (uploadErrorResponseFromFuga, errorConfigData)
 }
 
 const handleAlbumsErrorsMessage = albumErrorResponseFromFuga => {
+  console.log("ALBUM ERROR: ", albumErrorResponseFromFuga);
   const configError = albumErrorResponseFromFuga.config;
   const urlReq = configError.url;
   const dataError = albumErrorResponseFromFuga.data;
@@ -65,12 +66,11 @@ const handleAlbumsErrorsMessage = albumErrorResponseFromFuga => {
   if (dataError.code === "FIELD_REQUIRED" && urlReq.indexOf("/publish") > 0) return albumMissingFieldsToPublish(dataError.context);
   if (dataError.code === "NOT_AUTHORIZED") return albumNotAuthorizedGenericError;
   if (dataError.code === "DUPLICATE_AUDIOPRODUCT") return albumCreateDuplicateAlbum;
+  if (dataError.upc === "DUPLICATE_UPC_CODE") return albumAlreadyHasUPC;
 
   if (dataError.primary_artist === "ENTITY_NOT_FOUND") return albumUploadAlbumEntityNotFoundError(`${dataError.context}`);
   if (dataError.label === "ENTITY_NOT_FOUND") return albumUploadAlbumEntityNotFoundError(`${dataError.context}`);
   
-  if (dataError.messageVariables && dataError.messageVariables.length > 0 && dataError.messageVariables[0].upc === "DUPLICATE_UPC_CODE") return albumAlreadyHasUPC;
-
   return albumInesperatedGenericError;
 }
 

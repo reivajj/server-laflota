@@ -19,6 +19,8 @@ const createFugaAlbumFromFormData = albumAssetMetaData => {
   if (albumAssetMetaData.upc) rawDataAlbumAsset.upc = albumAssetMetaData.upc;
   if (albumAssetMetaData.subgenre) rawDataAlbumAsset.subgenre = albumAssetMetaData.subgenre;
   if (albumAssetMetaData.release_version) rawDataAlbumAsset.release_version = albumAssetMetaData.release_version;
+  if (albumAssetMetaData.extra_1) rawDataAlbumAsset.extra_1 = albumAssetMetaData.extra_1;
+  if (albumAssetMetaData.extra_2) rawDataAlbumAsset.extra_2 = albumAssetMetaData.extra_2;
   return rawDataAlbumAsset;
 }
 

@@ -1,6 +1,6 @@
 const createError = require('http-errors');
 const { axiosFugaInstance } = require('../../../config/axiosConfig');
-const { albumRearrengeError, albumTrackAssetError, albumGetAllError, albumUpdateFieldsError, albumDeleteError } = require('../../../utils/errors.utils');
+const { albumTrackAssetError, albumGetAllError, albumUpdateFieldsError, albumDeleteError } = require('../../../utils/errors.utils');
 
 const { get, post, put } = axiosFugaInstance;
 
@@ -20,14 +20,26 @@ const getAlbumLiveLinksByIdFuga = async albumId => {
   return response;
 }
 
+const checkIfErrorIsDuplicatedUPCandDelete = async (errorCreatingAlbum, rawDataAlbum) => {
+  if (errorCreatingAlbum.data.upc === "DUPLICATE_UPC_CODE") {
+    console.log("RAW DATA ALBUM PRE: ", rawDataAlbum);
+    rawDataAlbum.upc = "";
+    console.log("RAW DATA ALBUM POST: ", rawDataAlbum);
+    const creatingAlbumResponse = await uploadAlbumToProvider(rawDataAlbum);
+    return creatingAlbumResponse;
+  }
+  else throw createError(400, errorCreatingAlbum.data.message, { config: { url: "/products" }, response: { data: errorCreatingAlbum.data } });
+}
+
 const uploadAlbumToProvider = async rawDataAlbum => {
-  const response = await post('/products', rawDataAlbum)
+  const response = post('/products', rawDataAlbum)
+    .catch(async error => await checkIfErrorIsDuplicatedUPCandDelete(error.response, rawDataAlbum));
   return response;
 }
 
 const attachTrackAssetInAlbumFuga = async (albumId, trackId) => {
   const response = await put(`/products/${albumId}/assets/${trackId}`)
-    .catch((error) => { throw createError(400, albumTrackAssetError, { properties: { message: error.message, formData: trackId, error } }); });
+  // .catch((error) => { throw createError(400, albumTrackAssetError, { properties: { message: error.message, formData: trackId, error } }); });
   return response;
 }
 
@@ -40,10 +52,6 @@ const uploadCoverInAlbumToFuga = async formDataCover => {
 
 const changeTrackPositionInAlbumInFUGA = async (albumId, trackId, newPosition) => {
   const response = await put(`/products/${albumId}/assets/${trackId}/position/${newPosition}`)
-    .catch((error) => {
-      throw createError(400, albumRearrengeError,
-        { properties: { message: error.message, formData: { albumId, trackId, newPosition } } });
-    })
   return response;
 }
 
