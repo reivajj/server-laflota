@@ -19,7 +19,7 @@ const albumCreateDuplicateAlbum = "Este Album ya existe en el catálogo, con el 
 const albumGenerateUPCInesperatedError = "Sucedió un error inesperado al asignar un UPC al Album.";
 const albumNotAuthorizedGenericError = "No estás autorizado para realizar esta operación. Problablemente no estés logueado.";
 const albumMissingFieldsToPublish = fieldsMissing => `Faltan los siguientes campos obligatorios al querer Publicar el Album: ${fieldsMissing}`;
-const albumAlreadyHasUPC = "El UPC del lanzamiento ya existe en nuestro sistema, no puede usarlo nuevamente. Si el UPC fue asignado por el sistema, por favor, elimínelo y dejelo vacío (ver campo UPC).";
+const albumAlreadyHasUPC = "Hubo un problema al generar el código UPC. Pero el Lanzamiento se realizó correctamente. Pronto le asignaremos un código UPC.";
 const albumInesperatedGenericError = "Hubo un error inesperado al trabajar con un Album. Por favor, intente nuevamente.";
 
 // ARTISTS

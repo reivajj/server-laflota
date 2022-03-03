@@ -61,7 +61,7 @@ albums.delete('/:albumId', async (req, res, _) => {
 
 albums.post('/:albumId/barcode', async (req, res) => {
   const response = await generateUPCAlbumWithId(req.params.albumId);
-  return res.status(200).send({ response: response.data });
+  return res.status(200).send({ response: response.data.upc });
 })
 
 albums.use('/:albumId/delivery_instructions', delivery)

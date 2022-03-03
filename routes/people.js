@@ -1,11 +1,16 @@
 var router = require("express-promise-router")();
-const { getAllPeopleFuga, getPeopleByIdFuga, createPersonFuga, createMultiplePersonsFuga } = require("../third-party-api/providers/fuga/people");
+const { getAllPeopleFuga, getPeopleByIdFuga, createPersonFuga, createMultiplePersonsFuga, getPersonByNameFuga } = require("../third-party-api/providers/fuga/people");
 
 const multer  = require('multer');
 const upload = multer();
 
 router.get('/', async (_, res, __) => {
   const response = await getAllPeopleFuga();
+  return res.status(200).send({ response: response.data });
+});
+
+router.get('/:personName', async (req, res, __) => {
+  const response = await getPersonByNameFuga(req.params.personName);
   return res.status(200).send({ response: response.data });
 });
 

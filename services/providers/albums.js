@@ -74,10 +74,23 @@ const deleteAlbumAndAssetsWithId = async (albumId, deleteAllAssets) => {
   return responseDeleteAlbum;
 }
 
+const checkIfAlbumHasAlreadyUPCErrorAndAct = async (errorBarcode, albumId) => {
+  console.log("ERROR BARCODE: ", errorBarcode);
+  if (errorBarcode.data.code === "PRODUCT_ALREADY_HAS_UPC" || errorBarcode.data.upc === "DUPLICATE_UPC_CODE") {
+    const albumResponse = await getAlbumById(albumId);
+    return { data: albumResponse.data.upc };
+  }
+  else throw createError(400, errorBarcode.data.message, {
+    config: { url: "/albums" },
+    response: { data: { code: errorBarcode.data.code, upc: errorBarcode.data.upc } }
+  });
+}
+
+
 const generateUPCAlbumWithId = async albumId => {
-  console.log("CALLING GENERATE UPC: ", albumId);
-  const responsePublishAlbum = await generateUPCAlbumWithIdInFuga(albumId);
-  return responsePublishAlbum;
+  const responseCreateUPC = await generateUPCAlbumWithIdInFuga(albumId)
+    .catch(async error => await checkIfAlbumHasAlreadyUPCErrorAndAct(error.response, albumId));
+  return responseCreateUPC;
 }
 
 module.exports = {

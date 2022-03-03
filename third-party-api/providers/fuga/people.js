@@ -8,7 +8,7 @@ const getAllPeopleFuga = async () => {
   return response;
 }
 
-const getPersonByName = async personName => {
+const getPersonByNameFuga = async personName => {
   const personsThatCoincidInitName = await get(`/people?name=${encodeURI(personName)}`);
   return personsThatCoincidInitName;
 }
@@ -20,7 +20,7 @@ const getPeopleByIdFuga = async personId => {
 
 const checkIfErrorIsDuplicatedNameAndAct = async (errorCreatingPerson, personName) => {
   if (errorCreatingPerson.data.code === "DUPLICATE_PERSON_NAME") {
-    const allPersonsWhoInitWithThatName = await getPersonByName(personName);
+    const allPersonsWhoInitWithThatName = await getPersonByNameFuga(personName);
     return { data: allPersonsWhoInitWithThatName.data.person.find(person => person.name.toLowerCase() === personName.toLowerCase()) };
   }
   else throw createError(400, errorCreatingPerson.data.message, { config: { url: "/people" }, response: { data: { unexpectedError: true } } });
@@ -43,4 +43,4 @@ const createMultiplePersonsFuga = async personsNames => {
   return Promise.all(createPersons).then(result => result.filter(person => person !== "EMPTY NAME")).catch(error => error);
 }
 
-module.exports = { getAllPeopleFuga, getPeopleByIdFuga, createPersonFuga, createMultiplePersonsFuga };
+module.exports = { getAllPeopleFuga, getPeopleByIdFuga, createPersonFuga, createMultiplePersonsFuga, getPersonByNameFuga };
