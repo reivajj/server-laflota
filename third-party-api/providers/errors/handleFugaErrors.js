@@ -2,7 +2,7 @@ const { artistsInUseDeleteError, artistFieldsMissingCreateError, artistGetArtist
   albumUploadAlbumEntityNotFoundError, albumUploadCoverError, trackUploadFileError, genericErrorUploadingAFile,
   albumCreateDuplicateAlbum, albumGetAlbumError, contributorsInesperatedGenericError, peopleInesperatedGenericError, errorPersonNameDuplicated,
   contributorDuplicatedError, contributorInvalidValueError, albumNotAuthorizedGenericError, albumMissingFieldsToPublish,
-  albumAlreadyHasUPC, albumInesperatedGenericError, trackInesperatedGenericError, labelInesperatedGenericError, trackIsrcWrongValue, artistDuplicateArtistNameProprietaryId, errorInesperadoArtista, artistErrorNotAuthorized, artistErrorCreatingIdentifierNotAuthorized, artistInvalidIdentifier, trackQualityTooLow, trackFloatingPointWavError,
+  albumAlreadyHasUPC, albumInesperatedGenericError, trackInesperatedGenericError, labelInesperatedGenericError, trackIsrcWrongValue, artistDuplicateArtistNameProprietaryId, errorInesperadoArtista, artistErrorNotAuthorized, artistErrorCreatingIdentifierNotAuthorized, artistInvalidIdentifier, trackQualityTooLow, trackFloatingPointWavError, trackIsrcDuplicate,
 } = require("../../../utils/errors.utils");
 
 // Pasar esto a las distintas RUTAS que tenes en ROUTES. Y ver que esten incluidas y listo.
@@ -35,10 +35,12 @@ const handleContributorsErrorsMessage = (contributorsAssetsErrorFromFuga, errorC
 
 const handleAssetsErrorsMessage = (assetsErrorResponseFromFuga, errorConfigData) => {
   console.log("ERROR CONFIG EN HANDLE ASSETS", assetsErrorResponseFromFuga);
+  let errorData = assetsErrorResponseFromFuga.data;
   if (!assetsErrorResponseFromFuga || !assetsErrorResponseFromFuga.data) return trackInesperatedGenericError;
   if (assetsErrorResponseFromFuga.unexpectedError) return trackInesperatedGenericError;
 
-  if (assetsErrorResponseFromFuga.data.isrc === "FIELD_VALUE_WRONG") return trackIsrcWrongValue;
+  if (errorData.isrc === "DUPLICATE_ISRC_CODE") return trackIsrcDuplicate(errorData.messageVariables[2]);
+  if (errorData.isrc === "FIELD_VALUE_WRONG") return trackIsrcWrongValue;
 
   return trackInesperatedGenericError;
 }

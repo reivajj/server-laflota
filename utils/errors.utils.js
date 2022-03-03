@@ -44,6 +44,7 @@ const trackInesperatedGenericError = "Hubo un error inesperado al trabajar con u
 const trackUploadFileError = "Error al subir la Canción (archivo) al Lanzamiento, la calidad es muy baja. Debe ser un stereo, 16, 24, or 32 bit entre 44.1 and 192 kHz WAV";
 const genericErrorUploadingAFile = "Error al subir un archivo.";
 const trackIsrcWrongValue = "Error al subir la Canción, el ISRC no es válido."
+const trackIsrcDuplicate = duplicatedIsrc => `Error al subir la Canción, el ISRC (${duplicatedIsrc}) que intentas utilizar ya se encuentra en nuestro sistema. Contacta soporte si el código ISRC es tuyo. O deja el codigo isrc vacío.`;
 const trackQualityTooLow = "Error al subir el archivo de la canción, la calidad es muy baja. Debe ser un stereo, 16, 24, or 32 bit entre 44.1 and 192 kHz WAV";
 const trackFloatingPointWavError = "Archivos Floating point WAV no son soportados. Debe ser un stereo, 16, 24, or 32 bit entre 44.1 y 192 kHz (Sample Rate) WAV";
 // CONTRIBUTORS
@@ -70,6 +71,7 @@ module.exports = {
   labelDuplicateName, labelInesperatedGenericError,
 
   trackUploadFileError, trackInesperatedGenericError, trackIsrcWrongValue, trackQualityTooLow, trackFloatingPointWavError,
+  trackIsrcDuplicate,
 
   genericErrorUploadingAFile,
 
