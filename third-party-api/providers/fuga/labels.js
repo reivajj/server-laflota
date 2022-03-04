@@ -24,7 +24,7 @@ const checkIfErrorIsDuplicateLabelAndAct = async (errorCreatingLabel, labelName)
   if (errorCreatingLabel.data.code === "DUPLICATE_LABEL_NAME") {
     const labelsSearched = await getLabelByNameFuga(labelName);
     const labelFounded = labelsSearched.data.label.find(label => label.name.toLowerCase() === labelName.toLowerCase());
-    if (!labelFounded.id) return { data: "Hubo un problema al buscar si el Sello estaba creado." }
+    if (!labelFounded || !labelFounded.id) return { data: "Hubo un problema al buscar si el Sello estaba creado." }
     return { data: labelFounded };
   }
   else throw createError(400, errorCreatingLabel.data.message, { config: { url: "/labels" }, response: { data: { unexpectedError: true } } });
