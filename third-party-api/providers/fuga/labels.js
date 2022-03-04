@@ -1,6 +1,5 @@
 const createHttpError = require('http-errors');
 const { axiosFugaV2Instance } = require('../../../config/axiosConfig');
-const { handleLabelErrorsMessage } = require('../errors/handleFugaErrors');
 
 const { get, post } = axiosFugaV2Instance;
 
@@ -39,7 +38,7 @@ const uploadLabelToProvider = async rawDataLabel => {
 }
 
 const deleteLabelFuga = async idToDelete => {
-  const response = await axiosFugaInstance.delete(`/labels/${idToDelete}`).catch((error) => {
+  const response = await axiosFugaV2Instance.delete(`/labels/${idToDelete}`).catch((error) => {
     throw createHttpError(400, 'Error to delete a label in FUGA', { properties: { msgFromFuga: error.response.data } });
   });
 
