@@ -32,7 +32,7 @@ const deleteUserInFSByEmail = async email => {
 
 const getUserInFSByEmail = async email => {
   const usersRef = dbFS.collection('users');
-  const snapshotGet = await usersRef.where('email', '==', email).get();
+  const snapshotGet = await usersRef.where('email', '==', email.toLowerCase()).get();
 
   if (snapshotGet.empty) return { exist: false };
 
