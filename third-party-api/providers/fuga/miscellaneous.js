@@ -43,7 +43,7 @@ const getSubgenresFuga = async () => {
 }
 
 const getSubgenresByNameFuga = async subgenreName => {
-  const response = await get(`/miscellaneous/subgenres?search=${subgenreName}`);
+  const response = await get(`/miscellaneous/subgenres?search=${encodeURI(subgenreName)}`);
   console.log("RESPONSE: ", response);
   return response;
 }

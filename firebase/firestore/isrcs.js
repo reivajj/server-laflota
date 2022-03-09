@@ -87,7 +87,19 @@ const getIsrcByUsesStateAndLimitFS = async instructionsAndLimit => {
   return isrcsSnap.docs.map(isrcDoc => isrcDoc.data().isrc);
 }
 
+const getNotUsedIsrcAndMark = async limit => {
+  let isrcsSnap = await dbFS.collection('isrcs').where('used', "==", false).orderBy("isrc", "asc").limit(limit).get();
+  if (isrcsSnap.empty) return `No encontre ISRC que no esten usados`;
+
+  let isrcs = [];
+  for (isrcDoc of isrcsSnap.docs) {
+    isrcs.push(isrcDoc.data().isrc);
+    await isrcDoc.ref.update({ used: true });
+  }
+  return isrcs;
+}
+
 module.exports = {
   createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS,
-  createCapifIsrcs, getCapifISRCs
+  createCapifIsrcs, getCapifISRCs, getNotUsedIsrcAndMark
 };

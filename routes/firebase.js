@@ -1,5 +1,5 @@
 var router = require("express-promise-router")();
-const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS, createCapifIsrcs, getCapifISRCs } = require("../firebase/firestore/isrcs");
+const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS, createCapifIsrcs, getCapifISRCs, getNotUsedIsrcAndMark } = require("../firebase/firestore/isrcs");
 const { getTracksByPropFS, attachTracksToAlbumFS } = require("../firebase/firestore/tracks");
 const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
   getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS } = require("../firebase/firestore/user");
@@ -87,6 +87,11 @@ router.post('/createCapifIsrcs', async (req, res, next) => {
 
 router.get('/getIsrcByUsedStateAndLimit', async (req, res, next) => {
   const response = await getIsrcByUsesStateAndLimitFS(req.body);
+  return res.status(200).send({ response });
+})
+
+router.get('/getNotUsedIsrcAndMark', async (req, res, next) => {
+  const response = await getNotUsedIsrcAndMark(req.body.limit);
   return res.status(200).send({ response });
 })
 
