@@ -48,6 +48,7 @@ const updateUserInFSByEmail = async (email, fieldsToUpdate) => {
   const usersRef = dbFS.collection('users');
   const snapshotGet = await usersRef.where('email', '==', email).limit(1).get();
 
+  console.log("FIELDS TO UPDATE: ", fieldsToUpdate);
   if (snapshotGet.empty) return { exist: false };
 
   const resultUpdate = await snapshotGet.docs[0].ref.update(fieldsToUpdate);
@@ -59,6 +60,18 @@ const updateUserInFSByEmail = async (email, fieldsToUpdate) => {
   });
 
   return { user: usersData[0], exist: true, count: usersData.length, resultUpdate };
+}
+
+const updatePasswordByEmailInFS = async (userEmail, newPassword) => {
+  console.log("NEW PASS: ", newPassword);
+  const userDataFS = await getUserInFSByEmail(userEmail);
+  let updateAuthUser = await auth.updateUser(userDataFS.user[0].id, { password: newPassword }).catch(error => {
+    console.log(error);
+    return "Error al actualizar el Auth User";
+  });
+
+  let updateUserDocResult = await updateUserInFSByEmail(userEmail, { password: newPassword });
+  return updateUserDocResult;
 }
 
 const getArtistsFromUserIdFS = async ownerId => {
@@ -101,24 +114,6 @@ const getAllUsersFromFS = async () => {
   if (!allUsers) throw createHttpError(400, 'DB Error retrieving all users from firestore:', { properties: allUsers });
 
   return allUsers;
-}
-
-const updatePasswordByEmailInFS = async (userEmail, newPassword) => {
-  console.log("DATA: ", { userEmail, newPassword });
-  const userDataFS = await getUserInFSByEmail(userEmail);
-  console.log("UID: ", userDataFS.user);
-  auth.updateUser(userDataFS.user[0].id, {
-    password: newPassword,
-  })
-    .then((userRecord) => {
-      // See the UserRecord reference doc for the contents of userRecord.
-      console.log('Successfully updated user', userRecord.toJSON());
-      return userRecord;
-    })
-    .catch((error) => {
-      console.log('Error updating user:', error);
-    });
-
 }
 
 const deleteWpUsersNotLoggedInFS = async () => {

@@ -50,5 +50,4 @@ miscellaneous.post('/subgenres', async (req, res) => {
   return res.status(200).send({ response: response.data });
 });
 
-
 module.exports = miscellaneous;

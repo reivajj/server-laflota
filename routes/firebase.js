@@ -45,6 +45,7 @@ router.put('/usersByEmail/:email', async (req, res, _) => {
 })
 
 router.put('/changePasswordByEmail/:userEmail', async (req, res, _) => {
+  console.log("REQUEST: ", req.body)
   const response = await updatePasswordByEmailInFS(req.params.userEmail, req.body.password);
   return res.status(200).send({ response });
 });
