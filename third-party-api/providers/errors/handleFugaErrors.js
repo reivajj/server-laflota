@@ -58,7 +58,7 @@ const handleUploadErrorsMessage = (uploadErrorResponseFromFuga, errorConfigData)
 const handleAlbumsErrorsMessage = albumErrorResponseFromFuga => {
   console.log("ALBUM ERROR: ", albumErrorResponseFromFuga);
   const configError = albumErrorResponseFromFuga.config;
-  const urlReq = configError?.url || "";
+  const urlReq = configError ? configError.url : "";
   const dataError = albumErrorResponseFromFuga.data;
 
   if (!albumErrorResponseFromFuga || !albumErrorResponseFromFuga.data) return albumInesperatedGenericError;
@@ -73,7 +73,7 @@ const handleAlbumsErrorsMessage = albumErrorResponseFromFuga => {
 
   if (dataError.primary_artist === "ENTITY_NOT_FOUND") return albumUploadAlbumEntityNotFoundError(`${dataError.context}`);
   if (dataError.label === "ENTITY_NOT_FOUND") return albumUploadAlbumEntityNotFoundError(`${dataError.context}`);
-  
+
   return albumInesperatedGenericError;
 }
 
