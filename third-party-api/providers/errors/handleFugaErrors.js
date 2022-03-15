@@ -58,13 +58,14 @@ const handleUploadErrorsMessage = (uploadErrorResponseFromFuga, errorConfigData)
 const handleAlbumsErrorsMessage = albumErrorResponseFromFuga => {
   console.log("ALBUM ERROR: ", albumErrorResponseFromFuga);
   const configError = albumErrorResponseFromFuga.config;
-  const urlReq = configError.url;
+  const urlReq = configError?.url || "";
   const dataError = albumErrorResponseFromFuga.data;
 
   if (!albumErrorResponseFromFuga || !albumErrorResponseFromFuga.data) return albumInesperatedGenericError;
   if (albumErrorResponseFromFuga.statusText === "Not Found") return albumGetAlbumError;
 
   if (dataError.code === "PRODUCT_ALREADY_HAS_UPC") return albumAlreadyHasUPC;
+  // if (dataError.code === "FIELD_REQUIRED" && urlReq.indexOf("/publish") > 0) return albumMissingFieldsToPublish(dataError.context);
   if (dataError.code === "FIELD_REQUIRED" && urlReq.indexOf("/publish") > 0) return albumMissingFieldsToPublish(dataError.context);
   if (dataError.code === "NOT_AUTHORIZED") return albumNotAuthorizedGenericError;
   if (dataError.code === "DUPLICATE_AUDIOPRODUCT") return albumCreateDuplicateAlbum;
