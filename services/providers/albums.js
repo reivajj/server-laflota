@@ -3,8 +3,8 @@ const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, attac
 const { getUploadUuid, finishUpload } = require('../../third-party-api/providers/fuga/upload');
 const { createFugaCoverUploadStart, createFugaCoverUpload } = require('../../models/upload');
 const { createFugaAlbumFromFormData } = require('../../models/albums');
-const FormData = require('form-data');
 const { uploadFileByChunks } = require('../../utils/upload.utils');
+const { createNoCoverFugaError } = require('../../third-party-api/providers/errors/createFugaErrors');
 
 const getAllAlbums = async () => {
   const responseGetAllAlbums = await getAllAlbumsFromFuga();
@@ -33,10 +33,13 @@ const attachTrackAssetInAlbumWithId = async (albumId, trackId) => {
 }
 
 const createCoverImageInAlbum = async (coverFormDataToUpload, coverFile) => {
+  console.log("COVER: ", coverFile);
+  if (!coverFile) throw createNoCoverFugaError(coverFile);
   const rawDataCoverUploadStart = createFugaCoverUploadStart(coverFormDataToUpload);
   const responseUploadStart = await getUploadUuid(rawDataCoverUploadStart);
 
-  const chunksUploadResponse = await uploadFileByChunks(coverFile, responseUploadStart.data.id, "image/jpeg", "jpg", "cover", uploadCoverInAlbumToFuga);
+  let mimeType = coverFile.mimetype; let extension = coverFile.originalname.split(".")[1];
+  const chunksUploadResponse = await uploadFileByChunks(coverFile, responseUploadStart.data.id, mimeType, extension, "cover", uploadCoverInAlbumToFuga);
   const responseUploadAlbumCoverFinish = finishUpload(responseUploadStart.data.id, coverFile);
 
   return responseUploadAlbumCoverFinish;

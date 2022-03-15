@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 const { axiosFugaV2Instance } = require('../../../config/axiosConfig');
+const { deleteWeirdCharacters } = require('../../../utils/utils');
 
 const { get, post } = axiosFugaV2Instance;
 
@@ -21,7 +22,10 @@ const getPeopleByIdFuga = async personId => {
 const checkIfErrorIsDuplicatedNameAndAct = async (errorCreatingPerson, personName) => {
   if (errorCreatingPerson.data.code === "DUPLICATE_PERSON_NAME") {
     const allPersonsWhoInitWithThatName = await getPersonByNameFuga(personName);
-    return { data: allPersonsWhoInitWithThatName.data.person.find(person => person.name.toLowerCase() === personName.toLowerCase()) };
+    return {
+      data: allPersonsWhoInitWithThatName.data.person.find(person =>
+        deleteWeirdCharacters(person.name.toLowerCase()) === deleteWeirdCharacters(personName.toLowerCase()))
+    };
   }
   else throw createError(400, errorCreatingPerson.data.message, { config: { url: "/people" }, response: { data: { unexpectedError: true } } });
 }
@@ -34,13 +38,16 @@ const createPersonFuga = async rawDataPerson => {
 
 const createMultiplePersonsFuga = async personsNames => {
   const people = JSON.parse(personsNames.names);
-  const createPersons = people.map(async person => {
-    if (!person.name) return "EMPTY NAME";
-    const responseCreatePerson = await createPersonFuga(person);
-    return responseCreatePerson.data;
-  })
+  let personsResult = [];
 
-  return Promise.all(createPersons).then(result => result.filter(person => person !== "EMPTY NAME")).catch(error => error);
+  for (const personName of people) {
+    if (personName.name) {
+      const responseCreatePerson = await createPersonFuga(personName);
+      personsResult.push(responseCreatePerson.data);
+    }
+  }
+
+  return personsResult.filter(person => person !== "EMPTY NAME");
 }
 
 module.exports = { getAllPeopleFuga, getPeopleByIdFuga, createPersonFuga, createMultiplePersonsFuga, getPersonByNameFuga };

@@ -22,7 +22,6 @@ albums.get('/:albumId/live_links', async (req, res, _) => {
   return res.status(200).send({ response: response.data });
 });
 
-
 albums.post('/', upload.single('cover'), async (req, res) => {
   const response = await uploadAlbumAssetWithCover(req.body, req.file);
   return res.status(200).send({ response: response.data });

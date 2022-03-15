@@ -65,6 +65,7 @@ const handleAlbumsErrorsMessage = albumErrorResponseFromFuga => {
   if (albumErrorResponseFromFuga.statusText === "Not Found") return albumGetAlbumError;
 
   if (dataError.code === "PRODUCT_ALREADY_HAS_UPC") return albumAlreadyHasUPC;
+  if (dataError.code === "NO_COVER_FILE") return albumUploadCoverError;
   // if (dataError.code === "FIELD_REQUIRED" && urlReq.indexOf("/publish") > 0) return albumMissingFieldsToPublish(dataError.context);
   if (dataError.code === "FIELD_REQUIRED" && urlReq.indexOf("/publish") > 0) return albumMissingFieldsToPublish(dataError.context);
   if (dataError.code === "NOT_AUTHORIZED") return albumNotAuthorizedGenericError;

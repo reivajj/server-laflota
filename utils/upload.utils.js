@@ -35,7 +35,7 @@ const uploadFileByChunks = async (file, coverUploadStartUuid, mimeType, fileExte
     return `Chunk ${chunkIndex} uploaded`;
   })
 
-  return Promise.all(uploadChunks).then(result => result).catch(error => console.log(error));
+  return Promise.all(uploadChunks).then(result => result).catch(error => error);
 }
 
 module.exports = { uploadFileByChunks }

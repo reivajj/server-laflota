@@ -7,7 +7,7 @@ const errorInesperado = "Hubo un error inesperado. Por favor, intente nuevamente
 const albumPublishPermissionError = "Error al querer publicar el Album, no tienes permiso o contrato.";
 const albumPublishNotFoundError = "Error al querer publicar el Album, no fue posible encontrar el Album.";
 const albumRearrengeError = "Error al actualizar la posición de la Canción en el Album.";
-const albumUploadCoverError = `Error al subir la imagen del Arte de Tapa.`;
+const albumUploadCoverError = `Error al subir la imagen del Arte de Tapa. Por favor, vuelve a cargarla por más que la estés viendo en el formulario.`;
 const albumTrackAssetError = "Error al adjuntar la Canción al Album.";
 const albumUploadAlbumError = 'Error al crear el Album.';
 const albumUploadAlbumEntityNotFoundError = entityMissing => `Error al crear el Album, no encontramos las siguientes entidades: ${entityMissing}`;

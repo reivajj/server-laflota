@@ -38,8 +38,7 @@ const uploadAlbumToProvider = async rawDataAlbum => {
 }
 
 const attachTrackAssetInAlbumFuga = async (albumId, trackId) => {
-  const response = await put(`/products/${albumId}/assets/${trackId}`)
-  // .catch((error) => { throw createError(400, albumTrackAssetError, { properties: { message: error.message, formData: trackId, error } }); });
+  const response = await put(`/products/${albumId}/assets/${trackId}`);
   return response;
 }
 
