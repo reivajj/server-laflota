@@ -5,9 +5,20 @@ const {
   , getTerritoriesFuga, getContributorRolesFuga, getAudioLocalesFuga, getSubgenresFuga
 } = require("../third-party-api/providers/fuga/miscellaneous");
 
-miscellaneous.get('/contracts', async (_, res) => {
-  const response = await getAllDspGroupsFuga();
+miscellaneous.get('/contracts', async (req, res) => {
+  const pageSize = req.query.page_size;
+  const response = await getAllDspGroupsFuga(pageSize);
   return res.status(200).send({ response: response.data });
+});
+
+miscellaneous.get('/contracts-id-name', async (_, res) => {
+  let response = await getAllDspGroupsFuga(100);
+  let contracts = response.data.contract;
+  let activeContracts = contracts.filter(contract => contract.status === "EFFECTIVE");
+  activeContracts = activeContracts.map(contract => {
+    return { fugaId: contract.id, dspName: contract.dsp.name, dspId: contract.dsp.id };
+  });
+  return res.status(200).send({ response: activeContracts });
 });
 
 miscellaneous.get('/languages', async (_, res) => {

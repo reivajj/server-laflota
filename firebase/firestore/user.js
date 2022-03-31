@@ -4,6 +4,7 @@ const firebaseApp = require('../../loaders/firebase');
 // Firebase App lo necesito aca..
 const { getCountUsersWP, getAllUsersWP } = require('../../services/providers/users');
 const { createFBUser } = require('../models/user');
+const { batchActions } = require('../utils');
 
 const dbFS = admin.firestore();
 const auth = admin.auth();
@@ -44,11 +45,24 @@ const getUserInFSByEmail = async email => {
   return { user: usersData, exist: true, count: usersData.length };
 }
 
+const updateAllUsersFS = async infoToUpdate => {
+  const snapshot = await dbFS.collection('users').get();
+  let usersRefs = [];
+  let updateWith = [];
+
+  snapshot.forEach((doc) => {
+    updateWith.push(infoToUpdate);
+    usersRefs.push(doc.ref);
+  });
+
+  const result = await batchActions(usersRefs, "update", updateWith, "", "users", batchSize = 200);
+  return result;
+}
+
 const updateUserInFSByEmail = async (email, fieldsToUpdate) => {
   const usersRef = dbFS.collection('users');
   const snapshotGet = await usersRef.where('email', '==', email).limit(1).get();
 
-  console.log("FIELDS TO UPDATE: ", fieldsToUpdate);
   if (snapshotGet.empty) return { exist: false };
 
   const resultUpdate = await snapshotGet.docs[0].ref.update(fieldsToUpdate);
@@ -181,5 +195,6 @@ const createUsersInFS = async () => {
 
 module.exports = {
   getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
-  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS
+  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS,
+  updateAllUsersFS
 };

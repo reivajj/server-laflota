@@ -1,11 +1,18 @@
 var router = require("express-promise-router")();
+const { deleteElementFromFS, getElementFromFS } = require("../firebase/firestore/elements");
 const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS, createCapifIsrcs, getCapifISRCs, getNotUsedIsrcAndMark } = require("../firebase/firestore/isrcs");
 const { getTracksByPropFS, attachTracksToAlbumFS } = require("../firebase/firestore/tracks");
 const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
-  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS } = require("../firebase/firestore/user");
+  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS, updateAllUsersFS } = require("../firebase/firestore/user");
 
 router.get('/users', async (_, res, next) => {
   const response = await getAllUsersFromFS();
+  return res.status(200).send({ response });
+});
+
+router.put('/users', async (req, res, next) => {
+  console.log("REQ BODY: ", req.body)
+  const response = await updateAllUsersFS(req.body);
   return res.status(200).send({ response });
 });
 
@@ -50,6 +57,16 @@ router.put('/changePasswordByEmail/:userEmail', async (req, res, _) => {
   return res.status(200).send({ response });
 });
 
+//============================================================ELEMENTS=============================================\\
+router.delete('/element', async (req, res, _) => {
+  const response = await deleteElementFromFS(req.body.targetCollection, req.body.targetElementId);
+  return res.status(200).send({ response });
+})
+
+router.get('/element', async (req, res, _) => {
+  const response = await getElementFromFS(req.body.targetCollection, req.body.targetElementId);
+  return res.status(200).send({ response });
+})
 //============================================================ARTISTS==============================================\\
 
 router.get('/usersByEmail/:email/artists', async (req, res, _) => {
@@ -110,6 +127,5 @@ router.put('/updateIsrcs', async (req, res, next) => {
   const response = await updateISRCsInFS(req.body.isrcs, req.body.updateWith);
   return res.status(200).send({ response });
 });
-
 
 module.exports = router;

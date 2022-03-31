@@ -2,8 +2,8 @@ const { axiosFugaV2Instance } = require("../../../config/axiosConfig");
 
 const { get, post, put } = axiosFugaV2Instance;
 
-const getAllDspGroupsFuga = async () => {
-  const response = await get('/contracts');
+const getAllDspGroupsFuga = async pageSize => {
+  const response = await get(`/contracts?page_size=${pageSize}`);
   return response;
 };
 
