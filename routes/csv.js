@@ -1,4 +1,4 @@
-const { readSubscriptionsCsv, readISRCsCsv } = require("../csv/csvActions");
+const { readSubscriptionsCsv, readISRCsCsv, readUPCsCsvAndWriteNew } = require("../csv/csvActions");
 
 var router = require("express-promise-router")();
 
@@ -12,5 +12,9 @@ router.post('/importISRCsFromLocalCSV/:csvFileName', async (req, res, next) => {
   return res.status(200).send({ response });
 })
 
+router.post('/addZeroToUpcList', async (_, res, next) => {
+  const response = await readUPCsCsvAndWriteNew();
+  return res.status(200).send({ response });
+})
 
 module.exports = router;

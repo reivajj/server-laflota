@@ -16,7 +16,7 @@ const checkIfNeedLoginToFuga = reqUrl => {
 }
 
 const loginToFugaIfNeeded = async (req, res, next) => {
-
+  // console.log("REQ:", req);
   if (checkIfNeedLoginToFuga(req.url)) {
     console.log("NEED LOGIN");
     const loginData = {

@@ -27,9 +27,16 @@ albums.post('/', upload.single('cover'), async (req, res) => {
   return res.status(200).send({ response: response.data });
 });
 
-albums.post('/uploadCover', upload.single('cover'), async (req, res) => {
+albums.post('/uploadCover', upload.single('file'), async (req, res) => {
+  console.log("COVER: ", req.file);
   const response = await createCoverImageInAlbum(req.body, req.file);
   return res.status(200).send({ response: response.data });
+});
+
+albums.post('/tus-demo', upload.single('file'), async (req, res) => {
+  console.log("COVER: ", req);
+  // const response = await createCoverImageInAlbum(req.body, req.file);
+  return res.status(200).send({ response: "DEMO" });
 });
 
 albums.put('/:albumId/tracks/:trackId', upload.none(), async (req, res) => {

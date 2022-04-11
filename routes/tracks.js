@@ -22,7 +22,6 @@ router.put('/:trackId', upload.none(), async (req, res, next) => {
 });
 
 router.post('/', upload.single('track'), async (req, res) => {
-  console.log("MetaData: ", req.body);
   const response = await uploadTrackAssetWithFile(req.body, req.file);
   return res.status(200).send({ response: response.data });
 });

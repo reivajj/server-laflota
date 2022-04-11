@@ -23,12 +23,13 @@ const uploadTrackAssetToProvider = async rawDataTrackAsset => {
   return response;
 }
 
+// Agregar un buen HANDLING DE ERRORES: que escriba al CLOUD!
 const uploadTrackFileInAlbumToFuga = async formDataTrackFileUpload => {
   const response = await post('/upload', formDataTrackFileUpload, {
     headers: formDataTrackFileUpload.getHeaders()
   }).catch(error => console.log("ERROR: ", error));
 
-  if (!response || !response.data.success) throw createError(400, `Error to upload a Track to an album`, { properties: { response, formData: formDataTrackFileUpload } });
+  if (!response || !response.data || !response.data.success) throw createError(400, `Error to upload a Track to an album`, { properties: { response, formData: formDataTrackFileUpload } });
   return response;
 }
 

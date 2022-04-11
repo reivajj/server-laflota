@@ -33,7 +33,6 @@ const attachTrackAssetInAlbumWithId = async (albumId, trackId) => {
 }
 
 const createCoverImageInAlbum = async (coverFormDataToUpload, coverFile) => {
-  console.log("COVER: ", coverFile);
   if (!coverFile) throw createNoCoverFugaError(coverFile);
   const rawDataCoverUploadStart = createFugaCoverUploadStart(coverFormDataToUpload);
   const responseUploadStart = await getUploadUuid(rawDataCoverUploadStart);

@@ -1,5 +1,6 @@
 var router = require("express-promise-router")();
-const { deleteElementFromFS, getElementFromFS } = require("../firebase/firestore/elements");
+const { addAlbumFromFugaToFSUser } = require("../firebase/firestore/albums");
+const { deleteElementFromFS, getElementFromFS, editElementFromFS } = require("../firebase/firestore/elements");
 const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS, createCapifIsrcs, getCapifISRCs, getNotUsedIsrcAndMark } = require("../firebase/firestore/isrcs");
 const { getTracksByPropFS, attachTracksToAlbumFS } = require("../firebase/firestore/tracks");
 const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
@@ -11,7 +12,6 @@ router.get('/users', async (_, res, next) => {
 });
 
 router.put('/users', async (req, res, next) => {
-  console.log("REQ BODY: ", req.body)
   const response = await updateAllUsersFS(req.body);
   return res.status(200).send({ response });
 });
@@ -57,6 +57,13 @@ router.put('/changePasswordByEmail/:userEmail', async (req, res, _) => {
   return res.status(200).send({ response });
 });
 
+//============================================================ALBUMS===============================================\\
+
+router.post('/fuga/create-fs-album-from-fuga', async (req, res, _) => {
+  const response = await addAlbumFromFugaToFSUser(req.body.albumFugaId, req.body.userEmail, req.body.userId, req.body.artistId, req.body.nombreArtist);
+  return res.status(200).send({ response });
+})
+
 //============================================================ELEMENTS=============================================\\
 router.delete('/element', async (req, res, _) => {
   const response = await deleteElementFromFS(req.body.targetCollection, req.body.targetElementId);
@@ -65,6 +72,11 @@ router.delete('/element', async (req, res, _) => {
 
 router.get('/element', async (req, res, _) => {
   const response = await getElementFromFS(req.body.targetCollection, req.body.targetElementId);
+  return res.status(200).send({ response });
+})
+
+router.put('/element', async (req, res, _) => {
+  const response = await editElementFromFS(req.body.targetCollection, req.body.targetElementId, req.body.newInfo);
   return res.status(200).send({ response });
 })
 //============================================================ARTISTS==============================================\\
