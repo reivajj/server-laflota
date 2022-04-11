@@ -27,7 +27,10 @@ const uploadTrackAssetToProvider = async rawDataTrackAsset => {
 const uploadTrackFileInAlbumToFuga = async formDataTrackFileUpload => {
   const response = await post('/upload', formDataTrackFileUpload, {
     headers: formDataTrackFileUpload.getHeaders()
-  }).catch(error => console.log("ERROR: ", error));
+  }).catch(error => {
+    console.log("ERROR: ", error);
+    Logger.error("Error al subir un Track: (en el catch de uploadTrackFileInAlbumToFuga)", error);
+  });
 
   if (!response || !response.data || !response.data.success) throw createError(400, `Error to upload a Track to an album`, { properties: { response, formData: formDataTrackFileUpload } });
   return response;
