@@ -26,6 +26,7 @@ const createFugaAlbumFromFormData = albumAssetMetaData => {
   if (albumAssetMetaData.extra_2) rawDataAlbumAsset.extra_2 = albumAssetMetaData.extra_2;
   if (albumAssetMetaData.extra_3) rawDataAlbumAsset.extra_3 = albumAssetMetaData.extra_3;
   if (albumAssetMetaData.extra_4) rawDataAlbumAsset.extra_4 = albumAssetMetaData.extra_4;
+  if (albumAssetMetaData.extra_5) rawDataAlbumAsset.extra_5 = albumAssetMetaData.extra_5;
   return rawDataAlbumAsset;
 }
 
