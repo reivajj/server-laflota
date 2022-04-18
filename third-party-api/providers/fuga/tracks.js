@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 const { axiosFugaInstance } = require('../../../config/axiosConfig');
+const { logToCloudLoggingFS } = require('../errors/logCloudLogging');
 
 const { get, post, put } = axiosFugaInstance;
 
@@ -27,8 +28,9 @@ const uploadTrackAssetToProvider = async rawDataTrackAsset => {
 const uploadTrackFileInAlbumToFuga = async formDataTrackFileUpload => {
   const response = await post('/upload', formDataTrackFileUpload, {
     headers: formDataTrackFileUpload.getHeaders()
-  }).catch(error => {
-    console.log("ERROR: ", error);
+  }).catch(async error => {
+    await logToCloudLoggingFS("BE: Error al querer subir una cancion (en el catch de uploadTrackFileInAlbumToFuga)",
+      formDataTrackFileUpload, error, "error");
     Logger.error("Error al subir un Track: (en el catch de uploadTrackFileInAlbumToFuga)", error);
   });
 

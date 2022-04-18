@@ -22,9 +22,7 @@ const getAlbumLiveLinksByIdFuga = async albumId => {
 
 const checkIfErrorIsDuplicatedUPCandDelete = async (errorCreatingAlbum, rawDataAlbum) => {
   if (errorCreatingAlbum.data.upc === "DUPLICATE_UPC_CODE") {
-    console.log("RAW DATA ALBUM PRE: ", rawDataAlbum);
     rawDataAlbum.upc = "";
-    console.log("RAW DATA ALBUM POST: ", rawDataAlbum);
     const creatingAlbumResponse = await uploadAlbumToProvider(rawDataAlbum);
     return creatingAlbumResponse;
   }

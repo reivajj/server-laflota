@@ -5,6 +5,7 @@ const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUs
 const { getTracksByPropFS, attachTracksToAlbumFS } = require("../firebase/firestore/tracks");
 const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
   getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS, updateAllUsersFS } = require("../firebase/firestore/user");
+const { logToCloudLoggingFS } = require("../third-party-api/providers/errors/logCloudLogging");
 
 router.get('/users', async (_, res, next) => {
   const response = await getAllUsersFromFS();
@@ -139,5 +140,13 @@ router.put('/updateIsrcs', async (req, res, next) => {
   const response = await updateISRCsInFS(req.body.isrcs, req.body.updateWith);
   return res.status(200).send({ response });
 });
+
+//==================================================LOGS=====================================\\
+
+router.post('/logToCloudLogging', async (req, res, _) => {
+  let { msg, payloadData, payloadError, typeOfLog } = req.body;
+  const response = await logToCloudLoggingFS(msg, payloadData, payloadError, typeOfLog);
+  return res.status(200).send({ response });
+})
 
 module.exports = router;
