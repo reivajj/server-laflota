@@ -2,12 +2,21 @@ const createError = require('http-errors');
 const { axiosFugaInstance } = require('../../../config/axiosConfig');
 const { albumTrackAssetError, albumGetAllError, albumUpdateFieldsError, albumDeleteError } = require('../../../utils/errors.utils');
 
+const fs = require("fs");
+// const sharp = require("sharp");
+
 const { get, post, put } = axiosFugaInstance;
 
 const getAllAlbumsFromFuga = async () => {
   const response = await get('/products')
     .catch((error) => { throw createError(400, albumGetAllError, { properties: error.response.data }) });
   return response;
+}
+
+const getAlbumByFieldValueFuga = async fieldValue => {
+  const response = await get(`/products?page=0&page_size=20&search=${encodeURI(fieldValue)}`)
+    .catch(error => { console.log("ERROR: ", error); return { data: { product: ["ERROR"] } } });
+  return { data: response.data.product };
 }
 
 const getAlbumByIdFromFuga = async albumId => {
@@ -47,6 +56,17 @@ const uploadCoverInAlbumToFuga = async formDataCover => {
   return response;
 }
 
+const getFugaAlbumCoverImageFUGA = async (albumId, imageSize) => {
+  const response = await get(`products/${albumId}/image/${imageSize}`, { responseType: 'stream' });
+  const writer = fs.createWriteStream(`images/${albumId}.png`)
+
+  response.data.pipe(writer)
+  return new Promise((resolve, reject) => {
+    writer.on('finish', resolve)
+    writer.on('error', reject)
+  })
+}
+
 const changeTrackPositionInAlbumInFUGA = async (albumId, trackId, newPosition) => {
   const response = await put(`/products/${albumId}/assets/${trackId}/position/${newPosition}`)
   return response;
@@ -78,5 +98,6 @@ const publishAlbumWithIdInFuga = async albumId => {
 module.exports = {
   getAllAlbumsFromFuga, uploadAlbumToProvider, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga,
   uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga,
-  deleteAlbumAndAssetsWithIdFromFuga, generateUPCAlbumWithIdInFuga, getAlbumLiveLinksByIdFuga
+  deleteAlbumAndAssetsWithIdFromFuga, generateUPCAlbumWithIdInFuga, getAlbumLiveLinksByIdFuga, getFugaAlbumCoverImageFUGA,
+  getAlbumByFieldValueFuga
 };

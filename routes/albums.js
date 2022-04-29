@@ -5,10 +5,18 @@ const multer = require('multer');
 const upload = multer();
 
 const { getAllAlbums, getAlbumById, attachTrackAssetInAlbumWithId, createCoverImageInAlbum,
-  uploadAlbumAssetWithCover, changeTrackPositionInAlbum, changeMultipleTracksPositionsInAlbum, publishAlbumWithId, updateAlbumWithId, deleteAlbumAndAssetsWithId, generateUPCAlbumWithId, getAlbumLiveLinksById } = require('../services/providers/albums');
+  uploadAlbumAssetWithCover, changeTrackPositionInAlbum, changeMultipleTracksPositionsInAlbum,
+  publishAlbumWithId, updateAlbumWithId, deleteAlbumAndAssetsWithId, generateUPCAlbumWithId,
+  getAlbumLiveLinksById, getFugaAlbumCoverImage, getAlbumByFieldValue } = require('../services/providers/albums');
 
 albums.get('/', async (_, res, __) => {
   const response = await getAllAlbums();
+  return res.status(200).send({ response: response.data });
+});
+
+albums.get('/searchByFieldValue', async (req, res, __) => {
+  console.log("REQ: ", req.body.fieldValue);
+  const response = await getAlbumByFieldValue(req.body.fieldValue);
   return res.status(200).send({ response: response.data });
 });
 
@@ -31,6 +39,11 @@ albums.post('/uploadCover', upload.single('file'), async (req, res) => {
   console.log("COVER: ", req.file);
   const response = await createCoverImageInAlbum(req.body, req.file);
   return res.status(200).send({ response: response.data });
+});
+
+albums.get('/:albumId/image/:size', async (req, res) => {
+  await getFugaAlbumCoverImage(req.params.albumId, req.params.size);
+  return res.status(200).sendFile(`${req.params.albumId}.png`, { root: "images/" });
 });
 
 albums.post('/tus-demo', upload.single('file'), async (req, res) => {

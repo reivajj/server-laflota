@@ -1,5 +1,9 @@
+const fs = require("fs");
+
 const { uploadAlbumToProvider, getAllAlbumsFromFuga, getAlbumByIdFromFuga, attachTrackAssetInAlbumFuga,
-  uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga, deleteAlbumAndAssetsWithIdFromFuga, generateUPCAlbumWithIdInFuga, getAlbumLiveLinksByIdFuga } = require('../../third-party-api/providers/fuga/albums');
+  uploadCoverInAlbumToFuga, changeTrackPositionInAlbumInFUGA, publishAlbumWithIdInFuga, updateAlbumWithIdInFuga,
+  deleteAlbumAndAssetsWithIdFromFuga, generateUPCAlbumWithIdInFuga, getAlbumLiveLinksByIdFuga,
+  getFugaAlbumCoverImageFUGA, getAlbumByFieldValueFuga } = require('../../third-party-api/providers/fuga/albums');
 const { getUploadUuid, finishUpload } = require('../../third-party-api/providers/fuga/upload');
 const { createFugaCoverUploadStart, createFugaCoverUpload } = require('../../models/upload');
 const { createFugaAlbumFromFormData } = require('../../models/albums');
@@ -9,6 +13,11 @@ const { createNoCoverFugaError } = require('../../third-party-api/providers/erro
 const getAllAlbums = async () => {
   const responseGetAllAlbums = await getAllAlbumsFromFuga();
   return responseGetAllAlbums;
+}
+
+const getAlbumByFieldValue = async fieldValue => {
+  const responseGetAlbum = await getAlbumByFieldValueFuga(fieldValue);
+  return responseGetAlbum.data.length > 0 ? responseGetAlbum : { data: "NOT_EXISTS" };
 }
 
 const getAlbumById = async albumId => {
@@ -37,11 +46,19 @@ const createCoverImageInAlbum = async (coverFormDataToUpload, coverFile) => {
   const rawDataCoverUploadStart = createFugaCoverUploadStart(coverFormDataToUpload);
   const responseUploadStart = await getUploadUuid(rawDataCoverUploadStart);
 
-  let mimeType = coverFile.mimetype; let extension = coverFile.originalname.split(".")[1];
+  console.log("Cover: ", coverFile);
+  let mimeType = coverFile.mimetype; let extension = coverFile.originalname.split(".")[coverFile.originalname.split(".").length - 1];
   const chunksUploadResponse = await uploadFileByChunks(coverFile, responseUploadStart.data.id, mimeType, extension, "cover", uploadCoverInAlbumToFuga);
   const responseUploadAlbumCoverFinish = finishUpload(responseUploadStart.data.id, coverFile);
 
   return responseUploadAlbumCoverFinish;
+}
+
+const getFugaAlbumCoverImage = async (albumFugaId, size) => {
+  // const path = `images/${albumFugaId}.png`;
+  // if (fs.existsSync(path)) return;
+  await getFugaAlbumCoverImageFUGA(albumFugaId, size);
+  return "CREATED";
 }
 
 const uploadAlbumAssetWithCover = async (albumAssetMetaData, coverFile) => {
@@ -99,5 +116,5 @@ module.exports = {
   getAllAlbums, getAlbumById, createAlbumAsset, attachTrackAssetInAlbumWithId,
   createCoverImageInAlbum, uploadAlbumAssetWithCover, changeTrackPositionInAlbum,
   publishAlbumWithId, updateAlbumWithId, deleteAlbumAndAssetsWithId,
-  generateUPCAlbumWithId, getAlbumLiveLinksById
+  generateUPCAlbumWithId, getAlbumLiveLinksById, getFugaAlbumCoverImage, getAlbumByFieldValue
 };

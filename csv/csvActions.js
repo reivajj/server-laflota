@@ -3,6 +3,44 @@ const { parse } = require('fast-csv');
 const { createSubscriptionDataFromCSVRow } = require('../models/subscriptions');
 const { v4: uuidv4, v5: uuidv5 } = require('uuid');
 
+const { getAlbumByFieldValue } = require('../services/providers/albums');
+const { deliverAlbumForArrayOfDsps, addArrayOfDspsToDeliver } = require('../services/providers/delivery');
+
+const dgDSPsWithIDs = {
+  "amazon": 99268,
+  "amazonmusic": 99268,
+  "applemusic": 1330598,
+  "awa": 847103579,
+  "boomplay": 1514168496,
+  "deezer": 2100357,
+  "facebookfingerprinting": 1415672002,
+  "facebookmusic": 1499657856,
+  "hungama": 1268816855,
+  "imusica": 103725,
+  "itunes": 1330598,
+  "jaxsta": 1186352005,
+  "kanjian": null,
+  "kkbox": 121452605,
+  "linemusic": 1232212955,
+  "medianet": null,
+  "netease": 1382854531,
+  "nuuday": 464139,
+  "peloton": 2528780514,
+  "saavn": 316911752,
+  "sevendigital": 247916,
+  "shazam": 4266325,
+  "slacker": null,
+  "soundcloud": 35299696,
+  "spotify": 746109,
+  "tidal": 3440259,
+  "tiktok": 1809226414,
+  "touchtunes": 1130831671,
+  "umamusic": 1210987244,
+  "youtube": 3405271817,
+  "youtubemusic": 3405271817,
+  "zvook": null
+}
+
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const isrcNamespace = '1b671a64-40d5-491e-99b0-da01ff1f3341';
 
@@ -11,15 +49,27 @@ const dspsList = ["UPC", "amazon", "amazonmusic", "applemusic", "awa", "boomplay
   "saavn", "sevendigital", "shazam", "slacker", "soundcloud", "spotify", "tidal", "tiktok", "touchtunes", "umamusic",
   "youtube", "youtubemusic", "zvook"];
 
-const headersCsvWriter = dspsList.map(dspName => { return { id: dspName, title: dspName } });
-// const headersLessThan3 = [{ id: "upc", title: "UPC" }, { id: "DSP1", title: "DSP PUBLICADA 1" }, { id: "DSP2", title: "DSP PUBLICADA 2" }, { id: "DSP3", title: "DSP PUBLICADA 3" }]
-const csvWriter = createCsvWriter({
-  path: 'csv/0.0.onlyNeedsActiveUPCsFromTuli.csv',
-  header: headersCsvWriter
-});
+function uniqBy(a, key) {
+  return [
+    ...new Map(
+      a.map(x => [x[`${key}`], x])
+    ).values()
+  ]
+}
 
-let upcsActiveLessThanThree = ['018736564123', '018736244414', '018736775512', '018736896590', '024543803171',
-  '1963620022403', '1963620368457', '1963620546985', '1963620608195'];
+const headersCsvWriter = dspsList.map(dspName => { return { id: dspName, title: dspName } });
+let headersDGdspsToIds = Object.values(dgDSPsWithIDs).map(dspsIds => { return { id: dspsIds, title: dspsIds } });
+headersDGdspsToIds = [{ id: "upc", title: "UPC" }].concat(uniqBy(headersDGdspsToIds, "id").filter(dsp => dsp.id !== null));
+// console.log("HEADERS: ", headersDGdspsToIds);
+
+const headersLessThan10 = [{ id: "upc", title: "UPC" }, { id: "DSP1", title: "DSP PUBLICADA 1" }, { id: "DSP2", title: "DSP PUBLICADA 2" }, { id: "DSP3", title: "DSP PUBLICADA 3" }, { id: "DSP4", title: "DSP PUBLICADA 4" }
+  , { id: "DSP5", title: "DSP PUBLICADA 5" }, { id: "DSP6", title: "DSP PUBLICADA 6" }, { id: "DSP7", title: "DSP PUBLICADA 7" }, { id: "DSP8", title: "DSP PUBLICADA 8" }, { id: "DSP9", title: "DSP PUBLICADA 9" },
+{ id: "DSP10", title: "DSP PUBLICADA 10" }];
+
+const csvWriter = createCsvWriter({
+  path: 'csv/DELIVERY-RESULTS.csv',
+  header: [{ id: "upc", title: "UPC" }, { id: "result", title: "Result" }]
+});
 
 const createSubscriptionData = csvRowJson => {
   let subscriptionInJsonToFB = createSubscriptionDataFromCSVRow(csvRowJson);
@@ -33,9 +83,31 @@ const createISRCsData = csvRowJson => {
 
 const createUPCsData = (csvRowUpc) => {
   let quantityPublishedDsps = 0;
-  Object.values(csvRowUpc).forEach(dspValue => (dspValue === "Published") && quantityPublishedDsps++);
-  if (upcsActiveLessThanThree.includes(csvRowUpc.UPC)) console.log("INCLUIDO: ", csvRowUpc.UPC);
-  if (quantityPublishedDsps >= 4 || csvRowUpc.spotify === "Published" || upcsActiveLessThanThree.includes(csvRowUpc.UPC)) return csvRowUpc;
+  let result = {};
+  result.upc = csvRowUpc.UPC;
+  let keys = Object.keys(csvRowUpc);
+  let dspIndex = 1;
+  Object.values(csvRowUpc).forEach((dspValue, index) => {
+    if (dspValue === "Published") {
+      result = { ...result, [`DSP${dspIndex}`]: keys[index] }
+      dspIndex++;
+      quantityPublishedDsps++;
+    }
+  })
+  if (quantityPublishedDsps >= 4 && quantityPublishedDsps <= 250 && !(csvRowUpc.spotify === "Published")) return result;
+}
+
+const transcriptDSPsNamesToIds = csvRowUpc => {
+  let result = {};
+  result.upc = csvRowUpc.UPC;
+  let dspsIdsToDeliver = [];
+  let keys = Object.keys(csvRowUpc);
+  Object.values(csvRowUpc).forEach((dspValue, index) => {
+    if (dspValue === "Published" && dgDSPsWithIDs[keys[index]] !== null) dspsIdsToDeliver.push({ dsp: dgDSPsWithIDs[keys[index]] })
+  })
+
+  result.dspsIds = dspsIdsToDeliver;
+  return result;
 }
 
 const createUPCsSeparatedByComa = csvRowUpc => {
@@ -68,11 +140,11 @@ const readSubscriptionsCsv = async () => {
 
 const readUPCsCsvAndWriteNew = async () => {
   let data = await readCsv(
-    `${__dirname}/0.UPCsToApproveExcel.csv`,
+    `${__dirname}/3.upcsWithZerosSinComillasSinNuncaPublicados.csv`,
     // `${__dirname}/upcTest.csv`,
     { headers: true, ignoreEmpty: true },
-    // createUPCsData,
-    createUPCsSeparatedByComa
+    createUPCsData,
+    // createUPCsSeparatedByComa
   );
 
   data = data.filter(d => d !== undefined && Object.keys(d).length > 0);
@@ -80,17 +152,85 @@ const readUPCsCsvAndWriteNew = async () => {
     .writeRecords(data)
     .then(() => console.log('The CSV file was written successfully'));
 
-  let result = "";
-  data.forEach((upc, index) => {
-    if (data.length === index + 1) result = result + upc;
-    else result = result + upc + ","
-  })
+  // let result = "";
+  // console.log("DATA tamanio: ", data.length)
+  // data.forEach((upc, index) => {
+  //   if (data.length === index + 1) result = result + upc;
+  //   else result = result + upc + ","
+  // })
 
-  fs.writeFile('csv/0.UPCsToApproveTXT.txt', result, function (err) {
-    if (err) return console.log(err);
-  });
+  // fs.writeFile('csv/0.UPCsToApproveTXT.txt', result, function (err) {
+  //   if (err) return console.log(err);
+  // });
   return data;
 }
+
+const readAndTranscriptUPCsCsvAndDSPsForDelivery = async () => {
+  let data = await readCsv(
+    // `${__dirname}/3.upcsWithZerosSinComillasSinNuncaPublicados.csv`,
+    `${__dirname}/upcTest.csv`,
+    { headers: true, ignoreEmpty: true },
+    transcriptDSPsNamesToIds,
+  );
+
+  data = data.filter(d => d !== undefined && Object.keys(d).length > 0);
+  let dataResults = [];
+  let index = 1;
+  console.time("TEST DELIVERY");
+
+  let promisesDelivery = data.map(async upcWithDsp => {
+    if (upcWithDsp.dspsIds.length === 0) { console.log("DELIVERED: ", index); dataResults.push({ upc: upcWithDsp.upc, result: "UPC_NOT_FOUND" }); index++; return "NO_ACTION_NEED" };
+    let albumResponse = await getAlbumByFieldValue(upcWithDsp.upc);
+    if (!albumResponse?.data[0]?.id) { console.log("DELIVERED: ", index); index++; dataResults.push({ upc: upcWithDsp.upc, result: "UPC_NOT_FOUND" }); return "NO_ACTION_NEED" }
+
+    let album = albumResponse.data[0];
+    let albumFugaId = album.id;
+    if (album.state === "DELIVERED") {
+      console.log("DELIVERED: ", index); index++; dataResults.push({ upc: upcWithDsp.upc, result: "SUCCESS_ALREADY_DELIVERED" }); return "NO_ACTION_NEED";
+    };
+    if (album.state !== "PUBLISHED") { console.log("DELIVERED: ", index); index++; dataResults.push({ upc: upcWithDsp.upc, result: "NOT_PUBLISHED" }); return "NO_ACTION_NEED" };
+
+    let addDspsToDeliverResponse = await addArrayOfDspsToDeliver(albumFugaId, upcWithDsp.dspsIds);
+
+    let deliverResponse = await deliverAlbumForArrayOfDsps(albumFugaId, upcWithDsp.dspsIds);
+    if (addDspsToDeliverResponse.status === 207 && deliverResponse.status === 207) {
+      dataResults.push({ upc: upcWithDsp.upc, result: "SUCCESS" });
+    }
+    console.log("DELIVERED: ", index);
+    index++;
+  })
+
+  // for (let upcWithDsp of data) {
+
+  //   if (upcWithDsp.dspsIds.length === 0) { index++; dataResults.push({ upc: upcWithDsp.upc, result: "UPC_NOT_FOUND" });     console.log("DELIVERED: ", index);continue };
+  //   let albumResponse = await getAlbumByFieldValue(upcWithDsp.upc);
+  //   if (!albumResponse?.data[0]?.id) {
+  //     dataResults.push({ upc: upcWithDsp.upc, result: "UPC_NOT_FOUND" }); console.log("DELIVERED: ", index); continue
+  //   }
+
+  //   let album = albumResponse.data[0];
+  //   let albumFugaId = album.id;
+  //   if (album.state === "DELIVERED") {
+  //     index++; dataResults.push({ upc: upcWithDsp.upc, result: "SUCCESS_ALREADY_DELIVERED" }); console.log("DELIVERED: ", index); continue
+  //   };
+  //   if (album.state !== "PUBLISHED") { index++; dataResults.push({ upc: upcWithDsp.upc, result: "NOT_PUBLISHED" }); console.log("DELIVERED: ", index); continue };
+  //   let addDspsToDeliverResponse = await addArrayOfDspsToDeliver(albumFugaId, upcWithDsp.dspsIds);
+
+  //   let deliverResponse = await deliverAlbumForArrayOfDsps(albumFugaId, upcWithDsp.dspsIds);
+  //   if (addDspsToDeliverResponse.status === 207 && deliverResponse.status === 207) {
+  //     dataResults.push({ upc: upcWithDsp.upc, result: "SUCCESS" });
+  //   }
+  //   console.log("DELIVERED: ", index);
+  //   index++;
+  // }
+
+  await Promise.all(promisesDelivery);
+  await csvWriter.writeRecords(dataResults);
+  console.timeEnd("TEST DELIVERY");
+  return dataResults;
+}
+
+
 
 const readISRCsCsv = async csvFileName => {
   const data = await readCsv(
@@ -101,4 +241,4 @@ const readISRCsCsv = async csvFileName => {
   return data;
 }
 
-module.exports = { readSubscriptionsCsv, readISRCsCsv, readUPCsCsvAndWriteNew };
+module.exports = { readSubscriptionsCsv, readISRCsCsv, readUPCsCsvAndWriteNew, readAndTranscriptUPCsCsvAndDSPsForDelivery };

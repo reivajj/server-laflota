@@ -16,7 +16,6 @@ const getLabelByIdFuga = async labelId => {
 
 const getLabelByNameFuga = async labelName => {
   const response = await get(`/labels?order_by=id&page=0&page_size=30&search=${encodeURI(labelName)}`).catch(error => console.log("ERROR", error));
-  console.log("RESPONSE GET LABEL NAME: ", response.data);
   return response;
 }
 
