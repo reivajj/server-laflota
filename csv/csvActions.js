@@ -181,7 +181,7 @@ const readAndTranscriptUPCsCsvAndDSPsForDelivery = async () => {
   let promisesDelivery = data.map(async upcWithDsp => {
     if (upcWithDsp.dspsIds.length === 0) { console.log("DELIVERED: ", index); dataResults.push({ upc: upcWithDsp.upc, result: "UPC_NOT_FOUND" }); index++; return "NO_ACTION_NEED" };
     let albumResponse = await getAlbumByFieldValue(upcWithDsp.upc);
-    if (!albumResponse?.data[0]?.id) { console.log("DELIVERED: ", index); index++; dataResults.push({ upc: upcWithDsp.upc, result: "UPC_NOT_FOUND" }); return "NO_ACTION_NEED" }
+    // if (!albumResponse.data || !albumResponse.data[0].id) { console.log("DELIVERED: ", index); index++; dataResults.push({ upc: upcWithDsp.upc, result: "UPC_NOT_FOUND" }); return "NO_ACTION_NEED" }
 
     let album = albumResponse.data[0];
     let albumFugaId = album.id;
@@ -199,30 +199,6 @@ const readAndTranscriptUPCsCsvAndDSPsForDelivery = async () => {
     console.log("DELIVERED: ", index);
     index++;
   })
-
-  // for (let upcWithDsp of data) {
-
-  //   if (upcWithDsp.dspsIds.length === 0) { index++; dataResults.push({ upc: upcWithDsp.upc, result: "UPC_NOT_FOUND" });     console.log("DELIVERED: ", index);continue };
-  //   let albumResponse = await getAlbumByFieldValue(upcWithDsp.upc);
-  //   if (!albumResponse?.data[0]?.id) {
-  //     dataResults.push({ upc: upcWithDsp.upc, result: "UPC_NOT_FOUND" }); console.log("DELIVERED: ", index); continue
-  //   }
-
-  //   let album = albumResponse.data[0];
-  //   let albumFugaId = album.id;
-  //   if (album.state === "DELIVERED") {
-  //     index++; dataResults.push({ upc: upcWithDsp.upc, result: "SUCCESS_ALREADY_DELIVERED" }); console.log("DELIVERED: ", index); continue
-  //   };
-  //   if (album.state !== "PUBLISHED") { index++; dataResults.push({ upc: upcWithDsp.upc, result: "NOT_PUBLISHED" }); console.log("DELIVERED: ", index); continue };
-  //   let addDspsToDeliverResponse = await addArrayOfDspsToDeliver(albumFugaId, upcWithDsp.dspsIds);
-
-  //   let deliverResponse = await deliverAlbumForArrayOfDsps(albumFugaId, upcWithDsp.dspsIds);
-  //   if (addDspsToDeliverResponse.status === 207 && deliverResponse.status === 207) {
-  //     dataResults.push({ upc: upcWithDsp.upc, result: "SUCCESS" });
-  //   }
-  //   console.log("DELIVERED: ", index);
-  //   index++;
-  // }
 
   await Promise.all(promisesDelivery);
   await csvWriter.writeRecords(dataResults);
