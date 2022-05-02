@@ -2,7 +2,6 @@ const createError = require('http-errors');
 const { axiosFugaInstance } = require('../../../config/axiosConfig');
 const { albumTrackAssetError, albumGetAllError, albumUpdateFieldsError, albumDeleteError } = require('../../../utils/errors.utils');
 
-const fs = require("fs");
 // const sharp = require("sharp");
 
 const { get, post, put } = axiosFugaInstance;
@@ -58,13 +57,7 @@ const uploadCoverInAlbumToFuga = async formDataCover => {
 
 const getFugaAlbumCoverImageFUGA = async (albumId, imageSize) => {
   const response = await get(`products/${albumId}/image/${imageSize}`, { responseType: 'stream' });
-  const writer = fs.createWriteStream(`images/${albumId}.png`)
-
-  response.data.pipe(writer)
-  return new Promise((resolve, reject) => {
-    writer.on('finish', resolve)
-    writer.on('error', reject)
-  })
+  return response;
 }
 
 const changeTrackPositionInAlbumInFUGA = async (albumId, trackId, newPosition) => {

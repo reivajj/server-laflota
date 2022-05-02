@@ -46,7 +46,6 @@ const createCoverImageInAlbum = async (coverFormDataToUpload, coverFile) => {
   const rawDataCoverUploadStart = createFugaCoverUploadStart(coverFormDataToUpload);
   const responseUploadStart = await getUploadUuid(rawDataCoverUploadStart);
 
-  console.log("Cover: ", coverFile);
   let mimeType = coverFile.mimetype; let extension = coverFile.originalname.split(".")[coverFile.originalname.split(".").length - 1];
   const chunksUploadResponse = await uploadFileByChunks(coverFile, responseUploadStart.data.id, mimeType, extension, "cover", uploadCoverInAlbumToFuga);
   const responseUploadAlbumCoverFinish = finishUpload(responseUploadStart.data.id, coverFile);
@@ -55,10 +54,16 @@ const createCoverImageInAlbum = async (coverFormDataToUpload, coverFile) => {
 }
 
 const getFugaAlbumCoverImage = async (albumFugaId, size) => {
-  // const path = `images/${albumFugaId}.png`;
-  // if (fs.existsSync(path)) return;
-  await getFugaAlbumCoverImageFUGA(albumFugaId, size);
-  return "CREATED";
+  let imageResponse = await getFugaAlbumCoverImageFUGA(albumFugaId, size);
+ 
+  if (!fs.existsSync('./albumImages')) fs.mkdirSync('./albumImages');
+  const writer = fs.createWriteStream(`albumImages/${albumFugaId}.png`)
+
+  imageResponse.data.pipe(writer)
+  await new Promise((resolve, reject) => {
+    writer.on('finish', resolve)
+    writer.on('error', reject)
+  });
 }
 
 const uploadAlbumAssetWithCover = async (albumAssetMetaData, coverFile) => {

@@ -1,5 +1,6 @@
 const albums = require("express-promise-router")();
 const delivery = require('./delivery');
+const fs = require("fs");
 
 const multer = require('multer');
 const upload = multer();
@@ -15,7 +16,6 @@ albums.get('/', async (_, res, __) => {
 });
 
 albums.get('/searchByFieldValue', async (req, res, __) => {
-  console.log("REQ: ", req.body.fieldValue);
   const response = await getAlbumByFieldValue(req.body.fieldValue);
   return res.status(200).send({ response: response.data });
 });
@@ -43,7 +43,13 @@ albums.post('/uploadCover', upload.single('file'), async (req, res) => {
 
 albums.get('/:albumId/image/:size', async (req, res) => {
   await getFugaAlbumCoverImage(req.params.albumId, req.params.size);
-  return res.status(200).sendFile(`${req.params.albumId}.png`, { root: "images/" });
+  return res.status(200).sendFile(`${req.params.albumId}.png`, { root: "albumImages/" }, error => {
+    if (error) {
+      console.log("ERROR: ", error);
+      res.sendStatus(500)
+    }
+    fs.unlink(`albumImages/${req.params.albumId}.png`, error => error && console.log(error));
+  });
 });
 
 albums.post('/tus-demo', upload.single('file'), async (req, res) => {
