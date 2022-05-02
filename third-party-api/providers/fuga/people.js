@@ -10,7 +10,8 @@ const getAllPeopleFuga = async () => {
 }
 
 const getPersonByNameFuga = async personName => {
-  const personsThatCoincidInitName = await get(`/people?name=${encodeURI(personName)}`);
+  let cleanedName = deleteWeirdCharacters(personName.toLowerCase());
+  const personsThatCoincidInitName = await get(`/people?name=${cleanedName}`);
   return personsThatCoincidInitName;
 }
 
