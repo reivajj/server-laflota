@@ -46,7 +46,8 @@ const getEndOfChunk = (index, chunksize, totalParts, totalSize) => {
 
 
 const uploadFileByChunks = async (file, coverUploadStartUuid, mimeType, fileExtension, fileName, uploadFunction) => {
-  let chunksize = 2000000;
+  let oneMB = 1048576;  
+  let chunksize = fileExtension === "jpg" ? 6 * oneMB : 2 * oneMB;
   let totalParts = parseInt(file.size / chunksize) + 1;
   let arrayChunks = [...Array(totalParts).keys()];
   console.time("test upload");
