@@ -11,7 +11,7 @@ const getAllPeopleFuga = async () => {
 
 const getPersonByNameFuga = async personName => {
   let cleanedName = deleteWeirdCharacters(personName.toLowerCase());
-  const personsThatCoincidInitName = await get(`/people?name=${cleanedName}`);
+  const personsThatCoincidInitName = await get(`/people?name=${encodeURI(cleanedName)}`);
   return personsThatCoincidInitName;
 }
 
@@ -40,7 +40,6 @@ const createPersonFuga = async rawDataPerson => {
 const createMultiplePersonsFuga = async personsNames => {
   const people = JSON.parse(personsNames.names);
   let personsResult = [];
-
   for (const personName of people) {
     if (personName.name) {
       const responseCreatePerson = await createPersonFuga(personName);
