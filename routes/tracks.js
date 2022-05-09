@@ -2,9 +2,9 @@ var router = require("express-promise-router")();
 const multer = require('multer');
 const createError = require('http-errors');
 const { getAllTracks, getTrackAssetById, uploadTrack, uploadTrackAssetWithFile, updateTrackAssetWithId
-  , getTrackContributors, addContributorToAsset, uploadTrackTest } = require('../services/providers/tracks');
+  , getTrackContributors, addContributorToAsset, uploadTrackTest, createTrackAssetNew, uploadTrackFileInAssetNew } = require('../services/providers/tracks');
 
-const upload = multer({ limits: { fileSize: 1000000000 } });
+const upload = multer({ limits: { fileSize: 10000000000 } });
 
 router.get('/', async (_, res) => {
   const response = await getAllTracks();
@@ -26,17 +26,14 @@ router.post('/', upload.single('track'), async (req, res) => {
   return res.status(200).send({ response: response.data });
 });
 
-// router.post('/upload', upload.single('track'), async (req, res) => {
-//   const response = await uploadTrack(req.body, req.file);
+router.post('/new', upload.single('track'), async (req, res) => {
+  const response = await createTrackAssetNew(req.body);
+  return res.status(200).send({ response: response.data });
+});
 
-//   if (!response.data.success) throw createError(400, 'Error uploading a track to an Album', { properties: response });
-//   return res.status(200).send({ response: response.data });
-// });
-
-router.post('/uploadTest', upload.single('track'), async (req, res) => {
-  const response = await uploadTrackTest(req.body, req.file);
-  // if (!response.data.success) throw createError(400, 'Error uploading a track to an Album', { properties: response });
-  return res.status(200).send({ response: response });
+router.post('/audio_file', upload.single('track'), async (req, res) => {
+  const response = await uploadTrackFileInAssetNew(req.body.trackId, req.file);
+  return res.status(200).send({ response: response.data });
 });
 
 // =================================CONTRIBUTORS================================\\

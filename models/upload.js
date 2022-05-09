@@ -7,7 +7,7 @@ const createFugaTrackUploadStart = uploadMetaData => {
   // if (uploadMetaData.type !== 'audio') throw createError(400, 'Error starting the track upload, because the type is missing or is not AUDIO', { properties: { formData: uploadMetaData } });
   // if (uploadMetaData.id === undefined) throw createError(400, 'Error starting the track upload, because the trackAssetId is missing', { properties: { formData: uploadMetaData } });
   rawDataUpload.id = uploadMetaData.id;
-  rawDataUpload.type = uploadMetaData.type;
+  rawDataUpload.type = 'audio';
 
   return rawDataUpload;
 }
@@ -20,46 +20,6 @@ const createFugaTrackFileUpload = (trackFile, trackUploadStartUuid) => {
   formDataTrack.append("partbyteoffset", '0');
   formDataTrack.append("file", trackFile.buffer, trackFile.originalname);
   return formDataTrack;
-}
-
-const getEnd = (index, chunksize, totalParts, totalSize) => {
-  if (index + 1 === totalParts) return totalSize - 1;
-  else return (index + 1) * chunksize - 1;
-}
-
-const createFugaTrackFileUploadTest = async (trackFile, trackUploadStartUuid) => {
-  let chunksize = 2000000;
-  let totalParts = parseInt(trackFile.size / chunksize) + 1;
-  let arrayChunks = [...Array(totalParts).keys()];
-
-  const uploadChunks = arrayChunks.map(async chunkIndex => {
-    let cutBufferAt = getEnd(chunkIndex, chunksize, totalParts, trackFile.size);
-    let startBuffer = chunkIndex * chunksize;
-
-    let chunkFile = {
-      fieldname: 'track',
-      originalname: `trackChunk-${chunkIndex}.wav`,
-      encoding: '7bit',
-      mimetype: 'audio/wave',
-      buffer: trackFile.buffer.slice(startBuffer, cutBufferAt)
-    }
-
-    console.log("Start and End :", { startBuffer, cutBufferAt });
-    const formDataTrack = new FormData();
-    formDataTrack.append("uuid", trackUploadStartUuid);
-    formDataTrack.append("filename", trackFile.originalname);
-    formDataTrack.append("totalfilesize", trackFile.size);
-    formDataTrack.append("partindex", chunkIndex);
-    formDataTrack.append("chunksize", chunksize);
-    formDataTrack.append("partbyteoffset", chunksize * chunkIndex);
-    formDataTrack.append("totalparts", totalParts);
-    formDataTrack.append("file", chunkFile.buffer, chunkFile.originalname);
-
-    console.log("CHUNK FILE :", chunkFile)
-    await uploadTrackFileInAlbumToFuga(formDataTrack);
-  })
-
-  return Promise.all(uploadChunks).then(result => result).catch(error => console.log(error));
 }
 
 const createFugaCoverUploadStart = uploadCoverFormData => {
@@ -85,5 +45,5 @@ const createFugaCoverUpload = (imageCoverArtFile, coverUploadStartUuid) => {
 
 module.exports = {
   createFugaTrackUploadStart, createFugaTrackFileUpload, createFugaCoverUploadStart,
-  createFugaCoverUpload, createFugaTrackFileUploadTest
+  createFugaCoverUpload
 };
