@@ -31,6 +31,7 @@ module.exports = {
   },
   mySqlDb: {
     url: process.env.DATABASE_URL,
+    testUrl: process.env.DATABASE_TEST_URL,
   },
   logs: {
     level: process.env.LOG_LEVEL || 'silly',

@@ -6,6 +6,7 @@ const DELETED = "deleted";
 const WAITING_PAYMENT = "waiting_payment";
 const UNSUBSCRIBED_PENDING = "unsubscribed_pending";
 const PENDING = "pending";
+const MIGRATED = "was_migrated";
 
 const deleteWeirdCharacters = text => {
   return text.normalize('NFD')
@@ -13,4 +14,4 @@ const deleteWeirdCharacters = text => {
     .normalize();
 }
 
-module.exports = { possibleAlbumStates, ACTIVE, UNSUBSCRIBED, DELETED, WAITING_PAYMENT, UNSUBSCRIBED_PENDING, PENDING, deleteWeirdCharacters };
+module.exports = { possibleAlbumStates, MIGRATED, ACTIVE, UNSUBSCRIBED, DELETED, WAITING_PAYMENT, UNSUBSCRIBED_PENDING, PENDING, deleteWeirdCharacters };

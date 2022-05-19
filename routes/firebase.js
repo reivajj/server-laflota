@@ -3,10 +3,38 @@ const { addAlbumFromFugaToFSUser } = require("../firebase/firestore/albums");
 const { deleteElementFromFS, getElementFromFS, editElementFromFS } = require("../firebase/firestore/elements");
 const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS, createCapifIsrcs, getCapifISRCs, getNotUsedIsrcAndMark } = require("../firebase/firestore/isrcs");
 const { getTracksByPropFS, attachTracksToAlbumFS } = require("../firebase/firestore/tracks");
-const { getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
-  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS, updateAllUsersFS } = require("../firebase/firestore/user");
+const { getAllUsersFromFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSAndAuthByEmail,
+  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS, updateAllUsersFS, createAuthUserWihtUuid } = require("../firebase/firestore/user");
+const { createCsvFromUsersInFS, createCsvFromUsersInWpNotInFS, createFsUsersFromUsersDbCsv } = require("../migration/user.migration");
 const { logToCloudLoggingFS } = require("../third-party-api/providers/errors/logCloudLogging");
 
+//==============================================================MIGRATION===============================================================\\
+router.get('/usersToCsv', async (_, res, next) => {
+  const response = await createCsvFromUsersInFS();
+  return res.status(200).send({ response });
+});
+
+router.get('/missingWpUsersToCsv', async (_, res, next) => {
+  const response = await createCsvFromUsersInWpNotInFS();
+  return res.status(200).send({ response });
+});
+
+router.post('/createUsersInUsersAuthAndCollections', async (_, res, next) => {
+  const response = await createFsUsersFromUsersDbCsv();
+  return res.status(200).send({ response });
+})
+
+router.post('/createAuthUserFromMigratedUser', async (req, res, _) => {
+  const response = await createAuthUserWihtUuid(req.body.email, req.body.password, req.body.id);
+  return res.status(200).send({ response });
+});
+
+router.delete('/usersByEmailOnlyInUsers/:email', async (req, res, _) => {
+  const response = await deleteUserInFSAndAuthByEmail(req.params.email.trim(), onlyInUsers = true);
+  return res.status(200).send({ response });
+})
+
+//=============================================================END MIGRATION=============================================================\\
 router.get('/users', async (_, res, next) => {
   const response = await getAllUsersFromFS();
   return res.status(200).send({ response });
@@ -32,28 +60,22 @@ router.post('/updateTotalUsers', async (_, res, next) => {
   return res.status(200).send({ response });
 });
 
-router.post('/createUsers', async (_, res, next) => {
-  const response = await createUsersInFS();
-  return res.status(200).send({ response });
-})
-
-router.delete('/usersByEmail/:email', async (req, res, _) => {
-  const response = await deleteUserInFSByEmail(req.params.email);
+router.delete('/usersAuthAndDataByEmail/:email', async (req, res, _) => {
+  const response = await deleteUserInFSAndAuthByEmail(req.params.email.trim(), false);
   return res.status(200).send({ response });
 })
 
 router.get('/usersByEmail/:email', async (req, res, _) => {
-  const response = await getUserInFSByEmail(req.params.email);
+  const response = await getUserInFSByEmail(req.params.email.trim());
   return res.status(200).send({ response });
 })
 
 router.put('/usersByEmail/:email', async (req, res, _) => {
-  const response = await updateUserInFSByEmail(req.params.email, req.body);
+  const response = await updateUserInFSByEmail(req.params.email.trim(), req.body);
   return res.status(200).send({ response });
 })
 
 router.put('/changePasswordByEmail/:userEmail', async (req, res, _) => {
-  console.log("REQUEST: ", req.body)
   const response = await updatePasswordByEmailInFS(req.params.userEmail, req.body.password);
   return res.status(200).send({ response });
 });
@@ -83,7 +105,7 @@ router.put('/element', async (req, res, _) => {
 //============================================================ARTISTS==============================================\\
 
 router.get('/usersByEmail/:email/artists', async (req, res, _) => {
-  const response = await getUserArtistsInFSByEmail(req.params.email);
+  const response = await getUserArtistsInFSByEmail(req.params.email.trim());
   return res.status(200).send({ response });
 })
 

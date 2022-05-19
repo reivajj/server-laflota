@@ -1,6 +1,7 @@
 const createHttpError = require("http-errors");
 const db = require("../loaders/sequelize");
 const sequelize = require("sequelize");
+const { readRoyaltiesFromCsvAndMapToDB } = require("../csv/csvActions");
 
 const getDashGoRoyaltiesQuery = async (fieldName, fieldValue) => {
   const filteredRoyalties = await db.RegaliasDashgo.findAll({ where: { [fieldName]: fieldValue } }, { raw: true });
@@ -22,4 +23,12 @@ const getDashGoRoyaltiesQueryCount = async (fieldName, fieldValue) => {
   return filteredRoyalties;
 }
 
-module.exports = { getDashGoRoyaltiesQuery, getDashGoRoyaltiesQueryCount };
+const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
+  let mappedValuesFromCsv = await readRoyaltiesFromCsvAndMapToDB(companyName, csvPath);
+  const createOptions = { logging: true, benchmark: true, ignoreDuplicates: true }
+  const royaltiesCreatedInDB = await db.RoyaltyFuga.bulkCreate(mappedValuesFromCsv, createOptions);
+
+  return `SUCCES UPLOADED ${royaltiesCreatedInDB.length} ROYALTIES`;
+}
+
+module.exports = { getDashGoRoyaltiesQuery, getDashGoRoyaltiesQueryCount, loadRoyaltiesFromLocalCSV };

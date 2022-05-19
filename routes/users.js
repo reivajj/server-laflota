@@ -13,12 +13,12 @@ router.get('/countTotalUsers', async (_, res, next) => {
 });
 
 router.get('/searchByEmail/:email', async (req, res, _) => {
-  const response = await getUserByEmailWP(req.params.email);
+  const response = await getUserByEmailWP(req.params.email.trim());
   return res.status(200).send({ response });
 });
 
 router.get('/searchArtistsByEmail/:email', async (req, res, _) => {
-  const response = await getUserArtistsByEmailFromDG(req.params.email);
+  const response = await getUserArtistsByEmailFromDG(req.params.email.trim());
   return res.status(200).send({ response });
 });
 

@@ -5,22 +5,27 @@ const firebaseApp = require('../../loaders/firebase');
 const { getCountUsersWP, getAllUsersWP } = require('../../services/providers/users');
 const { createFBUser } = require('../models/user');
 const { batchActions } = require('../utils');
+const { ACTIVE, MIGRATED } = require('../../utils/utils')
 
 const dbFS = admin.firestore();
 const auth = admin.auth();
 
-const deleteUserInFSByEmail = async email => {
+const deleteUserInFSAndAuthByEmail = async (email, onlyInUsers) => {
   const usersRef = dbFS.collection('users');
-  const snapshotDelete = await usersRef.where('email', '==', email).get();
+  const snapshotDelete = await usersRef.where('email', '==', email.toLowerCase()).get();
 
   if (snapshotDelete.empty) return 'No matching documents.';
 
+  let userId = "";
   snapshotDelete.forEach(async doc => {
+    userId = doc.id;
     await usersRef.doc(doc.id).delete();
   });
 
   const elementStatsDbRef = dbFS.collection('users').doc('stats');
   await elementStatsDbRef.update({ total: admin.firestore.FieldValue.increment(-1) });
+
+  if (onlyInUsers) return "Delete only in users successed";
 
   const usersByEmailRef = dbFS.collection('usersByEmail').doc(email);
   const snapshotByEmailDelete = await usersByEmailRef.delete();
@@ -28,6 +33,7 @@ const deleteUserInFSByEmail = async email => {
   const usersByEmailStatsDbRef = dbFS.collection('usersByEmail').doc('stats');
   await usersByEmailStatsDbRef.update({ total: admin.firestore.FieldValue.increment(-1) });
 
+  const deleteAuthUser = await auth.deleteUser(userId);
   return "Delete successed";
 }
 
@@ -37,9 +43,9 @@ const getUserInFSByEmail = async email => {
 
   if (snapshotGet.empty) return { exist: false };
 
-  let usersData = [];
+  let usersData = {};
   snapshotGet.forEach(doc => {
-    usersData.push(doc.data());
+    usersData = doc.data();
   });
 
   return { user: usersData, exist: true, count: usersData.length };
@@ -76,15 +82,24 @@ const updateUserInFSByEmail = async (email, fieldsToUpdate) => {
   return { user: usersData[0], exist: true, count: usersData.length, resultUpdate };
 }
 
+const createAuthUserWihtUuid = async (userEmail, newPassword, id) => {
+  let result = await auth.createUser({ email: userEmail, uid: id, password: newPassword }).catch(error => error);
+  return `SUCCESS: Auth User Created: ${userEmail}`;
+}
+
 const updatePasswordByEmailInFS = async (userEmail, newPassword) => {
-  console.log("NEW PASS: ", newPassword);
   const userDataFS = await getUserInFSByEmail(userEmail);
-  let updateAuthUser = await auth.updateUser(userDataFS.user[0].id, { password: newPassword }).catch(error => {
+  let newData = { password: newPassword };
+
+  // Para los que entran por primera vez y fueron migrados.
+  if (userDataFS.user.userStatus === MIGRATED) newData.userStatus = ACTIVE;
+
+  let updateAuthUser = await auth.updateUser(userDataFS.user.id, { password: newPassword }).catch(error => {
     console.log(error);
     return "Error al actualizar el Auth User";
   });
 
-  let updateUserDocResult = await updateUserInFSByEmail(userEmail, { password: newPassword });
+  let updateUserDocResult = await updateUserInFSByEmail(userEmail, newData);
   return updateUserDocResult;
 }
 
@@ -119,17 +134,12 @@ const updateTotalUsersFromFS = async () => {
 const getAllUsersFromFS = async () => {
   const snapshot = await dbFS.collection('users').get();
   const allUsers = [];
-
-  snapshot.forEach((doc) => {
-    console.log(doc.id, '=>', doc.data());
-    allUsers.push(doc.data());
-  });
-
+  snapshot.forEach((doc) => allUsers.push(doc.data()));
   if (!allUsers) throw createHttpError(400, 'DB Error retrieving all users from firestore:', { properties: allUsers });
-
   return allUsers;
 }
 
+// Y esto???
 const deleteWpUsersNotLoggedInFS = async () => {
   let queryRef = dbFS.collection('users').where("idLaFlota", "<=", 10000);
   // queryRef = queryRef.limit(5);
@@ -157,23 +167,21 @@ const getAndProccesWpUsers = async () => {
   return fbUsers;
 }
 
-const createUsersInFS = async () => {
+const createUsersInUsersAndEmailCollectionFS = async usersAsFbModels => {
   let batch = dbFS.batch();
   let counter = 0;
   let totalCounter = 0;
   const promises = [];
 
-  const wpUsersToUploadToFS = await getAndProccesWpUsers();
-
-  for (const user of wpUsersToUploadToFS) {
+  for (const user of usersAsFbModels) {
     const docRef = dbFS.collection("users").doc(user.id);
-    batch.set(docRef, {
-      ...user
-    });
+    const docEmailRef = dbFS.collection("usersByEmail").doc(user.email);
+    batch.set(docRef, { ...user });
+    batch.set(docEmailRef, { ...user });
 
     counter++;
 
-    if (counter >= 500) {
+    if (counter >= 250) {
       console.log(`Committing batch of ${counter}`);
       promises.push(batch.commit());
       totalCounter += counter;
@@ -193,8 +201,10 @@ const createUsersInFS = async () => {
   return `Total creates ${totalCounter}`;
 }
 
+//=====================================================MIGRATION==========================================================\\
+
 module.exports = {
-  getAllUsersFromFS, createUsersInFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSByEmail,
+  getAllUsersFromFS, createUsersInUsersAndEmailCollectionFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSAndAuthByEmail,
   getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS,
-  updateAllUsersFS
+  updateAllUsersFS, createAuthUserWihtUuid
 };

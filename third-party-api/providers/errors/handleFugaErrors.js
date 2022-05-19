@@ -24,9 +24,7 @@ const handlePeopleErrorsMessage = peopleErrorFromFuga => {
 }
 
 const handleContributorsErrorsMessage = (contributorsAssetsErrorFromFuga, errorConfigData) => {
-  console.log("ERROR CONFIG EN HANDLE ASSETS", contributorsAssetsErrorFromFuga);
   if (!contributorsAssetsErrorFromFuga || !contributorsAssetsErrorFromFuga.data) return contributorsInesperatedGenericError;
-
   let errorData = contributorsAssetsErrorFromFuga.data;
   if (errorData.code === "DUPLICATE_CONTRIBUTOR") return contributorDuplicatedError;
   if (errorData.role === "INVALID_VALUE") return contributorInvalidValueError("role");
@@ -34,7 +32,6 @@ const handleContributorsErrorsMessage = (contributorsAssetsErrorFromFuga, errorC
 }
 
 const handleAssetsErrorsMessage = (assetsErrorResponseFromFuga, errorConfigData) => {
-  console.log("ERROR CONFIG EN HANDLE ASSETS", assetsErrorResponseFromFuga);
   let errorData = assetsErrorResponseFromFuga.data;
   if (!assetsErrorResponseFromFuga || !assetsErrorResponseFromFuga.data) return trackInesperatedGenericError;
   if (assetsErrorResponseFromFuga.unexpectedError) return trackInesperatedGenericError;

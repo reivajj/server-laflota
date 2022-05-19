@@ -34,7 +34,7 @@ const uploadFileByChunks = async (file, coverUploadStartUuid, mimeType, fileExte
     formDataFile.append("file", chunkFile.buffer, chunkFile.originalname);
 
     await uploadFunction(formDataFile).catch(error => error);
-    console.log("CHUNK INDEX: ", chunkIndex)
+    console.log("CHUNK INDEX: ", chunkIndex);
     return `Chunk ${chunkIndex} uploaded`;
   })
 
