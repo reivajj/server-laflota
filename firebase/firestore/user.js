@@ -114,7 +114,7 @@ const getArtistsFromUserIdFS = async ownerId => {
 
 const getUserArtistsInFSByEmail = async email => {
   const userDataFS = await getUserInFSByEmail(email);
-  const artistsFromOwnerIdFS = await getArtistsFromUserIdFS(userDataFS.user[0].id);
+  const artistsFromOwnerIdFS = await getArtistsFromUserIdFS(userDataFS.user.id);
   return artistsFromOwnerIdFS;
 }
 
