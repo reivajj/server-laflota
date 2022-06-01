@@ -4,7 +4,7 @@ const multer = require('multer');
 const upload = multer();
 
 const { getAllArtists, createArtist, getArtistById, updateArtistWithId, deleteArtistWithId, createArtistIdentifierDsp,
-  createArtistWithIdentifiersDsp, getArtistIdentifierById, deleteArtistIdentifierByBothIds, editArtistIdentifierDsp } = require('../services/providers/artists');
+  createArtistWithIdentifiersDsp, getArtistIdentifierById, deleteArtistIdentifierByBothIds, editArtistIdentifierDsp, getArtistByName } = require('../services/providers/artists');
 
 router.get('/', async (_, res) => {
   const response = await getAllArtists();
@@ -13,6 +13,11 @@ router.get('/', async (_, res) => {
 
 router.get('/:artistId', async (req, res) => {
   const response = await getArtistById(req.params.artistId);
+  return res.status(200).send({ response: response.data });
+});
+
+router.get('/byName/:artistName', async (req, res) => {
+  const response = await getArtistByName(req.params.artistName);
   return res.status(200).send({ response: response.data });
 });
 

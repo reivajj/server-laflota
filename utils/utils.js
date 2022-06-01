@@ -14,4 +14,11 @@ const deleteWeirdCharacters = text => {
     .normalize();
 }
 
-module.exports = { possibleAlbumStates, MIGRATED, ACTIVE, UNSUBSCRIBED, DELETED, WAITING_PAYMENT, UNSUBSCRIBED_PENDING, PENDING, deleteWeirdCharacters };
+const toTimestamp = (strDate) => {
+  return Date.parse(strDate);
+}
+
+module.exports = {
+  possibleAlbumStates, MIGRATED, ACTIVE, UNSUBSCRIBED, DELETED, WAITING_PAYMENT, UNSUBSCRIBED_PENDING, PENDING,
+  deleteWeirdCharacters, toTimestamp
+};

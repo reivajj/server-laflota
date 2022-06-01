@@ -104,6 +104,7 @@ const updatePasswordByEmailInFS = async (userEmail, newPassword) => {
 }
 
 const getArtistsFromUserIdFS = async ownerId => {
+  console.log("ARTIST OWNER ID: ", ownerId)
   const artistsSnap = await dbFS.collection('artists').where('ownerId', '==', ownerId).get();
   if (artistsSnap.empty) return { emtpy: true };
 
@@ -114,6 +115,7 @@ const getArtistsFromUserIdFS = async ownerId => {
 
 const getUserArtistsInFSByEmail = async email => {
   const userDataFS = await getUserInFSByEmail(email);
+  console.log("USER DATA: ", userDataFS);
   const artistsFromOwnerIdFS = await getArtistsFromUserIdFS(userDataFS.user.id);
   return artistsFromOwnerIdFS;
 }
@@ -137,6 +139,13 @@ const getAllUsersFromFS = async () => {
   snapshot.forEach((doc) => allUsers.push(doc.data()));
   if (!allUsers) throw createHttpError(400, 'DB Error retrieving all users from firestore:', { properties: allUsers });
   return allUsers;
+}
+
+const getUserByIdFromFS = async userId => {
+  const userSnap = await dbFS.collection('users').doc(userId).get();
+  if (!userSnap.exists) return { data: "USER_NOT_EXISTS"};
+  if (!userSnap) throw createHttpError(400, 'DB Error retrieving all users from firestore:', { properties: allUsers });
+  return userSnap.data();
 }
 
 // Y esto???
@@ -206,5 +215,5 @@ const createUsersInUsersAndEmailCollectionFS = async usersAsFbModels => {
 module.exports = {
   getAllUsersFromFS, createUsersInUsersAndEmailCollectionFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSAndAuthByEmail,
   getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS,
-  updateAllUsersFS, createAuthUserWihtUuid
+  updateAllUsersFS, createAuthUserWihtUuid, getUserByIdFromFS
 };

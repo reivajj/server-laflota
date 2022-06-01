@@ -1,6 +1,8 @@
 const createError = require("http-errors");
 const { artistUpdateFieldsError } = require("../utils/errors.utils");
 const { dspIdsIdentifiers } = require("../utils/fugaVariables");
+const { v4: uuidv4 } = require('uuid');
+const { toTimestamp } = require("../utils/utils");
 
 const createFugaArtist = artistMetaData => {
   let artistRawData = {};
@@ -24,14 +26,25 @@ const getIssuingOrganization = (identifierField) => {
 const createFugaIdentifierArtist = (identifierField, identifierValue, name) => {
   let rawDataArtitstIdentifier = {};
   if (name) rawDataArtitstIdentifier.name = name;
-  
+
   const identifierDspCode = getIssuingOrganization(identifierField);
   rawDataArtitstIdentifier.issuing_organization = identifierDspCode;
-  
+
   if (identifierValue === "") rawDataArtitstIdentifier.newForIssuingOrg = true;
   else rawDataArtitstIdentifier.identifier = identifierValue;
 
   return rawDataArtitstIdentifier;
 }
 
-module.exports = { createFugaArtist, createFugaIdentifierArtist };
+const createIdentifiersFromFugaToFS = fugaIdentifiers => {
+  let spotifyIds = fugaIdentifiers.find(identifier => identifier.issuingOrganization.name === "Spotify");
+  let appleIds = fugaIdentifiers.find(identifier => identifier.issuingOrganization.name === "Apple Music");
+  return {
+    spotifyIdentifierIdFuga: spotifyIds ? spotifyIds.id : "",
+    appleIdentifierIdFuga: appleIds ? appleIds.id : "",
+    spotify_uri: spotifyIds ? spotifyIds.identifier : "",
+    apple_id: appleIds ? appleIds.identifier : ""
+  }
+}
+
+module.exports = { createFugaArtist, createFugaIdentifierArtist, createIdentifiersFromFugaToFS };

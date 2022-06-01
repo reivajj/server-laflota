@@ -6,9 +6,9 @@ const { albumTrackAssetError, albumGetAllError, albumUpdateFieldsError, albumDel
 
 const { get, post, put } = axiosFugaInstance;
 
-const getAllAlbumsFromFuga = async () => {
-  const response = await get('/products')
-    .catch((error) => { throw createError(400, albumGetAllError, { properties: error.response.data }) });
+const getAllAlbumsFromFuga = async urlQuery => {
+  const response = await get(`/products${urlQuery}`)
+    .catch((error) => { throw createError(400, albumGetAllError, { properties: error.response ? error.response.data : error.message }) });
   return response;
 }
 
@@ -67,9 +67,7 @@ const changeTrackPositionInAlbumInFUGA = async (albumId, trackId, newPosition) =
 
 const updateAlbumWithIdInFuga = async (albumId, newFieldsValues) => {
   const response = await put(`/products/${albumId}`, newFieldsValues)
-    .catch((error) => {
-      throw createError(400, albumUpdateFieldsError, { properties: { error, formData: newFieldsValues } });
-    })
+    .catch(() => { return "ERROR_UPDATING"; })
   return response;
 }
 

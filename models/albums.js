@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const { fugaAlbumsFormatsToOurFormats } = require('../utils/album.utils');
+const { toTimestamp } = require('../utils/utils');
 
 const createFugaAlbumFromFormData = albumAssetMetaData => {
   let rawDataAlbumAsset = {};
@@ -28,29 +29,33 @@ const createFugaAlbumFromFormData = albumAssetMetaData => {
   if (albumAssetMetaData.extra_4) rawDataAlbumAsset.extra_4 = albumAssetMetaData.extra_4;
   if (albumAssetMetaData.extra_5) rawDataAlbumAsset.extra_5 = albumAssetMetaData.extra_5;
   if (albumAssetMetaData.extra_6) rawDataAlbumAsset.extra_6 = albumAssetMetaData.extra_6;
+  if (albumAssetMetaData.extra_7) rawDataAlbumAsset.extra_7 = albumAssetMetaData.extra_7;
   return rawDataAlbumAsset;
 }
 
-const createFSAlbumFromFugaAlbum = (albumFromFuga, ownerEmail, ownerId, artistId, nombreArtist) => {
+const createFSAlbumFromFugaAlbum = (albumFromFuga, ownerEmail, ownerId, artistId) => {
   let saleAndReleaseDateSplitted = albumFromFuga.consumer_release_date.split('-');
+
   return {
     fugaId: albumFromFuga.id,
-    nombreArtist,
+    nombreArtist: albumFromFuga.artists[0].name,
     artistId,
+    artistFugaId: albumFromFuga.artists[0].id,
+    allOtherArtist: albumFromFuga.artists.slice(1,),
+    artistFugaId: albumFromFuga.artists[0].id,
     id: uuidv4(),
     title: albumFromFuga.name,
     labelFugaId: albumFromFuga.label.id,
     label_name: albumFromFuga.label.name,
-    language: albumFromFuga.language,
-    catalog_number: albumFromFuga.catalog_number,
+    languageId: albumFromFuga.language,
+    languageName: albumFromFuga.language === "ES" ? "Spanish" : "English",
     format: fugaAlbumsFormatsToOurFormats[albumFromFuga.release_format_type],
     c_line: albumFromFuga.c_line_text,
     p_line: albumFromFuga.p_line_text,
     c_year: albumFromFuga.c_line_year,
     p_year: albumFromFuga.p_line_year,
-    artistFugaId: albumFromFuga.artists[0].id,
     genre: albumFromFuga.genre,
-    allOtherArtist: albumFromFuga.artists.slice(1,),
+    subgenre: albumFromFuga.subgenre,
     year: saleAndReleaseDateSplitted[0],
     month: saleAndReleaseDateSplitted[1] > 9 ? saleAndReleaseDateSplitted[1] : saleAndReleaseDateSplitted[1].slice(1),
     dayOfMonth: saleAndReleaseDateSplitted[2].slice(0, 2),
@@ -58,10 +63,19 @@ const createFSAlbumFromFugaAlbum = (albumFromFuga, ownerEmail, ownerId, artistId
     version: albumFromFuga.release_version,
     ownerEmail,
     ownerId,
-    lastUpdateTS: new Date().getTime(),
-    whenCreatedDate: albumFromFuga.added_date,
+    lastUpdateTS: toTimestamp(albumFromFuga.added_date),
+    whenCreatedTS: toTimestamp(albumFromFuga.added_date),
     imagenUrl: "",
     state: albumFromFuga.state,
+    migratedRelease: true,
+    preOrder: false,
+    preOrderDayOfMonth: "",
+    preOrderDate: "",
+    preOrderMonth: "",
+    preOrderYear: "",
+    cover: albumFromFuga.cover_image,
+    dsps: [],
+    totalAssets: albumFromFuga.total_assets,
   }
 }
 

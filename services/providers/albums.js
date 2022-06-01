@@ -10,8 +10,8 @@ const { createFugaAlbumFromFormData } = require('../../models/albums');
 const { uploadFileByChunks } = require('../../utils/upload.utils');
 const { createNoCoverFugaError } = require('../../third-party-api/providers/errors/createFugaErrors');
 
-const getAllAlbums = async () => {
-  const responseGetAllAlbums = await getAllAlbumsFromFuga();
+const getAllAlbums = async urlQuery => {
+  const responseGetAllAlbums = await getAllAlbumsFromFuga(urlQuery);
   return responseGetAllAlbums;
 }
 

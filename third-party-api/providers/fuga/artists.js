@@ -1,5 +1,5 @@
 const createError = require('http-errors');
-const { axiosFugaInstance } = require('../../../config/axiosConfig');
+const { axiosFugaInstance, axiosFugaV2Instance } = require('../../../config/axiosConfig');
 const { artistGetAllError } = require('../../../utils/errors.utils');
 
 const { get, post, put } = axiosFugaInstance;
@@ -10,19 +10,10 @@ const getAllArtistsFromFuga = async () => {
   return response;
 }
 
-// const checkIfErrorIsDuplicatedPropIdAndAct = async (errorCreatingArtist, artistName) => {
-//   if (errorCreatingArtist.data.code === "DUPLICATE_PERSON_NAME") {
-//     const allPersonsWhoInitWithThatName = await getPersonByName(artistName);
-//     return { data: allPersonsWhoInitWithThatName.data.person.find(person => person.name.toLowerCase() === artistName.toLowerCase()) };
-//   }
-//   else throw createError(400, errorCreatingArtist.data.message, { config: { url: "/people" }, response: { data: { unexpectedError: true } } });
-// }
-
-// const getArtistsByNameFromFuga = async artistName => {
-//   const response = await get(`/artists?name=${artistName}`)
-//     .catch(async error => await checkIfErrorIsDuplicatedPropIdAndAct(error.response, rawDataPerson.name))
-//   return response;
-// }
+const getArtistsByNameFromFuga = async artistName => {
+  const response = await axiosFugaV2Instance.get(`/artists?page=0&page_size=10&search=${artistName}`);
+  return response;
+}
 
 const getArtistByIdFromFuga = async artistId => {
   const response = await get(`/artists/${artistId}`)
@@ -78,5 +69,6 @@ const deleteArtistIdentifierByBothIdsFuga = async (artistId, identifierId) => {
 
 module.exports = {
   getAllArtistsFromFuga, getArtistByIdFromFuga, uploadArtistFuga, updateArtistWithIdFuga, deleteArtistWithIdFuga,
-  getArtistIdenfierByIdFuga, askForArtistIdentifierDspFuga, editArtistIdentifierDspFuga, deleteArtistIdentifierByBothIdsFuga
+  getArtistIdenfierByIdFuga, askForArtistIdentifierDspFuga, editArtistIdentifierDspFuga, deleteArtistIdentifierByBothIdsFuga,
+  getArtistsByNameFromFuga
 };

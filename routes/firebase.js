@@ -1,10 +1,11 @@
 var router = require("express-promise-router")();
-const { addAlbumFromFugaToFSUser } = require("../firebase/firestore/albums");
+const { addAlbumFromFugaToFSUser, getFsAlbumsByField } = require("../firebase/firestore/albums");
+const { getFsArtistsByField } = require("../firebase/firestore/artists");
 const { deleteElementFromFS, getElementFromFS, editElementFromFS } = require("../firebase/firestore/elements");
 const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS, createCapifIsrcs, getCapifISRCs, getNotUsedIsrcAndMark } = require("../firebase/firestore/isrcs");
 const { getTracksByPropFS, attachTracksToAlbumFS } = require("../firebase/firestore/tracks");
 const { getAllUsersFromFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSAndAuthByEmail,
-  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS, updateAllUsersFS, createAuthUserWihtUuid } = require("../firebase/firestore/user");
+  getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS, updateAllUsersFS, createAuthUserWihtUuid, getUserByIdFromFS } = require("../firebase/firestore/user");
 const { createCsvFromUsersInFS, createCsvFromUsersInWpNotInFS, createFsUsersFromUsersDbCsv } = require("../migration/user.migration");
 const { logToCloudLoggingFS } = require("../third-party-api/providers/errors/logCloudLogging");
 
@@ -37,6 +38,11 @@ router.delete('/usersByEmailOnlyInUsers/:email', async (req, res, _) => {
 //=============================================================END MIGRATION=============================================================\\
 router.get('/users', async (_, res, next) => {
   const response = await getAllUsersFromFS();
+  return res.status(200).send({ response });
+});
+
+router.get('/user/:userId', async (req, res, next) => {
+  const response = await getUserByIdFromFS(req.params.userId);
   return res.status(200).send({ response });
 });
 
@@ -82,6 +88,11 @@ router.put('/changePasswordByEmail/:userEmail', async (req, res, _) => {
 
 //============================================================ALBUMS===============================================\\
 
+router.get('/getAlbumByField', async (req, res, next) => {
+  const response = await getFsAlbumsByField(req.body.fieldName, req.body.fieldValue);
+  return res.status(200).send({ response });
+});
+
 router.post('/fuga/create-fs-album-from-fuga', async (req, res, _) => {
   const response = await addAlbumFromFugaToFSUser(req.body.albumFugaId, req.body.userEmail, req.body.userId, req.body.artistId, req.body.nombreArtist);
   return res.status(200).send({ response });
@@ -108,6 +119,12 @@ router.get('/usersByEmail/:email/artists', async (req, res, _) => {
   const response = await getUserArtistsInFSByEmail(req.params.email.trim());
   return res.status(200).send({ response });
 })
+
+router.get('/getArtistByField', async (req, res, _) => {
+  const response = await getFsArtistsByField(req.body.fieldName, req.body.fieldValue);
+  return res.status(200).send({ response });
+})
+
 
 //============================================================TRACKS===============================================\\
 

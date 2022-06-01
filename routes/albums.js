@@ -10,8 +10,8 @@ const { getAllAlbums, getAlbumById, attachTrackAssetInAlbumWithId, createCoverIm
   publishAlbumWithId, updateAlbumWithId, deleteAlbumAndAssetsWithId, generateUPCAlbumWithId,
   getAlbumLiveLinksById, getFugaAlbumCoverImage, getAlbumByFieldValue } = require('../services/providers/albums');
 
-albums.get('/', async (_, res, __) => {
-  const response = await getAllAlbums();
+albums.get('/', async (req, res, __) => {
+  const response = await getAllAlbums(req.url);
   return res.status(200).send({ response: response.data });
 });
 
@@ -50,12 +50,6 @@ albums.get('/:albumId/image/:size', async (req, res) => {
     }
     fs.unlink(`albumImages/${req.params.albumId}.png`, error => error && console.log(error));
   });
-});
-
-albums.post('/tus-demo', upload.single('file'), async (req, res) => {
-  console.log("COVER: ", req);
-  // const response = await createCoverImageInAlbum(req.body, req.file);
-  return res.status(200).send({ response: "DEMO" });
 });
 
 albums.put('/:albumId/tracks/:trackId', upload.none(), async (req, res) => {

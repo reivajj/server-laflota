@@ -16,7 +16,6 @@ const getElementFromFS = async (targetCollection, targetElementId) => {
 }
 
 const editElementFromFS = async (targetCollection, targetElementId, newInfo) => {
-  console.log("TS: ", new Date().getTime());
   let elementToUpdateDoc = dbFS.collection(targetCollection).doc(targetElementId);
   let oldElement = await elementToUpdateDoc.get();
   if (!oldElement.exists) return { updated: "ELEMENT_NOT_EXISTS" };
