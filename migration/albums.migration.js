@@ -25,7 +25,7 @@ const csvWriterFugaApproachDelivered = createCsvWriter({
 const createAlbumAnalisisRow = (albumFromFuga, albumFromWp, validationRules) => {
   return {
     upc: albumFromFuga.upc || "UPC NOT FOUNDED",
-    artistFugaId: albumFromFuga.artists[0]?.id || "ID NOT FOUNDED",
+    artistFugaId: albumFromFuga.artists[0].id || "ID NOT FOUNDED",
     artistName: albumFromWp['Artista'],
     ownerEmail: albumFromWp['Owner Email'],
     ownerIdWp: albumFromWp['User WP Id'],
@@ -72,7 +72,7 @@ const analizeAlbumsNotInDelivery = async () => {
     let validationRules = [];
 
     if (album.state === "PENDING") {
-      rules = album?.validation_rules?.publish;
+      rules = album.validation_rules?publish;
       rules.items.forEach(rule => validationRules.push(rule.message)) || "";
       console.log("VALIDATION RULES: ", validationRules);
       if (validationRules === "" || validationRules.length === 0) {
