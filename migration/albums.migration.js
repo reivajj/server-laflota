@@ -72,7 +72,7 @@ const analizeAlbumsNotInDelivery = async () => {
     let validationRules = [];
 
     if (album.state === "PENDING") {
-      rules = album.validation_rules?publish;
+      rules = album.validation_rules.publish;
       rules.items.forEach(rule => validationRules.push(rule.message)) || "";
       console.log("VALIDATION RULES: ", validationRules);
       if (validationRules === "" || validationRules.length === 0) {
