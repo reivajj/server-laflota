@@ -8,13 +8,13 @@ royalties.post('/search', async (req, res, _) => {
   return res.status(200).send({ response });
 });
 
-royalties.get('/queryWithOp', async (req, res, _) => {
+royalties.post('/queryWithOp', async (req, res, _) => {
   let { companyName, fieldName, fieldValue, fieldToSum } = req.body;
   const response = await getRoyaltiesByQueryWithOp(companyName, fieldName, fieldValue, fieldToSum);
   return res.status(200).send({ response });
 });
 
-royalties.get('/royalties-dsp-with-op', async (req, res, _) => {
+royalties.post('/royalties-dsp-with-op', async (req, res, _) => {
   let { companyName, fieldName, fieldValue, fieldToSum, groupBy } = req.body;
   const response = await getRoyaltiesByDspsWithOp(companyName, fieldName, fieldValue, fieldToSum, groupBy);
   return res.status(200).send({ response });
