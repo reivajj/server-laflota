@@ -16,14 +16,20 @@ const royaltiesFieldsToSentToFrontEnd = ["saleId", "upc", "saleStartDate", "dsp"
 
 const getRoyaltiesByQuery = async (companyName, fieldName, fieldValue, limit, offset) => {
   const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
-    where: { [fieldName]: fieldValue },
+    where: fieldValue ? { [fieldName]: fieldValue } : {},
     limit: limit,
     offset: offset,
     attributes: royaltiesFieldsToSentToFrontEnd
   },
     { raw: true });
   if (!filteredRoyalties) throw createHttpError(400, 'DB Error retrieving all users:', { properties: allUsers });
-  return filteredRoyalties;
+
+  let total = 0;
+  total = fieldValue.length > 0
+    ? await db[companyTableNameInDB[companyName]].count({ where: { [fieldName]: fieldValue } })
+    : await db[companyTableNameInDB[companyName]].count();
+
+  return { total, royalties: filteredRoyalties };
 }
 
 const getRoyaltiesByQueryWithOp = async (companyName, fieldName, fieldValue, fieldToSum) => {
