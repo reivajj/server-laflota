@@ -105,7 +105,7 @@ router.delete('/element', async (req, res, _) => {
 })
 
 router.get('/element', async (req, res, _) => {
-  const response = await getElementFromFS(req.body.targetCollection, req.body.targetElementId);
+  const response = await getElementFromFS(req.query.fieldName, req.query.fieldValue);
   return res.status(200).send({ response });
 })
 
