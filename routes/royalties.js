@@ -2,7 +2,7 @@ const { getRoyaltiesByQueryWithOp, getRoyaltiesByDspsWithOp, loadRoyaltiesFromLo
 
 var royalties = require("express-promise-router")();
 
-royalties.get('/search', async (req, res, _) => {
+royalties.post('/search', async (req, res, _) => {
   let { companyName, fieldName, fieldValue, limit, offset } = req.body;
   const response = await getRoyaltiesByQuery(companyName, fieldName, fieldValue, limit, offset);
   return res.status(200).send({ response });
