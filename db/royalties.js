@@ -9,7 +9,7 @@ const companyTableNameInDB = {
   "distroKid": "RoyaltyDK"
 }
 
-const royaltiesFieldsToSentToFrontEnd = ["saleId", "upc", "saleStartDate", "dsp", "saleUserType",
+const royaltiesFieldsToSentToFrontEnd = ["saleId", "upc", "saleStartDate", "saleEndDate", "dsp", "saleUserType",
   "territory", "releaseArtist", "releaseTitle", "assetTitle",
   "isrc", "assetOrReleaseSale", "assetQuantity", "originalRevenue",
   "netRevenue", "netRevenueCurrency"]
