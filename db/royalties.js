@@ -28,7 +28,7 @@ const getRoyaltiesByQuery = async (companyName, fieldName, fieldValue, limit, of
 
 const getRoyaltiesByQueryWithOp = async (companyName, fieldName, fieldValue, fieldToSum) => {
   const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
-    where: { [fieldName]: fieldValue },
+    where: fieldValue ? { [fieldName]: fieldValue } : {},
     attributes: [fieldName, [sequelize.fn('sum', sequelize.col(fieldToSum)), 'count']],
     group: [`${companyTableNameInDB[companyName]}.${fieldName}`],
     raw: true,
@@ -39,11 +39,20 @@ const getRoyaltiesByQueryWithOp = async (companyName, fieldName, fieldValue, fie
   return filteredRoyalties;
 }
 
-const getRoyaltiesByDspsWithOp = async (companyName, fieldName, fieldValue, fieldToSum, groupBy) => {
+const getRoyaltiesByDspsWithOp = async (companyName, fieldName, fieldValue, fieldToSum, groupByArray) => {
+  let groupClause = "";
+  let attributesClause = [[sequelize.fn('sum', sequelize.col(fieldToSum)), 'totalSum']];
+  console.log("GR: ", groupByArray)
+  if (groupByArray.length > 0) {
+    console.log("ENTRO AL IF")
+    groupClause = groupByArray.map(groupByField => `${companyTableNameInDB[companyName]}.${groupByField}`);
+    attributesClause.push([...groupByArray.map(groupByField => groupByField)]);
+  }
+  console.log("AT: ", attributesClause)
   const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
-    where: { [fieldName]: fieldValue },
-    attributes: [fieldName, [sequelize.fn('sum', sequelize.col(fieldToSum)), 'totalSum'], groupBy],
-    group: [`${companyTableNameInDB[companyName]}.${fieldName}`, `${companyTableNameInDB[companyName]}.${groupBy}`],
+    where: fieldValue ? { [fieldName]: fieldValue } : {},
+    attributes: attributesClause,
+    group: groupClause,
     raw: true,
     order: sequelize.literal('totalSum DESC')
   })
