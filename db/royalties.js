@@ -42,13 +42,12 @@ const getRoyaltiesByQueryWithOp = async (companyName, fieldName, fieldValue, fie
 const getRoyaltiesByDspsWithOp = async (companyName, fieldName, fieldValue, fieldToSum, groupByArray) => {
   let groupClause = "";
   let attributesClause = [[sequelize.fn('sum', sequelize.col(fieldToSum)), 'totalSum']];
-  console.log("GR: ", groupByArray)
+
   if (groupByArray.length > 0) {
-    console.log("ENTRO AL IF")
     groupClause = groupByArray.map(groupByField => `${companyTableNameInDB[companyName]}.${groupByField}`);
-    attributesClause.push([...groupByArray.map(groupByField => groupByField)]);
+    attributesClause.push(...groupByArray.map(groupByField => groupByField));
   }
-  console.log("AT: ", attributesClause)
+
   const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
     where: fieldValue ? { [fieldName]: fieldValue } : {},
     attributes: attributesClause,
