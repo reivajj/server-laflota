@@ -16,7 +16,7 @@ const royaltiesFieldsToSentToFrontEnd = ["saleId", "upc", "saleStartDate", "dsp"
 
 const getRoyaltiesByQuery = async (companyName, fieldName, fieldValue, limit, offset) => {
   const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
-    where: fieldValue ? { [fieldName]: fieldValue } : {},
+    where: fieldValue.length > 0 ? { [fieldName]: fieldValue } : {},
     limit: limit,
     offset: offset,
     attributes: royaltiesFieldsToSentToFrontEnd
@@ -34,7 +34,7 @@ const getRoyaltiesByQuery = async (companyName, fieldName, fieldValue, limit, of
 
 const getRoyaltiesByQueryWithOp = async (companyName, fieldName, fieldValue, fieldToSum) => {
   const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
-    where: fieldValue ? { [fieldName]: fieldValue } : {},
+    where: fieldValue.length > 0 ? { [fieldName]: fieldValue } : {},
     attributes: [fieldName, [sequelize.fn('sum', sequelize.col(fieldToSum)), 'count']],
     group: [`${companyTableNameInDB[companyName]}.${fieldName}`],
     raw: true,
@@ -55,7 +55,7 @@ const getRoyaltiesByDspsWithOp = async (companyName, fieldName, fieldValue, fiel
   }
 
   const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
-    where: fieldValue ? { [fieldName]: fieldValue } : {},
+    where: fieldValue.length > 0 ? { [fieldName]: fieldValue } : {},
     attributes: attributesClause,
     group: groupClause,
     raw: true,
