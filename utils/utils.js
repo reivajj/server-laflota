@@ -18,7 +18,15 @@ const toTimestamp = (strDate) => {
   return Date.parse(strDate);
 }
 
+const uniqBy = (a, key) => {
+  return [
+    ...new Map(
+      a.map(x => [x[`${key}`], x])
+    ).values()
+  ]
+}
+
 module.exports = {
   possibleAlbumStates, MIGRATED, ACTIVE, UNSUBSCRIBED, DELETED, WAITING_PAYMENT, UNSUBSCRIBED_PENDING, PENDING,
-  deleteWeirdCharacters, toTimestamp
+  deleteWeirdCharacters, toTimestamp, uniqBy
 };

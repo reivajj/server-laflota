@@ -3,6 +3,7 @@ const { getFsArtistsByField, addOwnerEmailToArtist, createFsArtistFromFugaArtist
 const { getUserInFSByEmail } = require("../firebase/firestore/user");
 const { createFSAlbumFromFugaAlbum } = require("../models/albums");
 const { getAlbumByFieldValue, getAlbumById, getAllAlbums, updateAlbumWithId } = require("../services/providers/albums");
+const { getAlbumDeliveryInstructions } = require("../services/providers/delivery");
 const { createCsvWriter, readCsv, getArrayElementsInFsFromCsv } = require("../utils/csv.utils");
 
 const csvWriterFsAlbumsNotDelivereds = createCsvWriter({
@@ -14,11 +15,8 @@ const csvWriterFsAlbumsNotDelivereds = createCsvWriter({
 });
 
 const csvWriterFugaApproachDelivered = createCsvWriter({
-  path: 'migration/2.migrateArtistsMissing.csv',
-  header: [{ id: "upc", title: "upc" }, { id: "mainArtistFugaId", title: "mainArtistFugaId" },
-  { id: "mainArtistAppId", title: "mainArtistAppId" }, { id: "artistName", title: "artistName" },
-  { id: "albumAppId", title: "albumAppId" }, { id: "ownerEmail", title: "ownerEmail" },
-  { id: "albumFugaId", title: "albumFugaId" }, { id: "result", title: "result" }]
+  path: 'migration/0.gettingEmailsOfYTReleases.csv',
+  header: [{ id: "upc", title: "upc" }, { id: "email", title: "email" }]
 });
 
 
@@ -90,8 +88,6 @@ const analizeAlbumsNotInDelivery = async () => {
   console.timeEnd("TEST GET ALBUM");
   return dataResults;
 }
-
-
 
 const createAlbumStatusRow = (fugaAlbum, appAlbum, result) => {
   return {
@@ -174,7 +170,6 @@ const createFsAlbumFromNotMigrated = async albumFromCsv => {
   return createAlbumStatusRow(albumFromFuga, createdFsAlbum, `CREATED_FS_ALBUM_AND_FUGA_EXTRA_FIELDS`);
 }
 
-
 const reviewFsAlbum = async (albumFromFuga, albumFromFS) => {
   let result = "ALBUM_EXISTED";
   let artistFromFSResponse = await getUserCredentialsFromArtist(albumFromFuga.artists[0].id, albumFromFuga);
@@ -231,6 +226,57 @@ const fugaAlbumsMigrationApproach = async () => {
   return results;
 }
 
+const actionsOnAllFugaAlbums = async () => {
+  let totalAlbumTargets = 5219;
+  let pageSize = 20; let pages = Math.ceil(totalAlbumTargets / pageSize);
+  let albumStatus = "PUBLISHED";
+  let pagesArray = [...Array(pages).keys()].slice(51);
+  let results = []; let index = 0;
+  let migrationDateAdded = new Date("2022-02-18T16:00:08");
+
+  for (const page of pagesArray) {
+    console.time(`TEST PAGINA: ${page}`);
+    console.log(`TEST PAGINA: ${page} de total: ${pages}`);
+
+    let albumsResponse = await getAllAlbums(`?page=${page}&page_size=${pageSize}&state=${albumStatus}&subresources=true`);
+
+    let parallelActions = albumsResponse.data.product.map(async albumFuga => {
+      let albumDateAdded = new Date(albumFuga.added_date);
+      let email = "no need action";
+
+      if (albumDateAdded <= migrationDateAdded) {
+        let dspsStatusResponse = await getAlbumDeliveryInstructions(albumFuga.id);
+        if (!dspsStatusResponse || dspsStatusResponse.data.delivery_instructions.length === 0) {
+          console.log("YA PROCESADOS: ", index + 1);
+          results.push({ upc: albumFuga.upc, email: "error delivery instructions" });
+        }
+        else {
+          let deliveryInstructions = dspsStatusResponse.data.delivery_instructions;
+          let ytDelivered = deliveryInstructions.find(delIns => (delIns.dsp.name === "YouTube Music & Content ID"
+            && delIns.state === "DELIVERED"));
+
+          email = "yt no encontrado";
+          if (ytDelivered) {
+            email = albumFuga.extra_4 ? albumFuga.extra_4.split(':').length > 1 ? albumFuga.extra_4.split(':')[1] : "no encontrado" : "no encontrado";
+            let wasAdded = results.find(res => res.email === email);
+            if (email === "no encontrado") results.push({ upc: albumFuga.upc, email })
+            else if (wasAdded === undefined) results.push({ upc: albumFuga.upc, email })
+          }
+        }
+
+      }
+
+      index++;
+      console.log("PROCESADO ALBUM: ", index, " / Fuga ID:  ", albumFuga.id, " / Email:", email);
+    })
+
+    await Promise.all(parallelActions);
+    console.timeEnd(`TEST PAGINA: ${page}`);
+  }
+  await csvWriterFugaApproachDelivered.writeRecords(results);
+  return results;
+}
+
 const createAlbumsNotMigrated = async () => {
   let albumsNotMigrated = await getArrayElementsInFsFromCsv("migration/1.artistsMissing.csv");
   let results = [];
@@ -263,5 +309,5 @@ const createAlbumsNotMigrated = async () => {
 
 module.exports = {
   analizeAlbumsNotInDelivery, fugaAlbumsMigrationApproach,
-  createAlbumsNotMigrated
+  createAlbumsNotMigrated, actionsOnAllFugaAlbums
 }

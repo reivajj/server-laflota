@@ -1,31 +1,20 @@
 const fs = require('fs');
-const { parse } = require('fast-csv');
 const { createSubscriptionDataFromCSVRow } = require('../models/subscriptions');
 const { v4: uuidv4, v5: uuidv5 } = require('uuid');
-
+const { readCsv, createCsvWriter } = require('../utils/csv.utils')
 // var wordlist = require('wordlist-english'); // CommonJS
 // var wordsSpanish = require('an-array-of-spanish-words')
 
 const { getAlbumByFieldValue, updateAlbumWithId } = require('../services/providers/albums');
 const { getTrackAssetById, updateTrackAssetWithId } = require('../services/providers/tracks');
-const { deliverAlbumForArrayOfDsps, addArrayOfDspsToDeliver, getAlbumDeliveryInstructions, redeliverAllAlbumDsps } = require('../services/providers/delivery');
-const { mapFugaRoyaltyToDB } = require('../models/royalties');
+const { deliverAlbumForArrayOfDsps, addArrayOfDspsToDeliver, getAlbumDeliveryInstructions, redeliverAllAlbumDsps, redeliverAlbumForArrayOfDsps } = require('../services/providers/delivery');
 const { mapWPReleaseToFilteredRelease } = require('../models/wp.albums');
 
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const isrcNamespace = '1b671a64-40d5-491e-99b0-da01ff1f3341';
 
-function uniqBy(a, key) {
-  return [
-    ...new Map(
-      a.map(x => [x[`${key}`], x])
-    ).values()
-  ]
-}
-
 const csvWriter = createCsvWriter({
-  path: 'csv/0.ReleasesNeedAnotherDeliveryRound.csv',
-  header: [{ id: "albumFugaId", title: "Album FUGA Id" }, { id: "upc", title: "UPC" }, { id: "needDelivery", title: "Need Delivery" }]
+  path: 'csv/0.appleDeliveryStatus.csv',
+  header: [{ id: "albumFugaId", title: "albumFugaId" }, { id: "upc", title: "upc" }, { id: "result", title: "result" }]
 });
 
 const csvWriterRedeliver = createCsvWriter({
@@ -75,30 +64,6 @@ const transcriptDSPsNamesToIds = csvRowUpc => {
 
 const createUPCsSeparatedByComa = csvRowUpc => {
   return `${csvRowUpc.UPC}`
-}
-
-// Async readCsv
-const readCsv = (path, options, rowProcessor) => {
-  return new Promise((resolve, reject) => {
-    const data = [];
-    fs.createReadStream(path)
-      .pipe(parse(options))
-      .on('error', reject)
-      .on('data', row => data.push(rowProcessor(row)))
-      .on('end', rowCount => {
-        console.log(`Parsed ${rowCount} rows`);
-        resolve(data);
-      });
-  });
-}
-
-const readRoyaltiesFromCsvAndMapToDB = async (royaltiesCompany, csvFileName) => {
-  const data = await readCsv(
-    `${__dirname}/${csvFileName}.csv`,
-    { headers: true, ignoreEmpty: true },
-    royaltiesCompany === "FUGA" ? mapFugaRoyaltyToDB : () => console.log("NOT FUGA"),
-  );
-  return data;
 }
 
 const readSubscriptionsCsv = async () => {
@@ -168,29 +133,9 @@ const readAndTranscriptUPCsCsvAndDSPsForDelivery = async () => {
   return dataResults;
 }
 
-// const newFieldsForAlbumFromAsset = (album, assets) => {
-//   let fieldsToEdit = {};
-//   if (assets.length === 1) {
-//     if (assets[0].name !== album.name) fieldsToEdit = { name: assets[0].name }
-//     if (assets[0].asset_version && (assets[0].asset_version !== album.release_version)) {
-//       fieldsToEdit = { ...fieldsToEdit, release_version: assets[0].asset_version || album.release_version }
-//     }
-//   }
-
-//   let albumTitleSplitted = album.name.split(" ");
-//   let englishWords = 0;
-//   albumTitleSplitted.forEach(word => {
-//     if (wordlist['english'].indexOf(word.toLowerCase()) !== -1) englishWords++;
-//   })
-//   let titleIsInEnglish = albumTitleSplitted.length / 2 < englishWords;
-
-//   if (!titleIsInEnglish && album.language !== "ES") fieldsToEdit = { ...fieldsToEdit, language: "ES" }
-//   return fieldsToEdit;
-// }
-
 const readAndEditAlbumsFromUPCs = async () => {
 
-  let upcs = fs.readFileSync('csv/0.UPCsToApproveTXT.txt', 'utf8');
+  let upcs = fs.readFileSync('csv/AppleDeliveryUPCs.txt', 'utf8');
   const upcsAsList = upcs.split(",").slice;
 
   let dataResults = [];
@@ -229,24 +174,37 @@ const readAndEditAlbumsFromUPCs = async () => {
   return { albumsEdited, dataResults };
 }
 
-// const newFieldsForAsset = asset => {
-//   let fieldsToEdit = {};
-//   let assetTitleSplitted = asset.name.split(" ");
-//   let spanishWords = 0;
-//   let englishWords = 0;
+const deliveryListOfUpcsToApple = async () => {
 
-//   assetTitleSplitted.forEach(word => {
-//     let wordIsInEnglishDict = wordlist['english'].indexOf(word.toLowerCase()) !== -1;
-//     let wordIsInSpanishDict = wordsSpanish.indexOf(word.toLowerCase()) !== -1 || word === 'y';
-//     if (wordIsInEnglishDict) englishWords++;
-//     if (wordIsInSpanishDict) spanishWords++;
-//   })
+  let upcs = fs.readFileSync('csv/AppleDeliveryUPCs.txt', 'utf8');
+  const upcsAsList = upcs.split(",");
+  let dataResults = [];
+  let index = 0;
 
-//   let titleIsInEnglish = spanishWords < englishWords;
-//   if (titleIsInEnglish && asset.language !== "EN") fieldsToEdit = { ...fieldsToEdit, language: "EN" }
-//   if (!titleIsInEnglish && asset.language !== "ES") fieldsToEdit = { ...fieldsToEdit, language: "ES" }
-//   return fieldsToEdit;
-// }
+  for (const upc of upcsAsList) {
+    console.time("TEST DELIVERY");
+    index++;
+    console.log("YA PROCESADOS: ", index);
+    let albumResponse = await getAlbumByFieldValue(upc);
+    if (!albumResponse || albumResponse.data === "NOT_EXISTS") dataResults.push({ upc, result: "NOT_FOUNDED" });
+
+    let album = albumResponse.data[0];
+    let albumFugaId = album.id;
+
+    let redeliverResponse = await redeliverAlbumForArrayOfDsps(albumFugaId, [{ dsp: 1330598 }]);
+    let arrayOfDspsProccessingPostDelivery = redeliverResponse.data.delivery_instructions.find(delInstruction => delInstruction.dsp.id === 1330598);
+    console.log("APPLE STATE: ", arrayOfDspsProccessingPostDelivery);
+
+    if (arrayOfDspsProccessingPostDelivery.state === "PROCESSING") {
+      dataResults.push({ albumFugaId, upc, result: "CORRECT_RE_DELIVERY" });
+      continue;
+    }
+    else dataResults.push({ albumFugaId, upc, redeliverStatus: "NOT_DELIVERED" });
+  }
+
+  await csvWriter.writeRecords(dataResults);
+  return dataResults;
+}
 
 const readAndEditTracksFromUPCs = async () => {
 
@@ -479,5 +437,5 @@ const tryAnotherDeliveryRound = async () => {
 module.exports = {
   readSubscriptionsCsv, readISRCsCsv, readUPCsCsvAndWriteNew,
   readAndTranscriptUPCsCsvAndDSPsForDelivery, readAndEditAlbumsFromUPCs, readAndEditTracksFromUPCs,
-  readRoyaltiesFromCsvAndMapToDB, filterWpAlbumsByUPCDelivered, tryAnotherDeliveryRound
+  filterWpAlbumsByUPCDelivered, tryAnotherDeliveryRound, deliveryListOfUpcsToApple
 }

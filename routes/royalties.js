@@ -1,18 +1,26 @@
-const { getDashGoRoyaltiesQuery, getDashGoRoyaltiesQueryCount, loadRoyaltiesFromLocalCSV } = require("../db/royalties");
+const { getRoyaltiesByQueryWithOp, getRoyaltiesByDspsWithOp, loadRoyaltiesFromLocalCSV, getRoyaltiesByQuery } = require("../db/royalties");
 
 var royalties = require("express-promise-router")();
 
-royalties.get('/dashgo/search', async (req, res, next) => {
-  const response = await getDashGoRoyaltiesQuery(req.body.fieldName, req.body.fieldValue);
+royalties.get('/search', async (req, res, _) => {
+  let { companyName, fieldName, fieldValue, limit, offset } = req.body;
+  const response = await getRoyaltiesByQuery(companyName, fieldName, fieldValue, limit, offset);
   return res.status(200).send({ response });
 });
 
-royalties.get('/dashgo/search-count', async (req, res, next) => {
-  const response = await getDashGoRoyaltiesQueryCount(req.body.fieldName, req.body.fieldValue);
+royalties.get('/queryWithOp', async (req, res, _) => {
+  let { companyName, fieldName, fieldValue, fieldToSum } = req.body;
+  const response = await getRoyaltiesByQueryWithOp(companyName, fieldName, fieldValue, fieldToSum);
   return res.status(200).send({ response });
 });
 
-royalties.post('/load-royalties-local', async (req, res, next) => {
+royalties.get('/royalties-dsp-with-op', async (req, res, _) => {
+  let { companyName, fieldName, fieldValue, fieldToSum, groupBy } = req.body;
+  const response = await getRoyaltiesByDspsWithOp(companyName, fieldName, fieldValue, fieldToSum, groupBy);
+  return res.status(200).send({ response });
+});
+
+royalties.post('/load-royalties-local', async (req, res, _) => {
   const response = await loadRoyaltiesFromLocalCSV(req.body.companyName, req.body.csvFileName);
   return res.status(200).send({ response });
 });

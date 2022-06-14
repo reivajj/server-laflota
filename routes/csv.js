@@ -1,5 +1,5 @@
-const { readSubscriptionsCsv, readISRCsCsv, readUPCsCsvAndWriteNew, readAndTranscriptUPCsCsvAndDSPsForDelivery, readAndEditAlbumsFromUPCs, readAndEditTracksFromUPCs, filterWpAlbumsByUPCDelivered, tryAnotherDeliveryRound } = require("../csv/csvActions");
-const { analizeAlbumsNotInDelivery, fugaAlbumsMigrationApproach, createAlbumsNotMigrated } = require("../migration/albums.migration");
+const { readSubscriptionsCsv, readISRCsCsv, readUPCsCsvAndWriteNew, readAndTranscriptUPCsCsvAndDSPsForDelivery, readAndEditAlbumsFromUPCs, readAndEditTracksFromUPCs, filterWpAlbumsByUPCDelivered, tryAnotherDeliveryRound, deliveryListOfUpcsToApple } = require("../csv/csvActions");
+const { analizeAlbumsNotInDelivery, fugaAlbumsMigrationApproach, createAlbumsNotMigrated, actionsOnAllFugaAlbums } = require("../migration/albums.migration");
 const { getArtistsToMigrateToFS, getArtistsFugaIdToMigrateToFS, createArtistFsFromMigrate } = require("../migration/artists.migration");
 var router = require("express-promise-router")();
 
@@ -50,6 +50,16 @@ router.post('/fugaMigrationApproach', async (_, res, next) => {
 
 router.post('/getArtistsToMigrateToFS', async (_, res, next) => {
   const response = await createArtistFsFromMigrate();
+  return res.status(200).send({ response });
+})
+
+router.post('/appleDeliveryListUpc', async (_, res, next) => {
+  const response = await deliveryListOfUpcsToApple();
+  return res.status(200).send({ response });
+})
+
+router.post('/getEmailsFromYtReleases', async (_, res, next) => {
+  const response = await actionsOnAllFugaAlbums();
   return res.status(200).send({ response });
 })
 

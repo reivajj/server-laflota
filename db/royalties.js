@@ -1,22 +1,51 @@
 const createHttpError = require("http-errors");
 const db = require("../loaders/sequelize");
 const sequelize = require("sequelize");
-const { readRoyaltiesFromCsvAndMapToDB } = require("../csv/csvActions");
+const { readRoyaltiesFromCsvAndMapToDB } = require("../csv/royalties");
 
-const getDashGoRoyaltiesQuery = async (fieldName, fieldValue) => {
-  const filteredRoyalties = await db.RegaliasDashgo.findAll({ where: { [fieldName]: fieldValue } }, { raw: true });
+const companyTableNameInDB = {
+  "dashgo": "RegaliasDashgo",
+  "fuga": "RoyaltyFuga",
+  "distroKid": "RoyaltyDK"
+}
+
+const royaltiesFieldsToSentToFrontEnd = ["saleId", "upc", "saleStartDate", "dsp", "saleUserType",
+  "territory", "releaseArtist", "releaseTitle", "assetTitle",
+  "isrc", "assetOrReleaseSale", "assetQuantity", "originalRevenue",
+  "netRevenue", "netRevenueCurrency"]
+
+const getRoyaltiesByQuery = async (companyName, fieldName, fieldValue, limit, offset) => {
+  const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
+    where: { [fieldName]: fieldValue },
+    limit: limit,
+    offset: offset,
+    attributes: royaltiesFieldsToSentToFrontEnd
+  },
+    { raw: true });
   if (!filteredRoyalties) throw createHttpError(400, 'DB Error retrieving all users:', { properties: allUsers });
   return filteredRoyalties;
 }
 
-const getDashGoRoyaltiesQueryCount = async (fieldName, fieldValue) => {
-  // const filteredRoyalties = await db.RegaliasDashgo.findAll({ where: { [fieldName]: fieldValue } }, { raw: true });
-  const filteredRoyalties = await db.RegaliasDashgo.findAll({
+const getRoyaltiesByQueryWithOp = async (companyName, fieldName, fieldValue, fieldToSum) => {
+  const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
     where: { [fieldName]: fieldValue },
-    attributes: [fieldName, [sequelize.fn('count', sequelize.col(fieldName)), 'count']],
-    group: [`RegaliasDashgo.${fieldName}`],
+    attributes: [fieldName, [sequelize.fn('sum', sequelize.col(fieldToSum)), 'count']],
+    group: [`${companyTableNameInDB[companyName]}.${fieldName}`],
     raw: true,
     order: sequelize.literal('count DESC')
+  })
+
+  if (!filteredRoyalties) throw createHttpError(400, 'DB Error retrieving all users:', { properties: allUsers });
+  return filteredRoyalties;
+}
+
+const getRoyaltiesByDspsWithOp = async (companyName, fieldName, fieldValue, fieldToSum, groupBy) => {
+  const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
+    where: { [fieldName]: fieldValue },
+    attributes: [fieldName, [sequelize.fn('sum', sequelize.col(fieldToSum)), 'totalSum'], groupBy],
+    group: [`${companyTableNameInDB[companyName]}.${fieldName}`, `${companyTableNameInDB[companyName]}.${groupBy}`],
+    raw: true,
+    order: sequelize.literal('totalSum DESC')
   })
 
   if (!filteredRoyalties) throw createHttpError(400, 'DB Error retrieving all users:', { properties: allUsers });
@@ -31,4 +60,4 @@ const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
   return `SUCCES UPLOADED ${royaltiesCreatedInDB.length} ROYALTIES`;
 }
 
-module.exports = { getDashGoRoyaltiesQuery, getDashGoRoyaltiesQueryCount, loadRoyaltiesFromLocalCSV };
+module.exports = { getRoyaltiesByQuery, getRoyaltiesByQueryWithOp, getRoyaltiesByDspsWithOp, loadRoyaltiesFromLocalCSV };
