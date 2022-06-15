@@ -10,7 +10,7 @@ const companyTableNameInDB = {
 }
 
 const royaltiesFieldsToSentToFrontEnd = ["saleId", "upc", "saleStartDate", "saleEndDate", "dsp", "saleUserType",
-  "territory", "releaseArtist", "releaseTitle", "assetTitle",
+  "territory", "releaseArtist", "releaseTitle", "assetTitle", "saleType",
   "isrc", "assetOrReleaseSale", "assetQuantity", "originalRevenue",
   "netRevenue", "netRevenueCurrency"]
 
