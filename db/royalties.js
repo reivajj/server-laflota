@@ -66,10 +66,31 @@ const getRoyaltiesGroupedWithOp = async (companyName, fieldName, fieldValue, op,
   return filteredRoyalties;
 }
 
-const getAccountingForTableView = async groupByField => {
-  let sumRevenues = await getRoyaltiesGroupedWithOp('fuga', "", [], "sum", "netRevenue", [groupByField]);
-  let countStreams = await getRoyaltiesGroupedWithOp('fuga', "", [], "sum", "assetQuantity", [groupByField]);
-  let countDownloads = await getRoyaltiesGroupedWithOp('fuga', "saleType", ["Download"], "count", "upc", [groupByField]);
+const getDownloadsGroupedBy = async (companyName, fieldName, fieldValue, groupByArray) => {
+  let groupClause = ""; let operationToName = operationsToProps('count', 'upc', "Download");
+  let attributesClause = [[sequelize.fn('count', sequelize.col('upc')), operationToName]];
+
+  if (groupByArray.length > 0) {
+    groupClause = groupByArray.map(groupByField => `${companyTableNameInDB[companyName]}.${groupByField}`);
+    attributesClause.push(...groupByArray.map(groupByField => groupByField));
+  }
+
+  const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
+    where: fieldValue.length > 0 ? { [fieldName]: fieldValue, "saleType": "Download" } : {},
+    attributes: attributesClause,
+    group: groupClause,
+    raw: true,
+    order: sequelize.literal(`${operationToName} DESC`)
+  })
+
+  if (!filteredRoyalties) throw createHttpError(400, 'DB Error retrieving all users:', { properties: allUsers });
+  return filteredRoyalties;
+}
+
+const getAccountingForTableView = async (groupByField, fieldName, fieldValues) => {
+  let sumRevenues = await getRoyaltiesGroupedWithOp('fuga', fieldName, fieldValues, "sum", "netRevenue", [groupByField]);
+  let countStreams = await getRoyaltiesGroupedWithOp('fuga', fieldName, fieldValues, "sum", "assetQuantity", [groupByField]);
+  let countDownloads = await getDownloadsGroupedBy('fuga', fieldName, fieldValues, [groupByField]);
 
   return sumRevenues.map(groupByValueAndRevenue => {
     let streamsByGroupByField = countStreams.find(groupByValueAndStream => groupByValueAndRevenue[groupByField] === groupByValueAndStream[groupByField]);
@@ -100,4 +121,7 @@ const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
   return `SUCCES UPLOADED ${rowsAdded} ROYALTIES`;
 }
 
-module.exports = { getRoyaltiesByQuery, getRoyaltiesGroupedWithOp, getAccountingForTableView, loadRoyaltiesFromLocalCSV };
+module.exports = {
+  getRoyaltiesByQuery, getRoyaltiesGroupedWithOp, getDownloadsGroupedBy, getAccountingForTableView,
+  loadRoyaltiesFromLocalCSV
+};

@@ -14,8 +14,8 @@ royalties.post('/query-with-op', async (req, res, _) => {
   return res.status(200).send({ response });
 });
 
-royalties.get('/accounting-groupBy/:groupByField', async (req, res, _) => {
-  const response = await getAccountingForTableView(req.params.groupByField);
+royalties.post('/accounting-groupBy/:groupByField', async (req, res, _) => {
+  const response = await getAccountingForTableView(req.params.groupByField, req.body.fieldName, req.body.fieldValue);
   return res.status(200).send({ response });
 });
 
