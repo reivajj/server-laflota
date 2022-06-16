@@ -69,6 +69,7 @@ const getRoyaltiesGroupedWithOp = async (companyName, fieldName, fieldValue, op,
 const getDownloadsGroupedBy = async (companyName, fieldName, fieldValue, groupByArray) => {
   let groupClause = ""; let operationToName = operationsToProps('count', 'upc', "Download");
   let attributesClause = [[sequelize.fn('count', sequelize.col('upc')), operationToName]];
+  let whereClause = fieldValue.length > 0 ? { [fieldName]: fieldValue } : {};
 
   if (groupByArray.length > 0) {
     groupClause = groupByArray.map(groupByField => `${companyTableNameInDB[companyName]}.${groupByField}`);
@@ -76,7 +77,7 @@ const getDownloadsGroupedBy = async (companyName, fieldName, fieldValue, groupBy
   }
 
   const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
-    where: fieldValue.length > 0 ? { [fieldName]: fieldValue, "saleType": "Download" } : {},
+    where: { ...whereClause, "saleType": "Download" },
     attributes: attributesClause,
     group: groupClause,
     raw: true,
