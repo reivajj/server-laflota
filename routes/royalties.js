@@ -1,4 +1,4 @@
-const { getRoyaltiesGroupedWithOp, loadRoyaltiesFromLocalCSV, getRoyaltiesByQuery } = require("../db/royalties");
+const { getRoyaltiesGroupedWithOp, loadRoyaltiesFromLocalCSV, getRoyaltiesByQuery, getAccountingForTable } = require("../db/royalties");
 
 var royalties = require("express-promise-router")();
 
@@ -11,6 +11,11 @@ royalties.post('/search', async (req, res, _) => {
 royalties.post('/query-with-op', async (req, res, _) => {
   let { companyName, fieldName, fieldValue, op, fieldOp, groupBy } = req.body;
   const response = await getRoyaltiesGroupedWithOp(companyName, fieldName, fieldValue, op, fieldOp, groupBy);
+  return res.status(200).send({ response });
+});
+
+royalties.get('/accounting-groupBy/:groupByField', async (req, res, _) => {
+  const response = await getAccountingForTable(req.params.groupByField);
   return res.status(200).send({ response });
 });
 

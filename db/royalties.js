@@ -9,7 +9,14 @@ const companyTableNameInDB = {
   "distroKid": "RoyaltyDK"
 }
 
-const royaltiesFieldsToSentToFrontEnd = ["saleId", "upc", "saleStartDate", "saleEndDate", "dsp", "saleUserType",
+const operationsToProps = (op, fieldOp, filterValue) => {
+  if (op === "sum" && fieldOp === "assetQuantity") return "streams";
+  if (op === "sum" && fieldOp === "netRevenue") return "revenues";
+  if (op === "count" && fieldOp === "upc" && filterValue === "Download") return "downloads";
+  return fieldOp + op;
+}
+
+const royaltiesFieldsToSentToFrontEnd = ["saleId", "upc", "saleStartDate", "saleEndDate", "dsp", "storeName", "saleUserType",
   "territory", "releaseArtist", "releaseTitle", "assetTitle", "saleType",
   "isrc", "assetOrReleaseSale", "assetQuantity", "originalRevenue",
   "netRevenue", "netRevenueCurrency", "distributor"]
@@ -34,8 +41,8 @@ const getRoyaltiesByQuery = async (companyName, fieldName, fieldValue, limit, of
 }
 
 const getRoyaltiesGroupedWithOp = async (companyName, fieldName, fieldValue, op, fieldOp, groupByArray) => {
-  let groupClause = "";
-  let attributesClause = [[sequelize.fn(op, sequelize.col(fieldOp)), `${fieldOp}${op.toUpperCase()}`]];
+  let groupClause = ""; let operationToName = operationsToProps(op, fieldOp, fieldValue[0] || "");
+  let attributesClause = [[sequelize.fn(op, sequelize.col(fieldOp)), operationToName]];
 
   if (groupByArray.length > 0) {
     groupClause = groupByArray.map(groupByField => `${companyTableNameInDB[companyName]}.${groupByField}`);
@@ -47,11 +54,27 @@ const getRoyaltiesGroupedWithOp = async (companyName, fieldName, fieldValue, op,
     attributes: attributesClause,
     group: groupClause,
     raw: true,
-    order: sequelize.literal(`${fieldOp}${op.toUpperCase()} DESC`)
+    order: sequelize.literal(`${operationToName} DESC`)
   })
 
   if (!filteredRoyalties) throw createHttpError(400, 'DB Error retrieving all users:', { properties: allUsers });
   return filteredRoyalties;
+}
+
+const getAccountingForTable = async groupByField => {
+  let sumRevenues = await getRoyaltiesGroupedWithOp('fuga', "", [], "sum", "netRevenue", [groupByField]);
+  let countStreams = await getRoyaltiesGroupedWithOp('fuga', "", [], "sum", "assetQuantity", [groupByField]);
+  let countDownloads = await getRoyaltiesGroupedWithOp('fuga', "saleType", ["Download"], "count", "upc", [groupByField]);
+
+  return sumRevenues.map(groupByValueAndRevenue => {
+    let streamsByGroupByField = countStreams.find(groupByValueAndStream => groupByValueAndRevenue[groupByField] === groupByValueAndStream[groupByField]);
+    let downloadsByGroupByField = countDownloads.find(groupByValueAndDownload => groupByValueAndRevenue[groupByField] === groupByValueAndDownload[groupByField]);
+    if (streamsByGroupByField) groupByValueAndRevenue.streams = streamsByGroupByField.streams;
+    else groupByValueAndRevenue.streams = 0;
+    if (downloadsByGroupByField) groupByValueAndRevenue.downloads = downloadsByGroupByField.downloads;
+    else groupByValueAndRevenue.downloads = 0;
+    return groupByValueAndRevenue;
+  })
 }
 
 const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
@@ -72,4 +95,4 @@ const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
   return `SUCCES UPLOADED ${rowsAdded} ROYALTIES`;
 }
 
-module.exports = { getRoyaltiesByQuery, getRoyaltiesGroupedWithOp, loadRoyaltiesFromLocalCSV };
+module.exports = { getRoyaltiesByQuery, getRoyaltiesGroupedWithOp, getAccountingForTable, loadRoyaltiesFromLocalCSV };
