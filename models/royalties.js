@@ -36,6 +36,7 @@ const fugaRoyaltyEquivalenceToDB = {
 const mapFugaRoyaltyToDB = csvRoyaltyRow => {
   let dbRoyaltyRow = {};
   Object.keys(csvRoyaltyRow).forEach(key => dbRoyaltyRow[fugaRoyaltyEquivalenceToDB[key]] = csvRoyaltyRow[key]);
+  dbRoyaltyRow.distributor = "FUGA";
   return dbRoyaltyRow;
 }
 

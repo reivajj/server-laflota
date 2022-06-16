@@ -5,21 +5,22 @@ const { readRoyaltiesFromCsvAndMapToDB } = require("../csv/royalties");
 
 const companyTableNameInDB = {
   "dashgo": "RegaliasDashgo",
-  "fuga": "RoyaltyFuga",
+  "fuga": "Royalty",
   "distroKid": "RoyaltyDK"
 }
 
 const royaltiesFieldsToSentToFrontEnd = ["saleId", "upc", "saleStartDate", "saleEndDate", "dsp", "saleUserType",
   "territory", "releaseArtist", "releaseTitle", "assetTitle", "saleType",
   "isrc", "assetOrReleaseSale", "assetQuantity", "originalRevenue",
-  "netRevenue", "netRevenueCurrency"]
+  "netRevenue", "netRevenueCurrency", "distributor"]
 
 const getRoyaltiesByQuery = async (companyName, fieldName, fieldValue, limit, offset) => {
   const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
     where: fieldValue.length > 0 ? { [fieldName]: fieldValue } : {},
     limit: limit,
     offset: offset,
-    attributes: royaltiesFieldsToSentToFrontEnd
+    attributes: royaltiesFieldsToSentToFrontEnd,
+    order: sequelize.literal('saleStartDate DESC')
   },
     { raw: true });
   if (!filteredRoyalties) throw createHttpError(400, 'DB Error retrieving all users:', { properties: allUsers });
@@ -68,10 +69,20 @@ const getRoyaltiesByDspsWithOp = async (companyName, fieldName, fieldValue, fiel
 
 const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
   let mappedValuesFromCsv = await readRoyaltiesFromCsvAndMapToDB(companyName, csvPath);
+  let batchSize = 10000;
+  let batches = Math.ceil(mappedValuesFromCsv.length / batchSize);
+  let batchesArray = [...Array(batches).keys()];
   const createOptions = { logging: true, benchmark: true, ignoreDuplicates: true }
-  const royaltiesCreatedInDB = await db.RoyaltyFuga.bulkCreate(mappedValuesFromCsv, createOptions);
+  let rowsAdded = 0; let royaltiesCreatedInDB = {};
 
-  return `SUCCES UPLOADED ${royaltiesCreatedInDB.length} ROYALTIES`;
+  for (const batch of batchesArray) {
+    royaltiesCreatedInDB = await db.Royalty.bulkCreate(mappedValuesFromCsv.slice(batch * batchSize, (batch + 1) * batchSize), createOptions);
+    rowsAdded += royaltiesCreatedInDB.length;
+    console.log("Batch number: ", batch);
+    console.log("Rows added: ", rowsAdded);
+  }
+
+  return `SUCCES UPLOADED ${rowsAdded} ROYALTIES`;
 }
 
 module.exports = { getRoyaltiesByQuery, getRoyaltiesByQueryWithOp, getRoyaltiesByDspsWithOp, loadRoyaltiesFromLocalCSV };

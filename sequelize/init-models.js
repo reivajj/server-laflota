@@ -1,7 +1,7 @@
 const DataTypes = require("sequelize").DataTypes;
 
 const _RegaliasDashgo = require("./RegaliasDashgo");
-const _RoyaltyFuga = require("./RoyaltyFuga");
+const _Royalty = require("./Royalty");
 const _RegaliasDgPayouts = require("./RegaliasDgPayouts");
 const _RegaliasDkPayouts = require("./RegaliasDkPayouts");
 const _UserArtist = require("./UserArtist");
@@ -11,18 +11,18 @@ const initModels = sequelize => {
   const RegaliasDashgo = _RegaliasDashgo(sequelize, DataTypes);
   const RegaliasDgPayouts = _RegaliasDgPayouts(sequelize, DataTypes);
   const RegaliasDkPayouts = _RegaliasDkPayouts(sequelize, DataTypes);
-  const RoyaltyFuga = _RoyaltyFuga(sequelize, DataTypes);
+  const Royalty = _Royalty(sequelize, DataTypes);
   const UserArtist = _UserArtist(sequelize, DataTypes);
   const User = _User(sequelize, DataTypes);
 
   // Aca hago el SYNC cuando quiero crear o actualizar tablas. // Sacar async despues
-  // await RoyaltyFuga.sync();
+  // await Royalty.sync();
   
   return {
     RegaliasDashgo,
     RegaliasDgPayouts,
     RegaliasDkPayouts,
-    RoyaltyFuga,
+    Royalty,
     UserArtist,
     User,
   };
