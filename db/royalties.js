@@ -33,22 +33,9 @@ const getRoyaltiesByQuery = async (companyName, fieldName, fieldValue, limit, of
   return { total, royalties: filteredRoyalties };
 }
 
-const getRoyaltiesByQueryWithOp = async (companyName, fieldName, fieldValue, fieldToSum) => {
-  const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
-    where: fieldValue.length > 0 ? { [fieldName]: fieldValue } : {},
-    attributes: [fieldName, [sequelize.fn('sum', sequelize.col(fieldToSum)), 'count']],
-    group: [`${companyTableNameInDB[companyName]}.${fieldName}`],
-    raw: true,
-    order: sequelize.literal('count DESC')
-  })
-
-  if (!filteredRoyalties) throw createHttpError(400, 'DB Error retrieving all users:', { properties: allUsers });
-  return filteredRoyalties;
-}
-
-const getRoyaltiesByDspsWithOp = async (companyName, fieldName, fieldValue, fieldToSum, groupByArray) => {
+const getRoyaltiesGroupedWithOp = async (companyName, fieldName, fieldValue, op, fieldOp, groupByArray) => {
   let groupClause = "";
-  let attributesClause = [[sequelize.fn('sum', sequelize.col(fieldToSum)), 'totalSum']];
+  let attributesClause = [[sequelize.fn(op, sequelize.col(fieldOp)), `${fieldOp}${op.toUpperCase()}`]];
 
   if (groupByArray.length > 0) {
     groupClause = groupByArray.map(groupByField => `${companyTableNameInDB[companyName]}.${groupByField}`);
@@ -60,7 +47,7 @@ const getRoyaltiesByDspsWithOp = async (companyName, fieldName, fieldValue, fiel
     attributes: attributesClause,
     group: groupClause,
     raw: true,
-    order: sequelize.literal('totalSum DESC')
+    order: sequelize.literal(`${fieldOp}${op.toUpperCase()} DESC`)
   })
 
   if (!filteredRoyalties) throw createHttpError(400, 'DB Error retrieving all users:', { properties: allUsers });
@@ -85,4 +72,4 @@ const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
   return `SUCCES UPLOADED ${rowsAdded} ROYALTIES`;
 }
 
-module.exports = { getRoyaltiesByQuery, getRoyaltiesByQueryWithOp, getRoyaltiesByDspsWithOp, loadRoyaltiesFromLocalCSV };
+module.exports = { getRoyaltiesByQuery, getRoyaltiesGroupedWithOp, loadRoyaltiesFromLocalCSV };
