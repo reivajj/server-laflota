@@ -2,6 +2,7 @@ const createHttpError = require("http-errors");
 const db = require("../loaders/sequelize");
 const sequelize = require("sequelize");
 const { readRoyaltiesFromCsvAndMapToDB } = require("../csv/royalties");
+const { Op } = require("sequelize");
 
 const companyTableNameInDB = {
   "dashgo": "RegaliasDashgo",
@@ -42,6 +43,10 @@ const getRoyaltiesByQuery = async (companyName, fieldName, fieldValue, limit, of
 
 const getRoyaltiesGroupedWithOp = async (companyName, fieldName, fieldValue, op, fieldOp, groupByArray) => {
   let groupClause = ""; let operationToName = operationsToProps(op, fieldOp, fieldValue[0] || "");
+
+  let whereClause = fieldValue.length > 0 ? { [fieldName]: fieldValue } : {};
+  if (operationToName === "streams") whereClause = { ...whereClause, "saleType": { [Op.ne]: "Download" } };
+
   let attributesClause = [[sequelize.fn(op, sequelize.col(fieldOp)), operationToName]];
 
   if (groupByArray.length > 0) {
@@ -50,7 +55,7 @@ const getRoyaltiesGroupedWithOp = async (companyName, fieldName, fieldValue, op,
   }
 
   const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
-    where: fieldValue.length > 0 ? { [fieldName]: fieldValue } : {},
+    where: whereClause,
     attributes: attributesClause,
     group: groupClause,
     raw: true,
@@ -61,7 +66,7 @@ const getRoyaltiesGroupedWithOp = async (companyName, fieldName, fieldValue, op,
   return filteredRoyalties;
 }
 
-const getAccountingForTable = async groupByField => {
+const getAccountingForTableView = async groupByField => {
   let sumRevenues = await getRoyaltiesGroupedWithOp('fuga', "", [], "sum", "netRevenue", [groupByField]);
   let countStreams = await getRoyaltiesGroupedWithOp('fuga', "", [], "sum", "assetQuantity", [groupByField]);
   let countDownloads = await getRoyaltiesGroupedWithOp('fuga', "saleType", ["Download"], "count", "upc", [groupByField]);
@@ -95,4 +100,4 @@ const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
   return `SUCCES UPLOADED ${rowsAdded} ROYALTIES`;
 }
 
-module.exports = { getRoyaltiesByQuery, getRoyaltiesGroupedWithOp, getAccountingForTable, loadRoyaltiesFromLocalCSV };
+module.exports = { getRoyaltiesByQuery, getRoyaltiesGroupedWithOp, getAccountingForTableView, loadRoyaltiesFromLocalCSV };
