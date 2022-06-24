@@ -17,7 +17,7 @@ const initModels = sequelize => {
 
   // Aca hago el SYNC cuando quiero crear o actualizar tablas. // Sacar async despues
   // await Royalty.sync();
-  
+
   return {
     RegaliasDashgo,
     RegaliasDgPayouts,

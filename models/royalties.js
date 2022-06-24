@@ -1,3 +1,6 @@
+const { dfSaleTypeToAll, dgStoreNameToAll } = require("../utils/royalties.utils");
+const { v4: uuidv4 } = require('uuid');
+
 const fugaRoyaltyEquivalenceToDB = {
   ['Sale ID']: "saleId",
   ['Sale Start date']: "saleStartDate",
@@ -37,7 +40,35 @@ const mapFugaRoyaltyToDB = csvRoyaltyRow => {
   let dbRoyaltyRow = {};
   Object.keys(csvRoyaltyRow).forEach(key => dbRoyaltyRow[fugaRoyaltyEquivalenceToDB[key]] = csvRoyaltyRow[key]);
   dbRoyaltyRow.distributor = "FUGA";
+  dbRoyaltyRow.reportedMonth = "2022-06"
   return dbRoyaltyRow;
 }
 
-module.exports = { mapFugaRoyaltyToDB }
+const mapDgRoyaltyToDB = dgRoyaltyFromDB => {
+  let dbRoyaltyRow = { ...dgRoyaltyFromDB };
+  dbRoyaltyRow.upc = dgRoyaltyFromDB.upc.length === 11 ? `0${dgRoyaltyFromDB.upc}` : dgRoyaltyFromDB.upc;
+  dbRoyaltyRow.reportedMonth = dgRoyaltyFromDB.reportedDate.slice(0,7);
+  dbRoyaltyRow.distributor = "DASHGO";
+  dbRoyaltyRow.saleType = dfSaleTypeToAll(dgRoyaltyFromDB.assetOrReleaseSale);
+  dbRoyaltyRow.assetOrReleaseSale = dbRoyaltyRow.isrc === "" ? "Product" : "Asset";
+  dbRoyaltyRow.assetQuantity =   dbRoyaltyRow.isrc !== "" ? dbRoyaltyRow.quantity : "";
+  dbRoyaltyRow.releaseQuantity = dbRoyaltyRow.isrc === "" ? dbRoyaltyRow.quantity : "";
+  dbRoyaltyRow.netRevenueCurrency = "USD";
+  dbRoyaltyRow.shareDeal = "93%";
+  dbRoyaltyRow.reportId = "";
+  dbRoyaltyRow.reportRunId = "";
+  dbRoyaltyRow.dsp = dgStoreNameToAll(dbRoyaltyRow.dsp);
+  dbRoyaltyRow.saleEndDate = dbRoyaltyRow.saleStartDate;
+  dbRoyaltyRow.storeName = dbRoyaltyRow.dsp;
+  dbRoyaltyRow.releaseFugaId = "";
+  dbRoyaltyRow.releaseCatNumber = "";
+  dbRoyaltyRow.assetFugaId = "";
+  dbRoyaltyRow.assetVersion = "";
+  dbRoyaltyRow.assetDuration = "";
+  delete dbRoyaltyRow.quantity;
+  delete dbRoyaltyRow.reportedDate;
+  
+  return dbRoyaltyRow;
+}
+
+module.exports = { mapFugaRoyaltyToDB, mapDgRoyaltyToDB }

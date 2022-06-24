@@ -4,6 +4,8 @@ module.exports = function (sequelize, DataTypes) {
 
     laFlotaUUID: { type: DataTypes.UUID, allowNull: false, defaultValue: DataTypes.UUIDV4 },
 
+    reportedMonth: { type: DataTypes.DATEONLY, allowNull: false, },
+
     saleStartDate: { type: DataTypes.DATEONLY, allowNull: false, },
 
     saleEndDate: { type: DataTypes.DATEONLY, allowNull: false },

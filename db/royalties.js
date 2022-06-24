@@ -3,6 +3,7 @@ const db = require("../loaders/sequelize");
 const sequelize = require("sequelize");
 const { readRoyaltiesFromCsvAndMapToDB } = require("../csv/royalties");
 const { Op } = require("sequelize");
+const { mapDgRoyaltyToDB } = require("../models/royalties");
 
 const companyTableNameInDB = {
   "dashgo": "RegaliasDashgo",
@@ -10,24 +11,41 @@ const companyTableNameInDB = {
   "distroKid": "RoyaltyDK"
 }
 
-const operationsToProps = (op, fieldOp, filterValue) => {
+const operationsToProps = (op, fieldOp, filterValue, currency) => {
   if (op === "sum" && fieldOp === "assetQuantity") return "streams";
-  if (op === "sum" && fieldOp === "netRevenue") return "revenues";
+  if (op === "sum" && fieldOp === "netRevenue") return "revenues" + currency;
   if (op === "count" && fieldOp === "upc" && filterValue === "Download") return "downloads";
   return fieldOp + op;
 }
 
-const royaltiesFieldsToSentToFrontEnd = ["saleId", "upc", "saleStartDate", "saleEndDate", "dsp", "storeName", "saleUserType",
+const royaltiesFieldsToSentToFrontEnd = ["saleId", "upc", "saleStartDate", "dsp", "storeName", "saleUserType",
   "territory", "releaseArtist", "releaseTitle", "assetTitle", "saleType",
   "isrc", "assetOrReleaseSale", "assetQuantity", "originalRevenue",
-  "netRevenue", "netRevenueCurrency", "distributor"]
+  "netRevenue", "netRevenueCurrency"]
+
+
+const dgAttributes = ["saleId", "reportedDate", "upc", "saleStartDate", "dsp", "saleUserType", "territory", "releaseArtist", "releaseTitle",
+  "assetTitle", "isrc", "assetOrReleaseSale", "quantity", "originalRevenue", "originalCurrency", "convertedRevenue", "netRevenue",
+  "exchangeRate", "shareDeal", "label", "assetArtist"]
+
+const getAllRoyaltiesFromDB = async (companyName, limit, offset, order) => {
+  const allStreams = await db[companyTableNameInDB[companyName]].findAll({
+    limit: limit,
+    attributes: companyName === "fuga" ? royaltiesFieldsToSentToFrontEnd : dgAttributes,
+    offset: offset,
+    order: sequelize.literal(order)
+  },
+    { raw: true });
+  if (!allStreams) throw createHttpError(400, 'DB Error retrieving all users:', { properties: allStreams });
+
+  return allStreams;
+}
 
 const getRoyaltiesByQuery = async (companyName, fieldName, fieldValue, limit, offset) => {
   const filteredRoyalties = await db[companyTableNameInDB[companyName]].findAll({
     where: fieldValue.length > 0 ? { [fieldName]: fieldValue } : {},
     limit: limit,
     offset: offset,
-    attributes: royaltiesFieldsToSentToFrontEnd,
     order: sequelize.literal('saleStartDate DESC')
   },
     { raw: true });
@@ -41,10 +59,12 @@ const getRoyaltiesByQuery = async (companyName, fieldName, fieldValue, limit, of
   return { total, royalties: filteredRoyalties };
 }
 
-const getRoyaltiesGroupedWithOp = async (companyName, fieldName, fieldValue, op, fieldOp, groupByArray) => {
-  let groupClause = ""; let operationToName = operationsToProps(op, fieldOp, fieldValue[0] || "");
+const getRoyaltiesGroupedWithOp = async (companyName, currency, fieldName, fieldValue, op, fieldOp, groupByArray) => {
+  let groupClause = ""; let operationToName = operationsToProps(op, fieldOp, fieldValue[0] || "", currency);
 
   let whereClause = fieldValue.length > 0 ? { [fieldName]: fieldValue } : {};
+  if (currency !== "") whereClause = { ...whereClause, "netRevenueCurrency": currency };
+
   if (operationToName === "streams") whereClause = { ...whereClause, "saleType": { [Op.ne]: "Download" } };
 
   let attributesClause = [[sequelize.fn(op, sequelize.col(fieldOp)), operationToName]];
@@ -89,24 +109,25 @@ const getDownloadsGroupedBy = async (companyName, fieldName, fieldValue, groupBy
 }
 
 const getAccountingForTableView = async (groupByField, fieldName, fieldValues) => {
-  let sumRevenues = await getRoyaltiesGroupedWithOp('fuga', fieldName, fieldValues, "sum", "netRevenue", [groupByField]);
-  let countStreams = await getRoyaltiesGroupedWithOp('fuga', fieldName, fieldValues, "sum", "assetQuantity", [groupByField]);
+  let sumUsdRevenues = await getRoyaltiesGroupedWithOp('fuga', "USD", fieldName, fieldValues, "sum", "netRevenue", [groupByField]);
+  let sumEurRevenues = await getRoyaltiesGroupedWithOp('fuga', "EUR", fieldName, fieldValues, "sum", "netRevenue", [groupByField]);
+  let countStreams = await getRoyaltiesGroupedWithOp('fuga', "", fieldName, fieldValues, "sum", "assetQuantity", [groupByField]);
   let countDownloads = await getDownloadsGroupedBy('fuga', fieldName, fieldValues, [groupByField]);
 
-  return sumRevenues.map(groupByValueAndRevenue => {
-    let streamsByGroupByField = countStreams.find(groupByValueAndStream => groupByValueAndRevenue[groupByField] === groupByValueAndStream[groupByField]);
-    let downloadsByGroupByField = countDownloads.find(groupByValueAndDownload => groupByValueAndRevenue[groupByField] === groupByValueAndDownload[groupByField]);
-    if (streamsByGroupByField) groupByValueAndRevenue.streams = streamsByGroupByField.streams;
-    else groupByValueAndRevenue.streams = 0;
-    if (downloadsByGroupByField) groupByValueAndRevenue.downloads = downloadsByGroupByField.downloads;
-    else groupByValueAndRevenue.downloads = 0;
-    return groupByValueAndRevenue;
+  return sumUsdRevenues.map(groupByValueAndUsdRevenue => {
+    let streamsByGroupByField = countStreams.find(groupByValueAndStream => groupByValueAndUsdRevenue[groupByField] === groupByValueAndStream[groupByField]);
+    let downloadsByGroupByField = countDownloads.find(groupByValueAndDownload => groupByValueAndUsdRevenue[groupByField] === groupByValueAndDownload[groupByField]);
+    let eurRevenuesByGroupByField = sumEurRevenues.find(groupByValueAndEurRevenue => groupByValueAndUsdRevenue[groupByField] === groupByValueAndEurRevenue[groupByField])
+    groupByValueAndUsdRevenue.streams = streamsByGroupByField ? streamsByGroupByField.streams : 0;
+    groupByValueAndUsdRevenue.downloads = downloadsByGroupByField ? downloadsByGroupByField.downloads : 0;
+    groupByValueAndUsdRevenue.revenuesEUR = eurRevenuesByGroupByField ? eurRevenuesByGroupByField.revenuesEUR : 0;
+    return groupByValueAndUsdRevenue;
   })
 }
 
 const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
   let mappedValuesFromCsv = await readRoyaltiesFromCsvAndMapToDB(companyName, csvPath);
-  let batchSize = 10000;
+  let batchSize = 20000;
   let batches = Math.ceil(mappedValuesFromCsv.length / batchSize);
   let batchesArray = [...Array(batches).keys()];
   const createOptions = { logging: true, benchmark: true, ignoreDuplicates: true }
@@ -122,7 +143,40 @@ const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
   return `SUCCES UPLOADED ${rowsAdded} ROYALTIES`;
 }
 
+//==============================================================DG==============================================================================\\
+
+const loadDgRoyaltiesFromDB = async () => {
+
+  let totalCount = 4841485;
+  let batchSize = 20000;
+  let batches = Math.ceil(totalCount / batchSize);
+  let batchesArray = [...Array(batches).keys()];
+
+  const createOptions = { logging: false, benchmark: true, ignoreDuplicates: true }
+  let rowsAdded = 0; let royaltiesCreatedInDB = [];
+  console.time("ALL PROCCES");
+
+  for (const batch of batchesArray) {
+    console.time(`Batch: ${batch}`);
+    let royaltiesFromDB = await getAllRoyaltiesFromDB("dashgo", batchSize, batch * batchSize, 'saleId ASC');
+    let mappedRoyaltiesToDB = royaltiesFromDB.map(dgRoyalty => mapDgRoyaltyToDB(dgRoyalty.dataValues));
+
+    royaltiesCreatedInDB = await db.Royalty.bulkCreate(mappedRoyaltiesToDB, createOptions);
+    rowsAdded += royaltiesCreatedInDB.length;
+
+    console.log("Batch number: ", batch);
+    console.log("Rows added: ", rowsAdded);
+    console.log("Porcentaje: ", (rowsAdded / totalCount) * 100);
+    console.timeEnd(`Batch: ${batch}`);
+  }
+  console.timeEnd("ALL PROCCES")
+
+  return `SUCCES UPLOADED ${rowsAdded} ROYALTIES`;
+}
+
+
+
 module.exports = {
-  getRoyaltiesByQuery, getRoyaltiesGroupedWithOp, getDownloadsGroupedBy, getAccountingForTableView,
-  loadRoyaltiesFromLocalCSV
+  getAllRoyaltiesFromDB, getRoyaltiesByQuery, getRoyaltiesGroupedWithOp, getDownloadsGroupedBy, getAccountingForTableView,
+  loadRoyaltiesFromLocalCSV, loadDgRoyaltiesFromDB
 };

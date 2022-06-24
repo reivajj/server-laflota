@@ -1,127 +1,160 @@
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('RegaliasDashgo', {
-    'Transaction ID': {
+    saleId: {
+      field: 'Transaction ID',
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    'Reported Date': {
+    reportedDate: {
+      field: 'Reported Date',
       type: DataTypes.DATEONLY,
       allowNull: false
     },
-    'Transaction Date': {
+    saleStartDate: {
+      field: 'Transaction Date',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    Store: {
+    dsp: {
+      field: 'Store',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    Region: {
+    saleUserType: {
+      field: 'Use Type',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    artist_name: {
+    territory: {
+      field: 'Region',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    'Label Name': {
+    upc: {
+      field: 'UPC',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    'Album Name': {
+    label: {
+      field: 'Label Name',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    'Track Artist': {
+    releaseArtist: {
+      field: 'artist_name',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    UPC: {
+    releaseTitle: {
+      field: 'Album Name',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    'Track Title': {
+    assetArtist: {
+      field: 'Track Artist',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    VideoId: {
+    assetTitle: {
+      field: 'Track Title',
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    isrc: {
+      field: 'ISRC',
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    assetOrReleaseSale: {
+      field: 'Product Type',
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    quantity: {
+      field: 'Units',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    ChannelId: {
+    originalRevenue: {
+      field: 'Revenue',
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    originalCurrency: {
+      field: 'Currency',
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    exchangeRate: {
+      field: 'Exchange Rate',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    ISRC: {
+    convertedRevenue: {
+      field: 'USD Revenue',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    'Label Track ID': {
+    shareDeal: {
+      field: 'Distribution Rate',
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    netRevenue: {
+      field: 'Payable',
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+
+    //NO LOS USO A LOS SIGUIENTES
+
+    labelTrackId: {
+      field: 'Label Track ID',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    Composers: {
+    videoId: {
+      field: 'VideoId',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    Units: {
+    channelId: {
+      field: 'ChannelId',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    Currency: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    'Product Type': {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    'Use Type': {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    Revenue: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    'Exchange Rate': {
+    composers: {
+      field: 'Composers',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    'USD Revenue': {
+    anotherNetRevenue: {
+      field: 'Net Revenue',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    'Distribution Rate': {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    'Net Revenue': {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    'Deal Share': {
+    unknownShareDeal: {
+      field: 'Deal Share',
       type: DataTypes.TEXT,
       allowNull: true
     },
-    'Cover Song': {
+    coverSong: {
+      field: 'Cover Song',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    'Mechanical Deduction': {
+    mechanicalDeduction: {
+      field: 'Mechanical Deduction',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    'Pub Admin Fee': {
+    pubAdminFee: {
+      field: 'Pub Admin Fee',
       type: DataTypes.TEXT,
       allowNull: false
     },
-    Payable: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    }
   }, {
     sequelize,
     tableName: 'wp_lf_regalias_dashgo',
