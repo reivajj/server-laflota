@@ -114,14 +114,14 @@ const getAccountingForTableView = async (groupByField, fieldName, fieldValues) =
   let countStreams = await getRoyaltiesGroupedWithOp('fuga', "", fieldName, fieldValues, "sum", "assetQuantity", [groupByField]);
   let countDownloads = await getDownloadsGroupedBy('fuga', fieldName, fieldValues, [groupByField]);
 
-  return sumUsdRevenues.map(groupByValueAndUsdRevenue => {
-    let streamsByGroupByField = countStreams.find(groupByValueAndStream => groupByValueAndUsdRevenue[groupByField] === groupByValueAndStream[groupByField]);
-    let downloadsByGroupByField = countDownloads.find(groupByValueAndDownload => groupByValueAndUsdRevenue[groupByField] === groupByValueAndDownload[groupByField]);
-    let eurRevenuesByGroupByField = sumEurRevenues.find(groupByValueAndEurRevenue => groupByValueAndUsdRevenue[groupByField] === groupByValueAndEurRevenue[groupByField])
-    groupByValueAndUsdRevenue.streams = streamsByGroupByField ? streamsByGroupByField.streams : 0;
-    groupByValueAndUsdRevenue.downloads = downloadsByGroupByField ? downloadsByGroupByField.downloads : 0;
-    groupByValueAndUsdRevenue.revenuesEUR = eurRevenuesByGroupByField ? eurRevenuesByGroupByField.revenuesEUR : 0;
-    return groupByValueAndUsdRevenue;
+  return countStreams.map(groupByValueAndStream => {
+    let usdRevenuesByGroupByField = sumUsdRevenues.find(groupByValueAndUsdRevenue => groupByValueAndStream[groupByField] === groupByValueAndUsdRevenue[groupByField]);
+    let downloadsByGroupByField = countDownloads.find(groupByValueAndDownload => groupByValueAndStream[groupByField] === groupByValueAndDownload[groupByField]);
+    let eurRevenuesByGroupByField = sumEurRevenues.find(groupByValueAndEurRevenue => groupByValueAndStream[groupByField] === groupByValueAndEurRevenue[groupByField])
+    groupByValueAndStream.revenuesUSD = usdRevenuesByGroupByField ? usdRevenuesByGroupByField.revenuesUSD : 0;
+    groupByValueAndStream.downloads = downloadsByGroupByField ? downloadsByGroupByField.downloads : 0;
+    groupByValueAndStream.revenuesEUR = eurRevenuesByGroupByField ? eurRevenuesByGroupByField.revenuesEUR : 0;
+    return groupByValueAndStream;
   })
 }
 
