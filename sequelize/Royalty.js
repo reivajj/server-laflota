@@ -10,17 +10,17 @@ module.exports = function (sequelize, DataTypes) {
 
     saleEndDate: { type: DataTypes.DATEONLY, allowNull: false },
 
-    dsp: { type: DataTypes.TEXT, allowNull: false },
+    dsp: { type: DataTypes.STRING(100), allowNull: false },
 
-    storeName: { type: DataTypes.TEXT, allowNull: false },
+    storeName: { type: DataTypes.STRING(100), allowNull: false },
 
     saleType: { type: DataTypes.TEXT, allowNull: false },
 
     saleUserType: { type: DataTypes.TEXT, allowNull: true },
 
-    territory: { type: DataTypes.TEXT, allowNull: false },
+    territory: { type: DataTypes.STRING(20), allowNull: false },
 
-    upc: { type: DataTypes.TEXT, allowNull: false },
+    upc: { type: DataTypes.STRING(14), allowNull: false },
 
     releaseFugaId: { type: DataTypes.TEXT, allowNull: false },
 
@@ -28,19 +28,19 @@ module.exports = function (sequelize, DataTypes) {
 
     label: { type: DataTypes.TEXT, allowNull: false },
 
-    releaseArtist: { type: DataTypes.TEXT, allowNull: false },
+    releaseArtist: { type: DataTypes.STRING(255), allowNull: false },
 
-    releaseTitle: { type: DataTypes.TEXT, allowNull: false },
+    releaseTitle: { type: DataTypes.STRING(255), allowNull: false },
 
-    assetArtist: { type: DataTypes.TEXT, allowNull: true },
+    assetArtist: { type: DataTypes.STRING(255), allowNull: true },
 
-    assetTitle: { type: DataTypes.TEXT, allowNull: true },
+    assetTitle: { type: DataTypes.STRING(255), allowNull: true },
 
     assetVersion: { type: DataTypes.TEXT, allowNull: true },
 
     assetDuration: { type: DataTypes.TEXT, allowNull: true },
 
-    isrc: { type: DataTypes.TEXT, allowNull: true },
+    isrc: { type: DataTypes.STRING(40), allowNull: true },
 
     assetFugaId: { type: DataTypes.TEXT, allowNull: true },
 
@@ -81,6 +81,62 @@ module.exports = function (sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "saleId" },
+        ]
+      },
+      {
+        name: "releaseArtist",
+        unique: false,
+        using: "BTREE",
+        fields: [
+          { name: "releaseArtist" },
+        ]
+      },
+      {
+        name: "releaseArtistByDsp",
+        unique: false,
+        using: "BTREE",
+        fields: [
+          { name: "releaseArtist" }, { name: "dsp" },
+        ]
+      },
+      {
+        name: "releaseArtistByTerritory",
+        unique: false,
+        using: "BTREE",
+        fields: [
+          { name: "releaseArtist" }, { name: "territory" },
+        ]
+      },
+      {
+        name: "releaseTitle",
+        unique: false,
+        using: "BTREE",
+        fields: [
+          { name: "releaseTitle" },
+        ]
+      },
+      {
+        name: "releaseTitleByDsp",
+        unique: false,
+        using: "BTREE",
+        fields: [
+          { name: "releaseTitle" }, { name: "dsp" },
+        ]
+      },
+      {
+        name: "albumFromArtist",
+        unique: false,
+        using: "BTREE",
+        fields: [
+          { name: "releaseTitle" }, { name: "releaseArtist" },
+        ]
+      },
+      {
+        name: "albumFromArtistByDsp",
+        unique: false,
+        using: "BTREE",
+        fields: [
+          { name: "releaseTitle" }, { name: "releaseArtist" }, { name: "dsp" },
         ]
       },
     ]

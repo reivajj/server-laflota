@@ -1,4 +1,4 @@
-const { dfSaleTypeToAll, dgStoreNameToAll } = require("../utils/royalties.utils");
+const { dfSaleTypeToAll, dgStoreNameToAll, dkStoreNameToAll } = require("../utils/royalties.utils");
 const { v4: uuidv4 } = require('uuid');
 
 const fugaRoyaltyEquivalenceToDB = {
@@ -47,11 +47,11 @@ const mapFugaRoyaltyToDB = csvRoyaltyRow => {
 const mapDgRoyaltyToDB = dgRoyaltyFromDB => {
   let dbRoyaltyRow = { ...dgRoyaltyFromDB };
   dbRoyaltyRow.upc = dgRoyaltyFromDB.upc.length === 11 ? `0${dgRoyaltyFromDB.upc}` : dgRoyaltyFromDB.upc;
-  dbRoyaltyRow.reportedMonth = dgRoyaltyFromDB.reportedDate.slice(0,7);
+  dbRoyaltyRow.reportedMonth = dgRoyaltyFromDB.reportedDate.slice(0, 7);
   dbRoyaltyRow.distributor = "DASHGO";
   dbRoyaltyRow.saleType = dfSaleTypeToAll(dgRoyaltyFromDB.assetOrReleaseSale);
   dbRoyaltyRow.assetOrReleaseSale = dbRoyaltyRow.isrc === "" ? "Product" : "Asset";
-  dbRoyaltyRow.assetQuantity =   dbRoyaltyRow.isrc !== "" ? dbRoyaltyRow.quantity : "";
+  dbRoyaltyRow.assetQuantity = dbRoyaltyRow.isrc !== "" ? dbRoyaltyRow.quantity : "";
   dbRoyaltyRow.releaseQuantity = dbRoyaltyRow.isrc === "" ? dbRoyaltyRow.quantity : "";
   dbRoyaltyRow.netRevenueCurrency = "USD";
   dbRoyaltyRow.shareDeal = "93%";
@@ -67,8 +67,51 @@ const mapDgRoyaltyToDB = dgRoyaltyFromDB => {
   dbRoyaltyRow.assetDuration = "";
   delete dbRoyaltyRow.quantity;
   delete dbRoyaltyRow.reportedDate;
-  
+
   return dbRoyaltyRow;
 }
 
-module.exports = { mapFugaRoyaltyToDB, mapDgRoyaltyToDB }
+const isDownload = csvRoyalryRow => {
+  const { assetOrReleaseSale, quantity, netRevenue, dsp } = csvRoyalryRow;
+  if (assetOrReleaseSale === "Album") return true;
+  if (dsp === "iTunes") return true;
+  else if ((parseFloat(netRevenue) / quantity) > 0.09) return true;
+  return false;
+}
+
+const mapDkRoyaltyToDB = csvRoyaltyRow => {
+  let dbRoyaltyRow = {};
+  Object.keys(csvRoyaltyRow).forEach(key => dbRoyaltyRow[key] = csvRoyaltyRow[key]);
+  dbRoyaltyRow.distributor = "DK";
+  dbRoyaltyRow.saleId = (parseInt(dbRoyaltyRow.saleId) + 700000000).toString()
+  dbRoyaltyRow.upc = csvRoyaltyRow.upc.length === 11 ? `0${csvRoyaltyRow.upc}` : csvRoyaltyRow.upc;
+  dbRoyaltyRow.reportedMonth = csvRoyaltyRow.reportedDate.slice(0, 7);
+  dbRoyaltyRow.saleStartDate = csvRoyaltyRow.saleStartDate + "-01";
+  dbRoyaltyRow.saleType = isDownload(csvRoyaltyRow) ? "Download" : "Stream";
+  dbRoyaltyRow.assetOrReleaseSale = dbRoyaltyRow.isrc === "" ? "Product" : "Asset";
+  dbRoyaltyRow.assetQuantity = dbRoyaltyRow.isrc !== "" ? dbRoyaltyRow.quantity : "";
+  dbRoyaltyRow.releaseQuantity = dbRoyaltyRow.isrc === "" ? dbRoyaltyRow.quantity : "";
+  dbRoyaltyRow.releaseTitle = dbRoyaltyRow.assetOrReleaseSale === "Product" ? csvRoyaltyRow.releaseTitle : "",
+  dbRoyaltyRow.assetTitle = dbRoyaltyRow.assetOrReleaseSale === "Asset" ? csvRoyaltyRow.releaseTitle : "",
+  dbRoyaltyRow.assetArtist = csvRoyaltyRow.releaseArtist,
+  dbRoyaltyRow.netRevenueCurrency = "USD";
+  dbRoyaltyRow.shareDeal = "DK DEAL";
+  dbRoyaltyRow.reportId = "";
+  dbRoyaltyRow.reportRunId = "";
+  dbRoyaltyRow.dsp = dkStoreNameToAll(dbRoyaltyRow.dsp);
+  dbRoyaltyRow.saleEndDate = dbRoyaltyRow.saleStartDate;
+  dbRoyaltyRow.storeName = dbRoyaltyRow.dsp;
+  dbRoyaltyRow.releaseFugaId = "";
+  dbRoyaltyRow.releaseCatNumber = "";
+  dbRoyaltyRow.assetFugaId = "";
+  dbRoyaltyRow.assetVersion = "";
+  dbRoyaltyRow.assetDuration = "";
+  dbRoyaltyRow.label = "";
+  dbRoyaltyRow.saleUserType = "DK Stream";
+
+  delete dbRoyaltyRow.reportedDate; delete dbRoyaltyRow.quantity;
+  delete dbRoyaltyRow.anotherShareDeal; delete dbRoyaltyRow.songwriterRights;
+  return dbRoyaltyRow;
+}
+
+module.exports = { mapFugaRoyaltyToDB, mapDgRoyaltyToDB, mapDkRoyaltyToDB }

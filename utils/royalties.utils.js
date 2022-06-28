@@ -36,4 +36,18 @@ const dgStoreNameToAll = dgStore => {
   return reducer[dgStore] || dgStore;
 }
 
-module.exports = { dgStoreNameToAll, dfSaleTypeToAll };
+const dkStoreNameToAll = dgStore => {
+  const reducer = {
+    "Amazon JP": "Amazon",
+    "Youtube Red": "Youtube (DK)",
+    "Youtube": "Youtube (DK)",
+    "Google Play All Access": "Google Music (DK)",
+    "Google Play": "Google Music (DK)",
+    "Groove (Streaming)": "Groove (DK)",
+    "Groove (Downloads)": "Groove (DK)", 
+    "iHeart Radio": "iHeart Radio US",
+  }
+  return reducer[dgStore] || dgStore;
+}
+
+module.exports = { dgStoreNameToAll, dfSaleTypeToAll, dkStoreNameToAll };
