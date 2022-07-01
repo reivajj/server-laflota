@@ -1,5 +1,4 @@
 const { dfSaleTypeToAll, dgStoreNameToAll, dkStoreNameToAll } = require("../utils/royalties.utils");
-const { v4: uuidv4 } = require('uuid');
 
 const fugaRoyaltyEquivalenceToDB = {
   ['Sale ID']: "saleId",

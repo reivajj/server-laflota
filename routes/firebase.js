@@ -3,9 +3,11 @@ const { addAlbumFromFugaToFSUser, getFsAlbumsByField } = require("../firebase/fi
 const { getFsArtistsByField } = require("../firebase/firestore/artists");
 const { deleteElementFromFS, getElementFromFS, editElementFromFS } = require("../firebase/firestore/elements");
 const { createISRCsBatchInFS, deleteISRCsBatchInFS, updateISRCsInFS, getIsrcByUsesStateAndLimitFS, getIsrcDocByIsrcCodeFS, createCapifIsrcs, getCapifISRCs, getNotUsedIsrcAndMark } = require("../firebase/firestore/isrcs");
+const { setAccountingByQueryFS, getAccountingByQueryFS } = require("../firebase/firestore/royalties");
 const { getTracksByPropFS, attachTracksToAlbumFS } = require("../firebase/firestore/tracks");
 const { getAllUsersFromFS, getUsersStatsFromFS, updateTotalUsersFromFS, deleteUserInFSAndAuthByEmail,
   getUserInFSByEmail, updateUserInFSByEmail, deleteAllUsersNotInFB, getUserArtistsInFSByEmail, updatePasswordByEmailInFS, updateAllUsersFS, createAuthUserWihtUuid, getUserByIdFromFS } = require("../firebase/firestore/user");
+const { loadPayoutsFromLocalCSV } = require("../firebase/firestore/payouts");
 const { createCsvFromUsersInFS, createCsvFromUsersInWpNotInFS, createFsUsersFromUsersDbCsv } = require("../migration/user.migration");
 const { logToCloudLoggingFS } = require("../third-party-api/providers/errors/logCloudLogging");
 
@@ -36,6 +38,7 @@ router.delete('/usersByEmailOnlyInUsers/:email', async (req, res, _) => {
 })
 
 //=============================================================END MIGRATION=============================================================\\
+
 router.get('/users', async (_, res, next) => {
   const response = await getAllUsersFromFS();
   return res.status(200).send({ response });
@@ -185,6 +188,25 @@ router.put('/updateIsrcs', async (req, res, next) => {
 router.post('/logToCloudLogging', async (req, res, _) => {
   let { msg, payloadData, payloadError, typeOfLog } = req.body;
   const response = await logToCloudLoggingFS(msg, payloadData, payloadError, typeOfLog);
+  return res.status(200).send({ response });
+});
+
+//=================================================WITHDRAWALS===============================\\
+
+router.post('/loadWithdrawalsFromLocalCsv', async (req, res) => {
+  const response = await loadPayoutsFromLocalCSV(req.body.companyName, req.body.csvFileName);
+  return res.status(200).send({ response });
+})
+
+//===============================================ROYALTIES===================================\\
+
+router.post('/royalties/accounting/query', async (req, res, _) => {
+  const response = await getAccountingByQueryFS(req.body.groupBy, req.body.fieldName, req.body.fieldValue);
+  return res.status(200).send({ response });
+})
+
+router.post('/royalties/accounting/set', async (req, res, _) => {
+  const response = await setAccountingByQueryFS(req.body.groupBy, req.body.fieldName, req.body.fieldValue);
   return res.status(200).send({ response });
 })
 

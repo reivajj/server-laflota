@@ -44,6 +44,7 @@ module.exports = async ({ app }) => {
   app.use(config.labelsApi, routes.labels);
   app.use(config.usersApi, routes.users);
   app.use(config.royaltiesApi, routes.royalties);
+  app.use(config.payoutsApi, routes.payouts);
   app.use(config.peopleApi, routes.people);
   app.use(config.firebaseApi, routes.firebase);
   app.use(config.spotifyApi, routes.spotify);

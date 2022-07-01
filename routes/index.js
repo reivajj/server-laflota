@@ -12,6 +12,7 @@ const spotify = require('./spotify');
 const miscellaneous = require('./miscellaneous');
 const csv = require('./csv');
 const royalties = require('./royalties');
+const payouts = require('./payouts');
 
 module.exports = {
   albums,
@@ -27,5 +28,6 @@ module.exports = {
   spotify,
   miscellaneous,
   csv,
-  royalties
+  royalties,
+  payouts
 };
