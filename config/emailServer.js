@@ -19,12 +19,12 @@ let transporter = nodemailer.createTransport({
 
 
 //Me jode al realizar los tests!
-// transporter.verify((error, success) => {
-//   if (error) {
-//     Logger.error(error);
-//   } else {
-//     Logger.info("Server Mail is ready to take our messages: ", success);
-//   }
-// });
+transporter.verify((error, success) => {
+  if (error) {
+    Logger.error(error);
+  } else {
+    Logger.info("Server Mail is ready to take our messages: ", success);
+  }
+});
 
 module.exports = { transporter };
