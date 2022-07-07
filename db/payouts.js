@@ -1,6 +1,6 @@
 const db = require("../loaders/sequelize");
 const sequelize = require("sequelize");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 
 const getPayoutsByQueryDB = async (limit, offset, orderClause, whereClause) => {
   const payoutsArray = await db.Payout.findAll({
@@ -20,7 +20,7 @@ const getPayoutsByQueryDB = async (limit, offset, orderClause, whereClause) => {
 const getPayoutsByGroupByAndOpsDB = async (orderClause, whereClause, groupByClause, opsArray, attributesNoOps) => {
   let opClauseAsArrays = opsArray.map(opClause => [sequelize.fn(opClause.op, sequelize.col(opClause.field)), opClause.name]);
   let attributesToReturn = [...attributesNoOps.map(att => att.name), ...opClauseAsArrays];
-  
+
   const payoutsArray = await db.Payout.findAll({
     where: whereClause,
     attributes: attributesToReturn,
@@ -33,6 +33,16 @@ const getPayoutsByGroupByAndOpsDB = async (orderClause, whereClause, groupByClau
   return payoutsArray;
 }
 
+const getLastPayoutForUserDB = async userEmail => {
+  const lastPayout = await db.Payout.findOne({
+    where: { 'userEmail': userEmail },
+    order: [['transferDate', 'DESC']]
+  },
+    { raw: true });
+
+  return lastPayout;
+}
+
 //=======================================================MIGRATE=======================================\\
 
 const loadPayoutsFromArrayDB = async payoutsArray => {
@@ -43,4 +53,4 @@ const loadPayoutsFromArrayDB = async payoutsArray => {
   return payoutsCreatedInDB;
 }
 
-module.exports = { loadPayoutsFromArrayDB, getPayoutsByQueryDB, getPayoutsByGroupByAndOpsDB }
+module.exports = { loadPayoutsFromArrayDB, getPayoutsByQueryDB, getPayoutsByGroupByAndOpsDB, getLastPayoutForUserDB }
