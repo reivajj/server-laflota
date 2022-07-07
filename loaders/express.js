@@ -10,7 +10,7 @@ const loginToFugaIfNeeded = require('../middleware/loginToFugaIfNeeded');
 module.exports = async ({ app }) => {
 
   let corsOptions = {
-    origin: ['https://app.laflota.com.ar'],
+    origin: 'https://app.laflota.com.ar',
     // origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
