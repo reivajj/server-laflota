@@ -127,7 +127,8 @@ const getAccountingForTableView = async (groupByField, fieldName, fieldValues) =
 
 const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
   let mappedValuesFromCsv = await readRoyaltiesFromCsvAndMapToDB(companyName, csvPath);
-  let batchSize = 20000;
+  mappedValuesFromCsv = mappedValuesFromCsv.map((row, index) => { return { saleId: (4899391 + index).toString(), ...row } })
+  let batchSize = 30000;
   let batches = Math.ceil(mappedValuesFromCsv.length / batchSize);
   let batchesArray = [...Array(batches).keys()];
   const createOptions = { logging: true, benchmark: true, ignoreDuplicates: true }
@@ -141,6 +142,7 @@ const loadRoyaltiesFromLocalCSV = async (companyName, csvPath) => {
   }
 
   return `SUCCES UPLOADED ${rowsAdded} ROYALTIES`;
+  // return mappedValuesFromCsv.slice(0,1000);
 }
 
 //==============================================================DG==============================================================================\\

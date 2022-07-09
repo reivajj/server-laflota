@@ -1,6 +1,7 @@
 const db = require("../loaders/sequelize");
 const sequelize = require("sequelize");
 const { Op, Sequelize } = require("sequelize");
+const { v4: uuidv4 } = require('uuid');
 
 const getPayoutsByQueryDB = async (limit, offset, orderClause, whereClause) => {
   const payoutsArray = await db.Payout.findAll({
@@ -20,7 +21,7 @@ const getPayoutsByQueryDB = async (limit, offset, orderClause, whereClause) => {
 const getPayoutsByGroupByAndOpsDB = async (orderClause, whereClause, groupByClause, opsArray, attributesNoOps) => {
   let opClauseAsArrays = opsArray.map(opClause => [sequelize.fn(opClause.op, sequelize.col(opClause.field)), opClause.name]);
   let attributesToReturn = [...attributesNoOps.map(att => att.name), ...opClauseAsArrays];
-
+  
   const payoutsArray = await db.Payout.findAll({
     where: whereClause,
     attributes: attributesToReturn,
@@ -33,14 +34,30 @@ const getPayoutsByGroupByAndOpsDB = async (orderClause, whereClause, groupByClau
   return payoutsArray;
 }
 
-const getLastPayoutForUserDB = async userEmail => {
+const getLastPayoutForUserDB = async ownerEmail => {
   const lastPayout = await db.Payout.findOne({
-    where: { 'userEmail': userEmail },
+    where: { 'ownerEmail': ownerEmail },
     order: [['transferDate', 'DESC']]
   },
     { raw: true });
 
   return lastPayout;
+}
+
+const createPayoutDB = async payoutRecord => {
+  let payoutWithId = payoutRecord.id === "" ? { id: uuidv4(), ...payoutRecord } : payoutRecord;
+  const newPayout = await db.Payout.create(payoutWithId);
+  return newPayout;
+}
+
+const updatePayoutDB = async newValuesPayout => {
+  const newPayout = await db.Payout.update({ ...payoutRecord });
+  return newPayout;
+}
+
+const deletePayoutDB = async payoutId => {
+  const destroyResponse = await db.Payout.delete({ where: { id: payoutId } });
+  return destroyResponse;
 }
 
 //=======================================================MIGRATE=======================================\\
@@ -53,4 +70,7 @@ const loadPayoutsFromArrayDB = async payoutsArray => {
   return payoutsCreatedInDB;
 }
 
-module.exports = { loadPayoutsFromArrayDB, getPayoutsByQueryDB, getPayoutsByGroupByAndOpsDB, getLastPayoutForUserDB }
+module.exports = {
+  loadPayoutsFromArrayDB, getPayoutsByQueryDB, getPayoutsByGroupByAndOpsDB, getLastPayoutForUserDB,
+  createPayoutDB, updatePayoutDB, deletePayoutDB
+}

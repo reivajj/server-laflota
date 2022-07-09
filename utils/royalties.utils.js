@@ -2,7 +2,8 @@ const dfSaleTypeToAll = dgProductType => {
   const reducer = {
     "T": "Download",
     "S": "Stream",
-    "A": "Download"
+    "A": "Download",
+    "C": "Stream"
   }
   return reducer[dgProductType] || "Stream";
 }

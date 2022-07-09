@@ -55,9 +55,9 @@ module.exports = function (sequelize, DataTypes) {
 
     userCuit: { type: DataTypes.STRING(30), allowNull: true },
 
-    userEmail: { type: DataTypes.STRING(100), allowNull: true },
+    ownerEmail: { type: DataTypes.STRING(100), allowNull: true },
 
-    userId: { type: DataTypes.STRING(255), allowNull: false },
+    ownerId: { type: DataTypes.STRING(255), allowNull: false },
 
     userLastName: { type: DataTypes.STRING(50), allowNull: true },
 
@@ -77,11 +77,11 @@ module.exports = function (sequelize, DataTypes) {
         ]
       },
       {
-        name: "userEmail",
+        name: "ownerEmail",
         unique: false,
         using: "BTREE",
         fields: [
-          { name: "userEmail" },
+          { name: "ownerEmail" },
         ]
       },
       {

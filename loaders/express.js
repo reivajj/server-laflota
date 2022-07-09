@@ -10,21 +10,21 @@ const loginToFugaIfNeeded = require('../middleware/loginToFugaIfNeeded');
 module.exports = async ({ app }) => {
 
   let corsOptions = {
-    origin: 'https://app.laflota.com.ar',
+    origin: ['https://app.laflota.com.ar', 'http://localhost:3001'],
     // origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
     exposedHeaders: ["set-cookie"],
   }
 
-  app.get('/status', (_, res) => { res.status(200).end(); });
-  app.head('/status', (_, res) => { res.status(200).end(); });
-  app.enable('trust proxy');
-
   app.use(cors(corsOptions));
   app.use(urlencoded({ extended: false }));
   app.use(json());
   app.use(cookieParser());
+
+  app.get('/status', (_, res) => { res.status(200).end(); });
+  app.head('/status', (_, res) => { res.status(200).end(); });
+  app.enable('trust proxy');
 
   app.use((req, _, next) => {
     console.log(`Request_Endpoint: ${req.method} ${req.url}`);

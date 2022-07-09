@@ -1,4 +1,4 @@
-const { loadPayoutsFromArrayDB, getPayoutsDB, getPayoutsByQueryDB, getPayoutsByGroupByAndOpsDB, getLastPayoutForUserDB } = require("../../db/payouts");
+const { loadPayoutsFromArrayDB, getPayoutsDB, getPayoutsByQueryDB, getPayoutsByGroupByAndOpsDB, getLastPayoutForUserDB, updatePayoutDB, createPayoutDB, deletePayoutDB } = require("../../db/payouts");
 const { getPayoutsFromFS } = require("../../firebase/firestore/payouts");
 const { mapFsPayoutToDB } = require("../../models/payouts");
 
@@ -18,9 +18,24 @@ const getPayoutsAndGroupByAndOps = async (order, whereClause, groupByClause, ops
   return payoutsFilteredAndTotal;
 }
 
-const getTotalPayedPayouts = async userEmail => {
-  let lastPayout = await getLastPayoutForUserDB(userEmail);
+const getTotalPayedPayouts = async ownerEmail => {
+  let lastPayout = await getLastPayoutForUserDB(ownerEmail);
   return lastPayout;
+}
+
+const createPayout = async payoutRecord => {
+  let newPayout = await createPayoutDB(payoutRecord);
+  return newPayout;
+}
+
+const updatePayout = async payoutRecord => {
+  let newPayout = await updatePayoutDB(payoutRecord);
+  return newPayout;
+}
+
+const deletePayout = async payoutId => {
+  let deleteDbResponse = await deletePayoutDB(payoutId);
+  return deleteDbResponse;
 }
 
 //================================================MIGRATE==============================================\\
@@ -31,4 +46,7 @@ const migratePayoutFromFS = async () => {
   return `SUCCESS CREATED ${writeInDbResult.length} PAYOUTS`;
 }
 
-module.exports = { migratePayoutFromFS, getPayoutsByQuery, getPayoutsAndGroupByAndOps, getTotalPayedPayouts }
+module.exports = {
+  migratePayoutFromFS, getPayoutsByQuery, getPayoutsAndGroupByAndOps, getTotalPayedPayouts,
+  createPayout, updatePayout, deletePayout
+}

@@ -1,4 +1,5 @@
 const { dfSaleTypeToAll, dgStoreNameToAll, dkStoreNameToAll } = require("../utils/royalties.utils");
+const { v4: uuidv4 } = require('uuid');
 
 const fugaRoyaltyEquivalenceToDB = {
   ['Sale ID']: "saleId",
@@ -43,7 +44,7 @@ const mapFugaRoyaltyToDB = csvRoyaltyRow => {
   return dbRoyaltyRow;
 }
 
-const mapDgRoyaltyToDB = dgRoyaltyFromDB => {
+const mapDgRoyaltyFromDBToDB = dgRoyaltyFromDB => {
   let dbRoyaltyRow = { ...dgRoyaltyFromDB };
   dbRoyaltyRow.upc = dgRoyaltyFromDB.upc.length === 11 ? `0${dgRoyaltyFromDB.upc}` : dgRoyaltyFromDB.upc;
   dbRoyaltyRow.reportedMonth = dgRoyaltyFromDB.reportedDate.slice(0, 7);
@@ -70,6 +71,44 @@ const mapDgRoyaltyToDB = dgRoyaltyFromDB => {
   return dbRoyaltyRow;
 }
 
+const mapDgCsvRoyaltyToDB = dgRoyaltyFromCSV => {
+  let dbRoyaltyAll = {};
+  dbRoyaltyAll.saleStartDate = dgRoyaltyFromCSV['Transaction Date'] || "";
+  dbRoyaltyAll.dsp = dgStoreNameToAll(dgRoyaltyFromCSV['Store']) || "";
+  dbRoyaltyAll.storeName = dbRoyaltyAll.dsp || "";
+  dbRoyaltyAll.saleEndDate = dbRoyaltyAll.saleStartDate || "";
+  dbRoyaltyAll.reportedMonth = dbRoyaltyAll.saleStartDate.slice(0, 8) + '01';
+  dbRoyaltyAll.isrc = dgRoyaltyFromCSV['ISRC'] || "";
+  dbRoyaltyAll.assetOrReleaseSale = dbRoyaltyAll.isrc === "" ? "Product" : "Asset";
+  dbRoyaltyAll.assetQuantity = dbRoyaltyAll.isrc !== "" ? dgRoyaltyFromCSV['Units'] : "";
+  dbRoyaltyAll.releaseQuantity = dbRoyaltyAll.isrc === "" ? dgRoyaltyFromCSV['Units'] : "";
+  dbRoyaltyAll.saleType = dfSaleTypeToAll(dgRoyaltyFromCSV['Product Type']) || "";
+  dbRoyaltyAll.saleUserType = dgRoyaltyFromCSV['Use Type'] || "";
+  dbRoyaltyAll.territory = dgRoyaltyFromCSV['Region'] || "";
+  dbRoyaltyAll.upc = dgRoyaltyFromCSV['UPC'].length === 11 ? `0${dgRoyaltyFromCSV['UPC']}` || "" : dgRoyaltyFromCSV['UPC'] || "";
+  dbRoyaltyAll.releaseCatNumber = dbRoyaltyAll.upc || "";
+  dbRoyaltyAll.label = dgRoyaltyFromCSV['Label Name'] || "";
+  dbRoyaltyAll.releaseArtist = dgRoyaltyFromCSV['Artist Name'] || "";
+  dbRoyaltyAll.releaseTitle = dgRoyaltyFromCSV['Album Name'] || "";
+  dbRoyaltyAll.assetArtist = dgRoyaltyFromCSV['Track Artist'] || "";
+  dbRoyaltyAll.assetTitle = dgRoyaltyFromCSV['Track Title'] || "";
+  dbRoyaltyAll.netRevenue = parseFloat(dgRoyaltyFromCSV['Payable']) || "";
+  dbRoyaltyAll.originalRevenue = parseFloat(dgRoyaltyFromCSV['Revenue']) || "";
+  dbRoyaltyAll.originalCurrency = dgRoyaltyFromCSV['Currency'] || "";
+  dbRoyaltyAll.exchangeRate = parseFloat(dgRoyaltyFromCSV['Exchange Rate']) || "";
+  dbRoyaltyAll.netRevenueCurrency = "USD";
+  dbRoyaltyAll.shareDeal = "93%";
+  dbRoyaltyAll.releaseFugaId = "";
+  dbRoyaltyAll.releaseCatNumber = "";
+  dbRoyaltyAll.assetFugaId = "";
+  dbRoyaltyAll.assetVersion = "";
+  dbRoyaltyAll.assetDuration = "";
+  dbRoyaltyAll.distributor = "DASHGO";
+  dbRoyaltyAll.reportRunId = "";
+  dbRoyaltyAll.reportId = "";
+  return dbRoyaltyAll;
+}
+
 const isDownload = csvRoyalryRow => {
   const { assetOrReleaseSale, quantity, netRevenue, dsp } = csvRoyalryRow;
   if (assetOrReleaseSale === "Album") return true;
@@ -91,9 +130,9 @@ const mapDkRoyaltyToDB = csvRoyaltyRow => {
   dbRoyaltyRow.assetQuantity = dbRoyaltyRow.isrc !== "" ? dbRoyaltyRow.quantity : "";
   dbRoyaltyRow.releaseQuantity = dbRoyaltyRow.isrc === "" ? dbRoyaltyRow.quantity : "";
   dbRoyaltyRow.releaseTitle = dbRoyaltyRow.assetOrReleaseSale === "Product" ? csvRoyaltyRow.releaseTitle : "",
-  dbRoyaltyRow.assetTitle = dbRoyaltyRow.assetOrReleaseSale === "Asset" ? csvRoyaltyRow.releaseTitle : "",
-  dbRoyaltyRow.assetArtist = csvRoyaltyRow.releaseArtist,
-  dbRoyaltyRow.netRevenueCurrency = "USD";
+    dbRoyaltyRow.assetTitle = dbRoyaltyRow.assetOrReleaseSale === "Asset" ? csvRoyaltyRow.releaseTitle : "",
+    dbRoyaltyRow.assetArtist = csvRoyaltyRow.releaseArtist,
+    dbRoyaltyRow.netRevenueCurrency = "USD";
   dbRoyaltyRow.shareDeal = "DK DEAL";
   dbRoyaltyRow.reportId = "";
   dbRoyaltyRow.reportRunId = "";
@@ -113,4 +152,4 @@ const mapDkRoyaltyToDB = csvRoyaltyRow => {
   return dbRoyaltyRow;
 }
 
-module.exports = { mapFugaRoyaltyToDB, mapDgRoyaltyToDB, mapDkRoyaltyToDB }
+module.exports = { mapFugaRoyaltyToDB, mapDgCsvRoyaltyToDB, mapDkRoyaltyToDB }

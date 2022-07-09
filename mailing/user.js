@@ -1,5 +1,6 @@
 const { transporter } = require('../config/emailServer');
 const createError = require('http-errors');
+const { handleEmailErrors } = require('./handleEmailsError');
 
 function to(promise) {
   return promise.then(data => {
@@ -8,28 +9,21 @@ function to(promise) {
     .catch(err => [err]);
 }
 
-const sendWelcome = async () => {
+const sendWelcome = async text => {
   const dest = "javi.petri.jp@gmail.com";
 
   const mailOptions = {
     from: '"La Flota" <info@laflota.com.ar>',
     to: dest,
     subject: `Javi Bienvenido a La Flota`,
-    html: "<b>Hola</b>"
+    html: `<b>${text}</b>`
   };
 
   let [errorSendingWelcomeEmail, infoSuccessWelcome] = await to(transporter.sendMail(mailOptions));
-  if (errorSendingWelcomeEmail) throw createError(505, 'Error al dar la bienvenida al Usuario con el Mail', { properties: errorSendingWelcomeEmail });
+  let emailsResponse = handleEmailErrors(errorSendingWelcomeEmail, infoSuccessWelcome);
+  if (!emailsResponse !== "OK") return emailsResponse;
 
-  if (infoSuccessWelcome.rejected.length > 0 && infoSuccessWelcome.accepted.length === 0) {
-    return { status: 'total rejected', errorType: 'all emails rejected', info: infoSuccessWelcome }
-  }
-
-  if (infoSuccessWelcome.rejected.length > 0 && infoSuccessWelcome.accepted.length > 0) {
-    return { status: 'partial success', errorType: 'some emails rejected', info: infoSuccessWelcome }
-  }
-
-  return infoSuccessWelcome;
+  return emailsResponse;
 }
 
 module.exports = { sendWelcome };

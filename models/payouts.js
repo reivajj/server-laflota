@@ -4,7 +4,7 @@ const mapDgPayoutToFS = dgPayoutCsvRow => {
   let fsRoyaltyRow = {};
 
   fsRoyaltyRow.id = uuidv4();
-  fsRoyaltyRow.userEmail = dgPayoutCsvRow.userEmail.trim();
+  fsRoyaltyRow.ownerEmail = dgPayoutCsvRow.ownerEmail.trim();
   fsRoyaltyRow.currency = dgPayoutCsvRow.currency;
   fsRoyaltyRow.currencyRate = parseFloat(dgPayoutCsvRow.currencyRate);
   fsRoyaltyRow.historicTotalUsd = parseFloat(dgPayoutCsvRow.historicTotal);
@@ -64,8 +64,8 @@ const mapFsPayoutToDB = fsPayoutDoc => {
   dbPayoutRow.payoneerEmail = "";
   dbPayoutRow.payoneerId = "";
   dbPayoutRow.payoneerFee = "";
-  dbPayoutRow.userEmail = fsPayoutDoc.userEmail;
-  dbPayoutRow.userId = fsPayoutDoc.userId;
+  dbPayoutRow.ownerEmail = fsPayoutDoc.ownerEmail;
+  dbPayoutRow.ownerId = fsPayoutDoc.ownerId;
   dbPayoutRow.taxesUsd = 0;
   dbPayoutRow.taxesOtherCurrency = 0;
   dbPayoutRow.taxesCurrency = "";
