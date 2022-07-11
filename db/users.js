@@ -22,7 +22,7 @@ const getAllArtistsFromLFByUserFromDB = async userId => {
 }
 
 const getUserByEmailFromDB = async (email) => {
-  const userByEmail = await db.User.findOne({ where: { ownerEmail: email }, raw: true });
+  const userByEmail = await db.User.findOne({ where: { userEmail: email }, raw: true });
   if (!userByEmail || !userByEmail.id) return { exist: false };
 
   return { exist: true, user: userByEmail };
