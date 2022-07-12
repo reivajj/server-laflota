@@ -3,15 +3,29 @@ const firebaseApp = require('../../loaders/firebase');
 
 const { readPayoutFromCsvAndMapToFS } = require("../../csv/royalties");
 const { getUserInFSByEmail } = require('./user');
+const { deleteElementFromFS } = require('./elements');
 
 const dbFS = admin.firestore();
 
-const createPayoutDocFS = async payoutWithId => {
+const createPayoutFS = async payoutWithId => {
   await dbFS.collection("payouts").doc(payoutWithId.id).set(payoutWithId).catch(error => {
     console.log(error);
     return { created: "FAIL" }
   });
   return { created: "SUCCESS" };
+}
+
+const updatePayoutFS = async (payoutNewValues, payoutId) => {
+  await dbFS.collection("payouts").doc(payoutId).update({ ...payoutNewValues }).catch(error => {
+    console.log(error);
+    return { updated: "FAIL" }
+  });
+  return { updated: "SUCCESS" };
+}
+
+const deletePayoutFS = async payoutId => {
+  let deleteResult = await deleteElementFromFS("payouts", payoutId);
+  return deleteResult.deleted;
 }
 
 const getPayoutsFromFS = async () => {
@@ -41,7 +55,7 @@ const loadPayoutsFromLocalCSV = async (companyName, csvPath) => {
 
   for (const batch of batchesArray) {
     let addUserEmail = mappedValuesFromCsv.slice(batch * batchSize, (batch + 1) * batchSize).map(async payout => {
-      let createResult = await createPayoutDocFS(payout);
+      let createResult = await createPayoutFS(payout);
       if (createResult.created !== "SUCCESS") return false;
       rowsCompleted++;
     })
@@ -53,4 +67,7 @@ const loadPayoutsFromLocalCSV = async (companyName, csvPath) => {
   return mappedValuesFromCsv;
 }
 
-module.exports = { loadPayoutsFromLocalCSV, getPayoutsFromFS, getPayoutsFromFSByOwnerId }
+module.exports = {
+  loadPayoutsFromLocalCSV, getPayoutsFromFS, getPayoutsFromFSByOwnerId,
+  createPayoutFS, deletePayoutFS, updatePayoutFS
+}

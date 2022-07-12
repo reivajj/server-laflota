@@ -37,7 +37,7 @@ const getPayoutsByGroupByAndOpsDB = async (orderClause, whereClause, groupByClau
 const getLastPayoutForUserDB = async ownerEmail => {
   const lastPayout = await db.Payout.findOne({
     where: { 'ownerEmail': ownerEmail },
-    order: [['transferDate', 'DESC']]
+    order: [['requestDate', 'DESC']]
   },
     { raw: true });
 
@@ -50,13 +50,13 @@ const createPayoutDB = async payoutRecord => {
   return newPayout;
 }
 
-const updatePayoutDB = async newValuesPayout => {
-  const newPayout = await db.Payout.update({ ...payoutRecord });
+const updatePayoutDB = async (newValuesPayout, payoutId) => {
+  const newPayout = await db.Payout.update({ ...newValuesPayout }, { where: { id: payoutId } });
   return newPayout;
 }
 
 const deletePayoutDB = async payoutId => {
-  const destroyResponse = await db.Payout.delete({ where: { id: payoutId } });
+  const destroyResponse = await db.Payout.destroy({ where: { id: payoutId } });
   return destroyResponse;
 }
 

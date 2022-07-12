@@ -28,12 +28,12 @@ payouts.get('/groupBy', async (req, res, _) => {
 });
 
 payouts.post('/', async (req, res, _) => {
-  const response = await createPayout(req.body);
+  const response = await createPayout(req.body.payoutRecord, req.body.sendNotification);
   return res.status(200).send({ response });
 })
 
 payouts.put('/', async (req, res, _) => {
-  const response = await updatePayout(req.body);
+  const response = await updatePayout(req.body.payoutRecord, req.body.sendNotification);
   return res.status(200).send({ response });
 })
 

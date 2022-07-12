@@ -63,4 +63,9 @@ router.post('/getEmailsFromYtReleases', async (_, res, next) => {
   return res.status(200).send({ response });
 })
 
+router.post('/addFugaAlbumsToApp', async (_, res) => {
+  const response = await createAlbumsNotMigrated();
+  return res.status(200).send({ response });
+})
+
 module.exports = router;

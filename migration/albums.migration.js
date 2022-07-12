@@ -154,17 +154,17 @@ const createFsAlbumFromNotMigrated = async albumFromCsv => {
 
   let userInFsResponse = await getUserInFSByEmail(albumFromCsv.ownerEmail.trim());
   if (!userInFsResponse.exist) return createAlbumStatusRow(albumFromFuga, createdFsAlbum, "NOT_FOUNDED_ARTIST");
-  let userInFs = userInFsResponse.user;
+  let ownerId = userInFsResponse.user.id;
 
-  let artistFromFSResponse = await getUserCredentialsFromArtist(albumFromCsv.mainArtistFugaId, { artists: [{ name: albumFromCsv.artistName }] });
-  if (artistFromFSResponse === "NOT_FOUNDED_FS_ARTIST") {
-    artistFromFSResponse = await createFsArtistFromFugaArtist(albumFromCsv.mainArtistFugaId, albumFromCsv.ownerEmail.trim(), userInFs.id.trim());
-    if (artistFromFSResponse === "FUGA_ARTIST_NOT_FOUNDED") return createAlbumStatusRow(albumFromFuga, createdFsAlbum, "NOT_FOUNDED_ARTIST_POST_CREATED");
-  }
+  // let artistFromFSResponse = await getUserCredentialsFromArtist(albumFromCsv.mainArtistFugaId, { artists: [{ name: albumFromCsv.artistName }] });
+  // if (artistFromFSResponse === "NOT_FOUNDED_FS_ARTIST") {
+  //   artistFromFSResponse = await createFsArtistFromFugaArtist(albumFromCsv.mainArtistFugaId, albumFromCsv.ownerEmail.trim(), albumFromCsv.ownerId.trim());
+  //   if (artistFromFSResponse === "FUGA_ARTIST_NOT_FOUNDED") return createAlbumStatusRow(albumFromFuga, createdFsAlbum, "NOT_FOUNDED_ARTIST_POST_CREATED");
+  // }
 
-  let { ownerEmail, ownerId, id } = artistFromFSResponse;
-  if (!ownerEmail || !ownerId || !id) return createAlbumStatusRow(albumFromFuga, createdFsAlbum, "NOT_FOUNDED_ARTISTS_CREDS");
-  createdFsAlbum = createFSAlbumFromFugaAlbum(albumFromFuga, ownerEmail, ownerId, artistId = id);
+  let { ownerEmail, artistAppId } = albumFromCsv;
+  if (!ownerEmail || !ownerId || !artistAppId) return createAlbumStatusRow(albumFromFuga, createdFsAlbum, "NOT_FOUNDED_ARTISTS_CREDS");
+  createdFsAlbum = createFSAlbumFromFugaAlbum(albumFromFuga, ownerEmail, ownerId, artistAppId);
   await updateAlbumWithId(albumFromCsv.albumFugaId, getExtraFields(createdFsAlbum, albumFromFuga));
   await setFsAlbum(createdFsAlbum);
   return createAlbumStatusRow(albumFromFuga, createdFsAlbum, `CREATED_FS_ALBUM_AND_FUGA_EXTRA_FIELDS`);
@@ -278,7 +278,7 @@ const actionsOnAllFugaAlbums = async () => {
 }
 
 const createAlbumsNotMigrated = async () => {
-  let albumsNotMigrated = await getArrayElementsInFsFromCsv("migration/1.artistsMissing.csv");
+  let albumsNotMigrated = await getArrayElementsInFsFromCsv("migration/addFugaAlbumsToApp.csv");
   let results = [];
 
   let pageSize = 20; let pages = Math.ceil(albumsNotMigrated.length / pageSize);
@@ -303,7 +303,7 @@ const createAlbumsNotMigrated = async () => {
     await Promise.all(parallelMigration);
     console.timeEnd(`TEST PAGINA: ${page}`);
   }
-  await csvWriterFugaApproachDelivered.writeRecords(results);
+  // await csvWriterFugaApproachDelivered.writeRecords(results);
   return results;
 }
 
