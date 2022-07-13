@@ -5,6 +5,8 @@ module.exports = function (sequelize, DataTypes) {
 
     ownerEmail: { type: DataTypes.STRING(100), allowNull: true },
 
+    lastUpdateTS: { type: DataTypes.DOUBLE, allowNull: false, defaultValue: new Date().getTime() },
+
     requestDate: { type: DataTypes.DATEONLY, allowNull: false, },
 
     transferDate: { type: DataTypes.DATEONLY, allowNull: true, },
@@ -67,7 +69,7 @@ module.exports = function (sequelize, DataTypes) {
 
   }, {
     sequelize,
-    tableName: 'payouts',
+    tableName: 'payouts_all',
     timestamps: false,
     indexes: [
       {
@@ -84,6 +86,14 @@ module.exports = function (sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "ownerEmail" },
+        ]
+      },
+      {
+        name: "lastUpdateTS",
+        unique: false,
+        using: "BTREE",
+        fields: [
+          { name: "lastUpdateTS" },
         ]
       },
       {

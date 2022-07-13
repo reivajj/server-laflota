@@ -20,7 +20,7 @@ const regaliasSolicitadasUsd = (name, currencyText, accountType, accountValue,
   paymentMethodText, currencyRate, transferTotalUsd, transferTotalAskedCurrency, idTransactionApp) => {
   const emailHtml =
     `<p>¡Hola <em><strong>${name}</strong></em>! ¿Cómo estás?</p><p>Este email es para confirmar que recibimos tu solicitud de cobro de regalías por el monto de <em>${transferTotalUsd}</em> <em>Dolares Estadounidenses (USD)</em> a través de <em>${paymentMethodText}</em> el día de hoy. </p>
-  <p>Se depositarán al siguiente <em>${accountType}</em> → <strong>${accountValue}</strong></p>
+  <p>Se depositarán a la siguiente cuenta de<em>${accountType}</em> → <strong>${accountValue}</strong></p>
   <p>&nbsp;</p>
   <p><img class="an1" src="https://fonts.gstatic.com/s/e/notoemoji/13.1.1/1f4fb/72.png" alt="📻" width="30" height="30" data-emoji="📻" aria-label="📻" /> <span style="font-family: arial, sans-serif;">¡Te invitamos a dejarnos tus comentarios! → </span><a href="https://www.facebook.com/pg/laflota.distribuciondigital/reviews/" target="_blank" rel="noopener" data-saferedirecturl="https://www.google.com/url?q=https://www.facebook.com/pg/laflota.distribuciondigital/reviews/&amp;source=gmail&amp;ust=1634757193028000&amp;usg=AFQjCNHTqovcOAZfHoD3jv8FAj2w6tvE_g"><i><b><span style="color: #3d85c6;">Facebook</span></b></i></a> | <b><i><a href="https://g.page/r/CYP5NvamJozCEAg/review" target="_blank" rel="noopener" data-saferedirecturl="https://www.google.com/url?q=https://g.page/r/CYP5NvamJozCEAg/review&amp;source=gmail&amp;ust=1634757193028000&amp;usg=AFQjCNGXshDUsE9sWWqzoxhlNFpVDH_HAQ"><span style="color: #3d85c6;">Google</span></a></i></b></p>
   <p>Saludos cordiales,</p>

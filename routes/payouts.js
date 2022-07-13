@@ -1,7 +1,6 @@
 const { getPayoutsFromFSByOwnerId } = require("../firebase/firestore/payouts");
-const { migratePayoutFromFS, getPayoutsByQuery,
-  getPayoutsAndGroupByAndOps, getTotalPayedPayouts, createPayout, updatePayout,
-  deletePayout } = require("../services/providers/payouts");
+const { getPayoutsByQuery, getPayoutsAndGroupByAndOps, getTotalPayedPayouts,
+  createPayout, updatePayout, deletePayout } = require("../services/providers/payouts");
 
 var payouts = require("express-promise-router")();
 
@@ -42,10 +41,14 @@ payouts.delete('/:payoutId', async (req, res, _) => {
   return res.status(200).send({ response });
 })
 
+// payouts.get('/migrate', async (req, res, _) => {
+//   const response = await migrateDGPayoutsFromDB();
+//   return res.status(200).send({ response });
+// });
 
-payouts.get('/migrate', async (req, res, _) => {
-  const response = await migratePayoutFromFS();
-  return res.status(200).send({ response });
-});
+// payouts.get('/fix-payouts', async (req, res, _) => {
+//   const response = await fixPayoutsFromDB();
+//   return res.status(200).send({ response });
+// });
 
 module.exports = payouts;

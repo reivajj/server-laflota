@@ -21,7 +21,7 @@ const getPayoutsByQueryDB = async (limit, offset, orderClause, whereClause) => {
 const getPayoutsByGroupByAndOpsDB = async (orderClause, whereClause, groupByClause, opsArray, attributesNoOps) => {
   let opClauseAsArrays = opsArray.map(opClause => [sequelize.fn(opClause.op, sequelize.col(opClause.field)), opClause.name]);
   let attributesToReturn = [...attributesNoOps.map(att => att.name), ...opClauseAsArrays];
-  
+
   const payoutsArray = await db.Payout.findAll({
     where: whereClause,
     attributes: attributesToReturn,
@@ -33,6 +33,32 @@ const getPayoutsByGroupByAndOpsDB = async (orderClause, whereClause, groupByClau
 
   return payoutsArray;
 }
+
+const getPayoutsSumToFixPayouts = async (atDate, userEmail) => {
+  const payoutsArray = await db.Payout.findOne({
+    where: {
+      requestDate: { [Op.lte]: atDate },
+      ownerEmail: userEmail
+    },
+    attributes: [[sequelize.fn('SUM', sequelize.col('transferTotalUsd')), 'total']],
+    raw: true
+  });
+  if (!payoutsArray) return "Error buscando los pagos.";
+  return payoutsArray.total;
+}
+
+const getPayoutsToFixDatePayouts = async () => {
+  const payoutsArray = await db.Payout.findAll({
+    where: { transferDate: '0000-00-00' },
+    attributes: ['id', 'requestDate'],
+    raw: true
+  });
+  if (!payoutsArray) return "Error buscando los pagos.";
+
+  return payoutsArray;
+}
+
+
 
 const getLastPayoutForUserDB = async ownerEmail => {
   const lastPayout = await db.Payout.findOne({
@@ -63,14 +89,26 @@ const deletePayoutDB = async payoutId => {
 //=======================================================MIGRATE=======================================\\
 
 const loadPayoutsFromArrayDB = async payoutsArray => {
-
   const createOptions = { logging: false, benchmark: true, ignoreDuplicates: true }
   payoutsCreatedInDB = await db.Payout.bulkCreate(payoutsArray, createOptions);
 
   return payoutsCreatedInDB;
 }
 
+//=======================================OLDS===========================================\\
+// const getPayoutsByQueryDgDB = async (limit, offset, whereClause) => {
+//   const payoutsArray = await db.RegaliasDgPayouts.findAll({
+//     limit: limit,
+//     offset: offset,
+//     order: sequelize.literal('request_date DESC')
+//   },
+//     { raw: true });
+//   if (!payoutsArray) return "Error buscando los pagos.";
+
+//   return payoutsArray;
+// }
+
 module.exports = {
   loadPayoutsFromArrayDB, getPayoutsByQueryDB, getPayoutsByGroupByAndOpsDB, getLastPayoutForUserDB,
-  createPayoutDB, updatePayoutDB, deletePayoutDB
+  createPayoutDB, updatePayoutDB, deletePayoutDB, getPayoutsToFixDatePayouts, getPayoutsSumToFixPayouts
 }

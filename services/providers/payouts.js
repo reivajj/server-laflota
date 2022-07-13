@@ -1,8 +1,8 @@
 const { loadPayoutsFromArrayDB, getPayoutsDB, getPayoutsByQueryDB, getPayoutsByGroupByAndOpsDB,
-  getLastPayoutForUserDB, updatePayoutDB, createPayoutDB, deletePayoutDB } = require("../../db/payouts");
+  getLastPayoutForUserDB, updatePayoutDB, createPayoutDB, deletePayoutDB, getPayoutsToFixDatePayouts, getPayoutsSumToFixPayouts } = require("../../db/payouts");
 const { getPayoutsFromFS, createPayoutFS, deletePayoutFS, updatePayoutFS } = require("../../firebase/firestore/payouts");
 const { sendRoyaltiesNotification } = require("../../mailing/payouts");
-const { mapFsPayoutToDB } = require("../../models/payouts");
+const { mapDgPayoutFromDBToDB } = require("../../models/payouts");
 
 //================================================CRUD=================================================\\
 
@@ -49,14 +49,53 @@ const deletePayout = async payoutId => {
 }
 
 //================================================MIGRATE==============================================\\
-const migratePayoutFromFS = async () => {
-  let payoutsElements = await getPayoutsFromFS();
-  payoutsElements = payoutsElements.map(pyElem => mapFsPayoutToDB(pyElem));
-  let writeInDbResult = await loadPayoutsFromArrayDB(payoutsElements);
-  return `SUCCESS CREATED ${writeInDbResult.length} PAYOUTS`;
+const migrateDKPayoutsFromDB = async () => {
+  let payoutsElements = await getPayoutsByQuery(100, 0, 'requestDate.DESC', JSON.stringify({ status: 'Migrated DK' }));
+  let result = payoutsElements.payouts.map(pyElem => {
+    let elem = { ...pyElem.dataValues };
+    elem.lastUpdateTS = new Date(elem.requestDate !== '0000-00-00' ? elem.requestDate : elem.transferDate).getTime() || 0;
+    return elem;
+  });
+  let writeInDbResult = await loadPayoutsFromArrayDB(result);
+  return { status: `SUCCESS CREATED ${writeInDbResult.length} PAYOUTS`, result };
 }
 
+// const migrateDGPayoutsFromDB = async () => {
+//   let payoutsElements = await getPayoutsByQueryDgDB(1000, 0);
+//   let results = []; let index = 0;
+
+//   for (const payout of payoutsElements) {
+//     let payoutMapped = await mapDgPayoutFromDBToDB(payout.dataValues);
+//     results.push(payoutMapped);
+//     index++;
+//     console.log("MIGRADO PAYOUT: ", index);
+//   }
+
+//   let writeInDbResult = await loadPayoutsFromArrayDB(results);
+//   return `SUCCESS CREATED ${0} PAYOUTS`;
+// }
+
+const fixPayoutsFromDB = async () => {
+  let allPayouts = await getPayoutsByQueryDB(1000, 0, 'requestDate ASC', { });
+
+  let results = []; let index = 0;
+
+  for (const payout of allPayouts.payouts) {
+    let sumAtDate = await getPayoutsSumToFixPayouts(payout.requestDate, payout.ownerEmail);
+    sumAtDate = parseFloat(sumAtDate.toFixed(2));
+    let resultUpdate = await updatePayoutDB({ historicTotalUsd: sumAtDate, alreadyPaidUsd: sumAtDate }, payout.id);
+    results.push(resultUpdate);
+    index++;
+    console.log(index)
+  }
+
+  return results;
+}
+
+
+
 module.exports = {
-  migratePayoutFromFS, getPayoutsByQuery, getPayoutsAndGroupByAndOps, getTotalPayedPayouts,
-  createPayout, updatePayout, deletePayout
+  getPayoutsByQuery, getPayoutsAndGroupByAndOps, getTotalPayedPayouts,
+  createPayout, updatePayout, deletePayout, migrateDKPayoutsFromDB,
+  fixPayoutsFromDB
 }
