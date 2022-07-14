@@ -20,7 +20,7 @@ const regaliasSolicitadasArsBank = (name, currencyText, accountType, accountValu
   const emailHtml =
     `<p>¡Hola <em><strong>${name}</strong></em>! ¿Cómo estás?</p>
     <p>Este email es para confirmar que recibimos tu solicitud de retiro de regalías por el monto de <em>${transferTotalAskedCurrency}</em> <em>${currencyText}</em> a través de <em>${paymentMethodText}</em> el día de hoy. </p>
-  <p>Este monto en Pesos Argentinos corresponde a USD <em>${transferTotalUsd}, al tipo de cambio del día solicitado: <em>${currencyRate}</em></p>
+  <p>Este monto en ARS corresponde a USD <em>${transferTotalUsd}, al tipo de cambio del día solicitado: <em>${currencyRate}</em></p>
   ${timeToDepositText}
   <p>Se depositarán al siguiente <em>${accountType}</em> → <strong>${accountValue}</strong></p>
   
@@ -34,7 +34,7 @@ const regaliasSolicitadasCupon = (name, transferTotalUsd, currencyRate) => {
   <p>¡Hola <em><strong>${name}</strong></em>! ¿Cómo estás?</p>
   <p>Este mail es para confirmar que solicitaste regalías en formato Cupón de Crédito el día de hoy.
   ${timeToDepositText}
-  <p>El monto en Pesos Argentinos del cupón corresponde a USD <em>${transferTotalUsd}, al tipo de cambio del día solicitado: <em>${currencyRate}</em></p>
+  <p>El monto en ARS del cupón corresponde a USD <em>${transferTotalUsd}, al tipo de cambio del día solicitado: <em>${currencyRate}</em></p>
  
   ${endingEmail}`
 }
@@ -43,7 +43,7 @@ const regaliasSolicitadasUsd = (name, currencyText, accountType, accountValue,
   paymentMethodText, currencyRate, transferTotalUsd, transferTotalAskedCurrency, idTransactionApp) => {
   const emailHtml =
     `<p>¡Hola <em><strong>${name}</strong></em>! ¿Cómo estás?</p>
-  <p>Este email es para confirmar que recibimos tu solicitud de retiro de regalías por el monto de <em>${transferTotalUsd}</em> <em>Dolares Estadounidenses (USD)</em> a través de <em>${paymentMethodText}</em> el día de hoy. </p>
+  <p>Este email es para confirmar que recibimos tu solicitud de retiro de regalías por el monto de <em>${transferTotalUsd}</em> <em>USD</em> a través de <em>${paymentMethodText}</em> el día de hoy. </p>
   ${timeToDepositText}
   <p>Se depositarán a la siguiente cuenta de<em>${accountType}</em> → <strong>${accountValue}</strong></p>
   
@@ -56,8 +56,8 @@ const regaliasPagadas = (name, currencyText, accountType, accountValue, paymentM
   transferTotalUsd, transferTotalAskedCurrency, idPayAccount) => {
   const emailHtml =
     `<p>¡Hola <em><strong>${name}</strong></em>! ¿Cómo estás?</p>
-    <p>Este email es para avisarte que ya realizamos el pago de tus regalías por el monto de <strong>${currencyText === "Pesos Argentinos" ? transferTotalAskedCurrency : transferTotalUsd}</strong> <em>${currencyText}</em> a través de <em>${paymentMethodText}</em> el día de hoy. </p>
-  ${currencyText === "Pesos Argentinos"
+    <p>Este email es para avisarte que ya realizamos el pago de tus regalías por el monto de <strong>${currencyText === "ARS" ? transferTotalAskedCurrency : transferTotalUsd}</strong> <em>${currencyText}</em> a través de <em>${paymentMethodText}</em> el día de hoy. </p>
+  ${currencyText === "ARS"
       ? `<p>Se depositaron al siguiente <em>${accountType}</em> → <strong>${accountValue}</strong></p>`
       : `<p> Se depositaron a la siguiente cuenta de <em>${accountType}</em> → <strong>${accountValue}</strong></p>`}
   <p>El código de identificación del pago es el siguiente: <strong><em>${idPayAccount}</em></strong>
@@ -84,23 +84,23 @@ const regaliasNotification = (requestedOrPayed, name, currencyText, accountType,
   paymentMethodText, currencyRate, transferTotalUsd, transferTotalAskedCurrency, idTransactionApp, idPayAccount) => {
   if (requestedOrPayed === "requested") {
 
-    if (currencyText === "Pesos Argentinos") {
+    if (currencyText === "ARS") {
       if (accountType === "CBU/CVU") return regaliasSolicitadasArsBank(name, currencyText, accountType, accountValue,
         paymentMethodText, currencyRate, transferTotalUsd, transferTotalAskedCurrency, idTransactionApp);
       if (accountType === "Cupón de Crédito") return regaliasSolicitadasCupon(name, transferTotalUsd, currencyRate)
     }
 
-    if (currencyText === "Dolares Estadounidenses (USD)")
+    if (currencyText === "USD")
       return regaliasSolicitadasUsd(name, currencyText, accountType, accountValue, paymentMethodText,
         currencyRate, transferTotalUsd, transferTotalAskedCurrency, idTransactionApp);
   }
   else {
-    if (currencyText === "Pesos Argentinos") {
+    if (currencyText === "ARS") {
       if (accountType === "CBU/CVU") return regaliasPagadas(name, currencyText, accountType, accountValue, paymentMethodText,
         transferTotalUsd, transferTotalAskedCurrency, idPayAccount);
       if (accountType === "Cupón") return regaliasPagadasCupon(name, currencyText, transferTotalAskedCurrency, idPayAccount);
     }
-    if (currencyText === "Dolares Estadounidenses (USD)")
+    if (currencyText === "USD")
       return regaliasPagadas(name, currencyText, accountType, accountValue, paymentMethodText,
         transferTotalUsd, transferTotalAskedCurrency, idPayAccount);
   }

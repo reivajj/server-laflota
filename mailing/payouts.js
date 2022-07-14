@@ -15,7 +15,7 @@ const sendRoyaltiesNotification = async (payoutRecord, requestedOrPayed) => {
   let ownerEmail = payoutRecord.ownerEmail;
   let userName = payoutRecord.userName;
   let cupon = payoutRecord.cupon || "";
-  let currencyText = payoutRecord.currency === "ARS" ? "Pesos Argentinos" : "Dolares Estadounidenses (USD)";
+  let currencyText = payoutRecord.currency;
   let accountType = getAccountTypeFromPayout(payoutRecord);
   let accountValue = getAccountValueFromPayout(payoutRecord);
   let paymentMethodText = accountType === "CBU/CVU" ? "Transferencia Bancaria" : accountType;
@@ -35,9 +35,7 @@ const sendRoyaltiesNotification = async (payoutRecord, requestedOrPayed) => {
 
   let [errorSendingWelcomeEmail, infoSuccessWelcome] = await to(transporter.sendMail(mailOptions));
   let emailsResponse = handleEmailErrors(errorSendingWelcomeEmail, infoSuccessWelcome);
-  console.log("EMAILS RESPONSE: ", emailsResponse);
   if (emailsResponse !== "OK") return emailsResponse;
-  console.log("INFO SUCCESS EMAIL: ", infoSuccessWelcome);
   return infoSuccessWelcome;
 }
 
