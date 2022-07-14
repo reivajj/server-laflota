@@ -8,7 +8,20 @@ const { deleteElementFromFS } = require('./elements');
 const dbFS = admin.firestore();
 
 const createPayoutFS = async payoutWithId => {
-  await dbFS.collection("payouts").doc(payoutWithId.id).set(payoutWithId).catch(error => {
+  let dbPayoutRow = {...payoutWithId};
+  dbPayoutRow.historicTotalUsd = parseFloat(payoutWithId.historicTotalUsd);
+  dbPayoutRow.alreadyPaidUsd = parseFloat(payoutWithId.alreadyPaidUsd);
+  dbPayoutRow.currencyRateToUsd = parseFloat(payoutWithId.currencyRateToUsd);
+  dbPayoutRow.transferTotalUsd = parseFloat(payoutWithId.transferTotalUsd);
+  dbPayoutRow.transferTotalAskedCurrency = parseFloat(payoutWithId.transferTotalAskedCurrency);
+  dbPayoutRow.comissionAskedCurrency = parseFloat(payoutWithId.comissionAskedCurrency);
+  dbPayoutRow.payoneerFee = parseFloat(payoutWithId.payoneerFee);
+  dbPayoutRow.paypalFee = parseFloat(payoutWithId.paypalFee);
+  dbPayoutRow.taxesOtherCurrency = parseFloat(payoutWithId.taxesOtherCurrency);
+  dbPayoutRow.taxesUsd = parseFloat(payoutWithId.taxesUsd);
+  dbPayoutRow.comissionUsd = parseFloat(payoutWithId.comissionUsd);  
+  
+  await dbFS.collection("payouts").doc(payoutWithId.id).set(dbPayoutRow).catch(error => {
     console.log(error);
     return { created: "FAIL" }
   });

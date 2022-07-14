@@ -22,13 +22,15 @@ const getPayoutsByGroupByAndOpsDB = async (orderClause, whereClause, groupByClau
   let opClauseAsArrays = opsArray.map(opClause => [sequelize.fn(opClause.op, sequelize.col(opClause.field)), opClause.name]);
   let attributesToReturn = [...attributesNoOps.map(att => att.name), ...opClauseAsArrays];
 
+  console.log("ATT TO RETURN: ", attributesToReturn);
+
   const payoutsArray = await db.Payout.findAll({
     where: whereClause,
     attributes: attributesToReturn,
     group: groupByClause,
-    order: sequelize.literal(orderClause)
-  },
-    { raw: true });
+    order: sequelize.literal(orderClause),
+    raw: true
+  });
   if (!payoutsArray) return "Error buscando los pagos.";
 
   return payoutsArray;

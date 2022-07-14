@@ -1,3 +1,4 @@
+const { getTotalsPayoutsToCSV, getDiffsTotalsPayoutsToCSV } = require("../csv/csvActions");
 const { getPayoutsFromFSByOwnerId } = require("../firebase/firestore/payouts");
 const { getPayoutsByQuery, getPayoutsAndGroupByAndOps, getTotalPayedPayouts,
   createPayout, updatePayout, deletePayout } = require("../services/providers/payouts");
@@ -41,6 +42,15 @@ payouts.delete('/:payoutId', async (req, res, _) => {
   return res.status(200).send({ response });
 })
 
+payouts.get('/totalsToCsv', async (req, res, _) => {
+  const response = await getTotalsPayoutsToCSV();
+  return res.status(200).send({ response });
+});
+
+payouts.get('/totalsDiffsToCsv', async (req, res, _) => {
+  const response = await getDiffsTotalsPayoutsToCSV();
+  return res.status(200).send({ response });
+});
 // payouts.get('/migrate', async (req, res, _) => {
 //   const response = await migrateDGPayoutsFromDB();
 //   return res.status(200).send({ response });

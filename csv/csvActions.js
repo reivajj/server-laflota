@@ -9,12 +9,13 @@ const { getAlbumByFieldValue, updateAlbumWithId } = require('../services/provide
 const { getTrackAssetById, updateTrackAssetWithId } = require('../services/providers/tracks');
 const { deliverAlbumForArrayOfDsps, addArrayOfDspsToDeliver, getAlbumDeliveryInstructions, redeliverAllAlbumDsps, redeliverAlbumForArrayOfDsps } = require('../services/providers/delivery');
 const { mapWPReleaseToFilteredRelease } = require('../models/wp.albums');
+const { getPayoutsAndGroupByAndOps } = require('../services/providers/payouts');
 
 const isrcNamespace = '1b671a64-40d5-491e-99b0-da01ff1f3341';
 
 const csvWriter = createCsvWriter({
-  path: 'csv/0.appleDeliveryStatus.csv',
-  header: [{ id: "albumFugaId", title: "albumFugaId" }, { id: "upc", title: "upc" }, { id: "result", title: "result" }]
+  path: 'csv/payouts_diffs.csv',
+  header: [{ id: "ownerEmail", title: "ownerEmail" }, { id: "totalDiff", title: "totalDiff" }]
 });
 
 const csvWriterRedeliver = createCsvWriter({
@@ -434,8 +435,75 @@ const tryAnotherDeliveryRound = async () => {
   return albumsAndDeliveryStatusDsps;
 }
 
+const getTotalesWdAccountingRow = accountingValues => {
+  let totals = { ownerEmail: "Totales", cantPayouts: 0, lastPayAskedDay: 0, totalPayed: 0 };
+  if (accountingValues.length === 0) return totals;
+  console.log(accountingValues);
+  accountingValues.forEach(accVal => {
+    totals.cantPayouts += accVal.cantPayouts;
+    totals.totalPayed += accVal.totalPayed;
+  })
+
+  return {
+    ownerEmail: totals.email,
+    lastPayAskedDay: accountingValues[accountingValues.length - 1].lastPayAskedDay,
+    cantPayouts: totals.cantPayouts,
+    totalPayed: totals.totalPayed,
+  }
+}
+
+const getTotalsPayoutsToCSV = async () => {
+  let ops = JSON.stringify([{ op: "sum", field: "transferTotalUsd", name: "totalPayed" },
+  { op: "count", field: "ownerEmail", name: "cantPayouts" },
+  { op: "max", field: "requestDate", name: "lastPayAskedDay" }]);
+
+  let whereClause = JSON.stringify({});
+
+  let attNoOps = JSON.stringify([{ name: 'ownerEmail' }]);
+
+  let payoutTotals = await getPayoutsAndGroupByAndOps('totalPayed.DESC', whereClause,
+    'ownerEmail', ops, attNoOps);
+
+  payoutTotals = payoutTotals.map(payout => {
+    payout.totalPayed = parseFloat(payout.totalPayed.toFixed(2));
+    return payout;
+  })
+  // payoutTotals.totalPayed = parseFloat(payoutTotals.totalPayed.toFixed(2));
+  await csvWriter.writeRecords(payoutTotals);
+}
+
+const combineArraysWithNoDuplicates = (arr1, arr2) => [...new Set(arr1.concat(arr2))];
+
+const getDiffsTotalsPayoutsToCSV = async () => {
+  let totalsPayouts = await readCsv(
+    `${__dirname}/totals_payouts.csv`,
+    { headers: true, ignoreEmpty: true },
+    (csvRow) => csvRow,
+  );
+
+  let totalsPayoutsAll = await readCsv(
+    `${__dirname}/totals_payouts_all.csv`,
+    { headers: true, ignoreEmpty: true },
+    (csvRow) => csvRow,
+  );
+
+  let results = [];
+  let emailsFromAll = totalsPayoutsAll.map(tpA => tpA.ownerEmail);
+  let emailsFromNotAll = totalsPayouts.map(tp => tp.ownerEmail);
+  let allEmails = combineArraysWithNoDuplicates(emailsFromAll, emailsFromNotAll);
+  allEmails.forEach(email => {
+    let rowFromAll = totalsPayoutsAll.find(tpA => email === tpA.ownerEmail) || { totalPayed: 0 };
+    let rowFromNotAll = totalsPayouts.find(tp => email === tp.ownerEmail) || { totalPayed: 0 };
+    results.push({ ownerEmail: email, totalDiff: rowFromAll.totalPayed - rowFromNotAll.totalPayed });
+  })
+
+  // payoutTotals.totalPayed = parseFloat(payoutTotals.totalPayed.toFixed(2));
+  await csvWriter.writeRecords(results);
+}
+
 module.exports = {
   readSubscriptionsCsv, readISRCsCsv, readUPCsCsvAndWriteNew,
   readAndTranscriptUPCsCsvAndDSPsForDelivery, readAndEditAlbumsFromUPCs, readAndEditTracksFromUPCs,
-  filterWpAlbumsByUPCDelivered, tryAnotherDeliveryRound, deliveryListOfUpcsToApple
+  filterWpAlbumsByUPCDelivered, tryAnotherDeliveryRound, deliveryListOfUpcsToApple, getTotalsPayoutsToCSV,
+  getDiffsTotalsPayoutsToCSV
 }
