@@ -110,17 +110,14 @@ const getDownloadsGroupedBy = async (companyName, fieldName, fieldValue, groupBy
 
 const getAccountingForTableView = async (groupByField, fieldName, fieldValues) => {
   let sumUsdRevenues = await getRoyaltiesGroupedWithOp('fuga', "USD", fieldName, fieldValues, "sum", "netRevenue", [groupByField]);
-  let sumEurRevenues = await getRoyaltiesGroupedWithOp('fuga', "EUR", fieldName, fieldValues, "sum", "netRevenue", [groupByField]);
   let countStreams = await getRoyaltiesGroupedWithOp('fuga', "", fieldName, fieldValues, "sum", "assetQuantity", [groupByField]);
   let countDownloads = await getDownloadsGroupedBy('fuga', fieldName, fieldValues, [groupByField]);
 
   return countStreams.map(groupByValueAndStream => {
     let usdRevenuesByGroupByField = sumUsdRevenues.find(groupByValueAndUsdRevenue => groupByValueAndStream[groupByField] === groupByValueAndUsdRevenue[groupByField]);
     let downloadsByGroupByField = countDownloads.find(groupByValueAndDownload => groupByValueAndStream[groupByField] === groupByValueAndDownload[groupByField]);
-    let eurRevenuesByGroupByField = sumEurRevenues.find(groupByValueAndEurRevenue => groupByValueAndStream[groupByField] === groupByValueAndEurRevenue[groupByField])
     groupByValueAndStream.revenuesUSD = usdRevenuesByGroupByField ? usdRevenuesByGroupByField.revenuesUSD : 0;
     groupByValueAndStream.downloads = downloadsByGroupByField ? downloadsByGroupByField.downloads : 0;
-    groupByValueAndStream.revenuesEUR = eurRevenuesByGroupByField ? eurRevenuesByGroupByField.revenuesEUR : 0;
     return groupByValueAndStream;
   })
 }
