@@ -1,6 +1,6 @@
 const getAccountTypeFromPayout = payout => {
   if (payout.cbuCvuAlias !== "") return "CBU/CVU";
-  if (payout.cupon !== "") return "Cupón";
+  if (payout.cupon !== "") return "Cupón de Crédito";
   if (payout.paypalEmail !== "") return "Paypal";
   if (payout.payoneerEmail !== "") return "Payoneer";
   return "CBU/CVU";

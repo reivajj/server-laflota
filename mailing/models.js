@@ -57,7 +57,8 @@ const regaliasPagadas = (name, currencyText, accountType, accountValue, paymentM
 
 const regaliasPagadasCupon = (name, currencyText, transferTotalAskedCurrency, idPayAccount) => {
   const emailHtml =
-    `<p>¡Hola <em><strong>${name}</strong></em>! ¿Cómo estás?</p><p>Este email es para avisarte que ya realizamos generamos el cupón de regalías por el monto de <strong>${transferTotalAskedCurrency}</strong> <em>${currencyText}</em> el día de hoy. </p>
+    `<p>¡Hola <em><strong>${name}</strong></em>! ¿Cómo estás?</p>
+    <p>Este email es para avisarte que ya generamos el cupón de crédito por el monto de <strong>${transferTotalAskedCurrency}</strong> <em>${currencyText}</em> el día de hoy. </p>
   
   <p>El código de identificación del cupón es el siguiente: <strong><em>${idPayAccount}</em></strong>
   
@@ -74,7 +75,7 @@ const regaliasNotification = (requestedOrPayed, name, currencyText, accountType,
     if (currencyText === "Pesos Argentinos") {
       if (accountType === "CBU/CVU") return regaliasSolicitadasArsBank(name, currencyText, accountType, accountValue,
         paymentMethodText, currencyRate, transferTotalUsd, transferTotalAskedCurrency, idTransactionApp);
-      if (accountType === "Cupón") return regaliasSolicitadasCupon(name, currencyRate, transferTotalUsd)
+      if (accountType === "Cupón de Crédito") return regaliasSolicitadasCupon(name, transferTotalUsd, currencyRate)
     }
 
     if (currencyText === "Dolares Estadounidenses (USD)")
