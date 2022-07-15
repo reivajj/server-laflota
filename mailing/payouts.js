@@ -15,7 +15,7 @@ const sendRoyaltiesNotification = async (payoutRecord, requestedOrPayed) => {
   let ownerEmail = payoutRecord.ownerEmail;
   let userName = payoutRecord.userName;
   let cupon = payoutRecord.cupon || "";
-  let currencyText = payoutRecord.currency;
+  let currencyText = payoutRecord.currency.toUpperCase();
   let accountType = getAccountTypeFromPayout(payoutRecord);
   let accountValue = getAccountValueFromPayout(payoutRecord);
   let paymentMethodText = accountType === "CBU/CVU" ? "Transferencia Bancaria" : accountType;

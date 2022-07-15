@@ -11,9 +11,9 @@ const endingEmail = `<p>&nbsp;</p>
 
 const timeToDepositText = '<p>La solicitud va a ser procesada dentro de los siguientes 10 días hábiles.</p>';
 
-// Este e-mail es para confirmar que recibimos tu solicitud de retiro de regalías por el monto de u$s 334,81 a través de Paypal. La solicitud va a ser procesada dentro de los siguientes 10 días hábiles. 
+// Este e-mail es para confirmar que recibimos tu solicitud de retiro de regalías por el monto de u$s 334,81 a través de PayPal. La solicitud va a ser procesada dentro de los siguientes 10 días hábiles. 
 
-// Se depositarán a la siguiente cuenta de Paypal → paypal@laflo.c
+// Se depositarán a la siguiente cuenta de PayPal → paypal@laflo.c
 
 const regaliasSolicitadasArsBank = (name, currencyText, accountType, accountValue,
   paymentMethodText, currencyRate, transferTotalUsd, transferTotalAskedCurrency, idTransactionApp) => {
@@ -45,7 +45,7 @@ const regaliasSolicitadasUsd = (name, currencyText, accountType, accountValue,
     `<p>¡Hola <em><strong>${name}</strong></em>! ¿Cómo estás?</p>
   <p>Este email es para confirmar que recibimos tu solicitud de retiro de regalías por el monto de <em>${transferTotalUsd}</em> <em>USD</em> a través de <em>${paymentMethodText}</em> el día de hoy. </p>
   ${timeToDepositText}
-  <p>Se depositarán a la siguiente cuenta de<em>${accountType}</em> → <strong>${accountValue}</strong></p>
+  <p>Se depositarán a la siguiente cuenta de <em>${accountType === "PayPal" ? "PayPal" : "Payoneer"}</em> → <strong>${accountValue}</strong></p>
   
   ${endingEmail}`;
 
@@ -98,7 +98,7 @@ const regaliasNotification = (requestedOrPayed, name, currencyText, accountType,
     if (currencyText === "ARS") {
       if (accountType === "CBU/CVU") return regaliasPagadas(name, currencyText, accountType, accountValue, paymentMethodText,
         transferTotalUsd, transferTotalAskedCurrency, idPayAccount);
-      if (accountType === "Cupón") return regaliasPagadasCupon(name, currencyText, transferTotalAskedCurrency, idPayAccount);
+      if (accountType === "Cupón de Crédito") return regaliasPagadasCupon(name, currencyText, transferTotalAskedCurrency, idPayAccount);
     }
     if (currencyText === "USD")
       return regaliasPagadas(name, currencyText, accountType, accountValue, paymentMethodText,

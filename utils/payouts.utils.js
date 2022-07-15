@@ -1,8 +1,8 @@
 const getAccountTypeFromPayout = payout => {
   if (payout.cbuCvuAlias !== "") return "CBU/CVU";
-  if (payout.cupon !== "") return "Cupón de Crédito";
-  if (payout.paypalEmail !== "") return "Paypal";
+  if (payout.paypalEmail !== "") return "PayPal";
   if (payout.payoneerEmail !== "") return "Payoneer";
+  if (payout.cupon) return "Cupón de Crédito";
   return "CBU/CVU";
 }
 
@@ -15,7 +15,7 @@ const getAccountValueFromPayout = payout => {
 
 const getAccountPayId = (account, payoutRecord) => {
   if (payoutRecord.currency === "ARS") return payoutRecord.otherPayId;
-  if (account === "Paypal") return payoutRecord.paypalId;
+  if (account === "PayPal") return payoutRecord.paypalId;
   if (account === "Payoneer") return payoutRecord.payoneerId;
   return "";
 }
