@@ -1,7 +1,7 @@
 const { getTotalsPayoutsToCSV, getDiffsTotalsPayoutsToCSV } = require("../csv/csvActions");
 const { getPayoutsFromFSByOwnerId } = require("../firebase/firestore/payouts");
 const { getPayoutsByQuery, getPayoutsAndGroupByAndOps, getTotalPayedPayouts,
-  createPayout, updatePayout, deletePayout } = require("../services/providers/payouts");
+  createPayout, updatePayout, deletePayout, getPayoutsAccounting } = require("../services/providers/payouts");
 
 var payouts = require("express-promise-router")();
 
@@ -24,6 +24,12 @@ payouts.get('/fs/:ownerId', async (req, res, _) => {
 payouts.get('/groupBy', async (req, res, _) => {
   let { order, where, groupBy, ops, attributes } = req.query;
   const response = await getPayoutsAndGroupByAndOps(order, where, groupBy, ops, attributes);
+  return res.status(200).send({ response });
+});
+
+payouts.get('/accounting', async (req, res, _) => {
+  let { order, where, groupBy, ops, attributes } = req.query;
+  const response = await getPayoutsAccounting(order, where, groupBy, ops, attributes);
   return res.status(200).send({ response });
 });
 

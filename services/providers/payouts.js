@@ -13,6 +13,13 @@ const getPayoutsByQuery = async (limit, offset, order, whereClause) => {
   return payoutsFilteredAndTotal;
 }
 
+const getPayoutsAccounting = async (order, whereClause, groupByClause, opsArrayClause, attributesArrayClause) => {
+  let accWithOutPending = await getPayoutsAndGroupByAndOps(order, whereClause, groupByClause, opsArrayClause, attributesArrayClause);
+  let accOnlyPending = await getPayoutsAndGroupByAndOps(order, JSON.stringify({ ...JSON.parse(whereClause), status: "REQUESTED" })
+    , groupByClause, opsArrayClause, attributesArrayClause);
+  return { accWithOutPending, accOnlyPending };
+}
+
 const getPayoutsAndGroupByAndOps = async (order, whereClause, groupByClause, opsArrayClause, attributesArrayClause) => {
   let orderClause = order.split('.').length === 2 ? `${order.split('.')[0]} ${order.split('.')[1]}` : "";
   let payoutsFilteredAndTotal = await getPayoutsByGroupByAndOpsDB(orderClause, whereClause ? JSON.parse(whereClause) : {}
@@ -76,7 +83,7 @@ const migrateDKPayoutsFromDB = async () => {
 // }
 
 const fixPayoutsFromDB = async () => {
-  let allPayouts = await getPayoutsByQueryDB(1000, 0, 'requestDate ASC', { });
+  let allPayouts = await getPayoutsByQueryDB(1000, 0, 'requestDate ASC', {});
 
   let results = []; let index = 0;
 
@@ -97,5 +104,5 @@ const fixPayoutsFromDB = async () => {
 module.exports = {
   getPayoutsByQuery, getPayoutsAndGroupByAndOps, getTotalPayedPayouts,
   createPayout, updatePayout, deletePayout, migrateDKPayoutsFromDB,
-  fixPayoutsFromDB
+  fixPayoutsFromDB, getPayoutsAccounting
 }
